@@ -1,4 +1,4 @@
-
+<!-- resources/views/investor/pending/registration-pending.blade.php -->
 <x-layout title="Registration Pending">
     <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
         <div class="w-full max-w-2xl p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
@@ -91,4 +91,26 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        function checkRegistrationStatus() {
+            fetch('{{ route("check.registration.status") }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'approved') {
+                        window.location.href = '{{ route("investor.dashboard") }}';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Check every 30 seconds
+        setInterval(checkRegistrationStatus, 10000);
+
+        // Also check immediately when page loads
+        checkRegistrationStatus();
+    </script>
+    @endpush
+
 </x-layout>

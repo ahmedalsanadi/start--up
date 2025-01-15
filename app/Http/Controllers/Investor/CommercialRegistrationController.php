@@ -4,21 +4,38 @@ namespace App\Http\Controllers\Investor;
 
 use App\Http\Controllers\Controller;
 
+use Auth;
 use Illuminate\Http\Request;
 use App\Models\CommercialRegistration;
 
 class CommercialRegistrationController extends Controller
 {
 
-    public function index()
-    {
-
-
-    }
-
     public function create()
     {
-        return view('investor.commercial-registration.create');
+        $commercialRegistration = Auth::user()->commercialRegistration;
+
+        // Check if commercialRegistration exists
+        if (!$commercialRegistration) {
+            return view('investor.commercial-registration.create');
+        }
+        else
+        {
+
+            $status = $commercialRegistration->status;
+            if($status == 'approved')
+            {
+                return redirect()->route('investor.dashboard');
+            }
+
+            if($status == 'pending')
+            {
+                return redirect()->route('pending-commercial-registration');
+            }
+
+
+        }
+
     }
 
     public function store(Request $request)
@@ -34,8 +51,27 @@ class CommercialRegistrationController extends Controller
             'status' => 'pending'
         ]);
 
-        return redirect()->route('registration-pending');
+        return redirect()->route('pending-commercial-registration');
     }
+
+    public function displayPendingPage()
+    {
+
+        $status = Auth::user()->commercialRegistration->status;
+        if($status == 'approved')
+        {
+
+            return redirect()->route('investor.dashboard');
+        }
+
+        return view('investor.pending.registration-pending' , ['status' => $status]);
+    }
+
+    public function checkStatus()
+{
+    $status = Auth::user()->commercialRegistration->status;
+    return response()->json(['status' => $status]);
+}
 
 
 }

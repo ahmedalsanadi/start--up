@@ -66,6 +66,7 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
 // Commercial Registration Routes
 Route::middleware(['auth', 'user_type:investor'])->group(function () {
 
+    //allow investor to enter the commercial registration number
     Route::get('/commercial-registration', [CommercialRegistrationController::class, 'create'])
         ->name('commercial-registration.create');
 
@@ -73,11 +74,12 @@ Route::middleware(['auth', 'user_type:investor'])->group(function () {
     Route::post('/commercial-registration', [CommercialRegistrationController::class, 'store'])
         ->name('commercial-registration.store');
 
+    //display pending page
+    Route::get('/pending-commercial-registration', [CommercialRegistrationController::class, 'displayPendingPage']) ->name('pending-commercial-registration');
 
-    Route::get('/registration-pending', function () {
-        return view('investor.pending.registration-pending');
-    })->name('registration-pending');
-
+    //check registration status and refresh the pending page by ajax
+    Route::get('/check-registration-status', [CommercialRegistrationController::class, 'checkStatus'])
+    ->name('check.registration.status');
 
 });
 
@@ -85,7 +87,7 @@ Route::middleware(['auth', 'user_type:investor'])->group(function () {
 Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->group(function () {
 
     Route::get('/investor', function () {
-        return view('investor');
+        return view('investor.index');
     })->name('investor.dashboard');
     // Add other investor routes here
 
