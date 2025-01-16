@@ -32,7 +32,7 @@ class SessionController extends Controller
 
         // Redirect based on user type
         if ($user->isAdmin()) {
-            return redirect('/admin/dashboard');
+            return redirect()->route('admin.index');
         } elseif ($user->isInvestor()) {
             return redirect('/investor');
         } elseif ($user->isEntrepreneur()) {

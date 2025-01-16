@@ -6,12 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CommercialRegistration extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'registration_number',
-        'status',
-        'admin_notes'
-    ];
+    protected $guarded = [];
 
     public function user()
     {

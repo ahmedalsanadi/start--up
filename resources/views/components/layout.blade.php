@@ -35,7 +35,10 @@
 
 
         <!-- Navbar -->
-        <x-layout.navbar />
+         @auth
+            <x-layout.navbar />
+         @endauth
+
 
         <!-- Sidebar -->
         <x-layout.sidebar />
@@ -54,7 +57,7 @@
 
 
     @stack('scripts')
-    
+
     <!-- Toast Container -->
     <script>
         function showToast(message, type = 'success', duration = 5000) {

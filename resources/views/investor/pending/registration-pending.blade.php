@@ -93,24 +93,26 @@
     </div>
 
     @push('scripts')
-    <script>
-        function checkRegistrationStatus() {
-            fetch('{{ route("check.registration.status") }}')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'approved') {
-                        window.location.href = '{{ route("investor.dashboard") }}';
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
+        <script>
+            function checkRegistrationStatus() {
+                fetch('{{ route("check.registration.status") }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'approved') {
+                            window.location.href = '{{ route("investor.dashboard") }}';
+                        } else if (data.status === 'rejected') {
+                            window.location.href = '{{ route("commercial-registration.create") }}';
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
 
-        // Check every 30 seconds
-        setInterval(checkRegistrationStatus, 10000);
+            // Check every 30 seconds
+            setInterval(checkRegistrationStatus, 30000);
 
-        // Also check immediately when page loads
-        checkRegistrationStatus();
-    </script>
+            // Also check immediately when page loads
+            checkRegistrationStatus();
+        </script>
     @endpush
 
 </x-layout>
