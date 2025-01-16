@@ -23,11 +23,47 @@
                     </svg>
                 </button>
 
-                <!-- Logo -->
-                <a href="https://flowbite.com" class="flex ms-2 md:me-24">
-                    <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" />
-                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
-                        Flowbite
+                <a href="#" class="flex items-center space-x-3">
+                    <div class="relative group">
+                        <!-- Main logo container -->
+                        <div class="w-12 h-12 relative">
+                            <!-- Animated background gradient -->
+                            <div
+                                class="absolute inset-0 rounded-xl bg-gradient-to-br from-violet-600 via-indigo-500 to-cyan-400 animate-pulse">
+                                <div
+                                    class="absolute inset-0 rounded-xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 mix-blend-overlay">
+                                </div>
+                            </div>
+
+                            <!-- Star shape -->
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="w-6 h-6 text-white transform rotate-12">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"
+                                        class="w-full h-full filter drop-shadow-lg">
+                                        <path
+                                            d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z">
+                                        </path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Glowing effect -->
+                            <div
+                                class="absolute -inset-1 rounded-xl bg-gradient-to-br from-violet-600/30 via-indigo-500/30 to-cyan-400/30 blur-lg group-hover:opacity-75 transition duration-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text logo -->
+                    <span class="text-2xl font-extrabold">
+                        <span
+                            class="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400">
+                            Start
+                        </span>
+                        <span
+                            class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+                            -up
+                        </span>
                     </span>
                 </a>
 

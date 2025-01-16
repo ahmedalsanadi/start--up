@@ -61,9 +61,66 @@
                         </div>
                     </div>
 
-                    <!-- Other stats... -->
-                </div>
+                    <!-- Pending Business Ideas -->
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                            Pending Ideas
+                                        </dt>
+                                        <dd class="flex items-baseline">
+                                            <div class="text-2xl font-semibold text-blue-600 dark:text-blue-500">
+                                                {{ $stats['pending_ideas'] ?? 0 }}
+                                            </div>
+                                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                                                new
+                                            </span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Inbox Messages -->
+                    <div class="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
+                        <div class="p-5">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                    </svg>
+                                </div>
+                                <div class="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
+                                            Inbox
+                                        </dt>
+                                        <dd class="flex items-baseline">
+                                            <div class="text-2xl font-semibold text-green-600 dark:text-green-500">
+                                                {{ $stats['inbox_count'] ?? 2 }}
+                                            </div>
+                                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">
+                                                unread
+                                            </span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Pending Registrations List -->
                 <div class="mt-8">
                     <div class="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
