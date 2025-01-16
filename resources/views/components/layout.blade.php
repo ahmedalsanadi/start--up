@@ -9,42 +9,29 @@
     <title>{{ $title ?? 'Home' }}</title>
     <!-- Vite for CSS & JavaScript -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- Add this in the <head> section -->
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
 </head>
 
 <body class="bg-white dark:bg-gray-900">
 
-    <!-- Add this where you want the toasts to appear -->
-    <div id="toastContainer" class="toast-container" dir="ltr"></div>
-    @if(Session::has('success'))
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                showToast('{{ Session::get('success') }}', 'success');
-            });
-        </script>
-    @endif
-
-    @if(Session::has('error'))
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                showToast('{{ Session::get('error') }}', 'error');
-            });
-        </script>
-    @endif
+    <x-toast />
 
     @if ($title != 'Login' && $title != 'Register' && $title != 'Commercial Registration' && $title != 'Registration Pending')
 
 
         <!-- Navbar -->
-         @auth
+        @auth
             <x-layout.navbar />
-         @endauth
+        @endauth
 
 
         <!-- Sidebar -->
         <x-layout.sidebar />
 
         <div class="p-4 sm:mr-64">
-            <div class="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
+            <div class="p-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-700 overflow-y-hidden mt-20">
                 {{ $slot }}
             </div>
         </div>
@@ -58,68 +45,71 @@
 
     @stack('scripts')
 
-    <!-- Toast Container -->
+    <!-- Include Lucide Icons Script -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        function showToast(message, type = 'success', duration = 5000) {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 
-            const icons = {
-                success: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`,
-                error: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`
-            };
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const drawer = document.getElementById('logo-sidebar');
+            const drawerToggle = document.querySelector('[data-drawer-toggle="logo-sidebar"]');
 
-            toast.innerHTML = `
-        <div class="toast-content">
-            <div class="toast-icon">
-                ${icons[type]}
-            </div>
-            <div class="toast-message">${message}</div>
-            <div class="toast-close" onclick="closeToast(this.parentElement.parentElement)">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-            </div>
-        </div>
-        <div class="toast-progress">
-            <div class="toast-progress-bar" style="width: 100%"></div>
-        </div>
-    `;
+            // Create backdrop element
+            const backdrop = document.createElement('div');
+            backdrop.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 z-30 hidden transition-opacity duration-300 ease-in-out opacity-0';
+            document.body.appendChild(backdrop);
 
-            container.appendChild(toast);
+            function openDrawer() {
+                drawer.classList.remove('translate-x-full');
+                drawer.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                }, 10);
+                document.body.style.overflow = 'hidden';
+            }
 
-            // Start progress bar animation
-            const progressBar = toast.querySelector('.toast-progress-bar');
-            progressBar.style.transition = `width ${duration}ms linear`;
+            function closeDrawer() {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                }, 300);
+                document.body.style.overflow = '';
+            }
 
-            // Use setTimeout to ensure the transition is applied
-            setTimeout(() => {
-                progressBar.style.width = '0%';
-            }, 10);
+            drawerToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isVisible = !drawer.classList.contains('translate-x-full');
 
-            // Remove toast after duration
-            const timeout = setTimeout(() => {
-                closeToast(toast);
-            }, duration);
+                if (isVisible) {
+                    closeDrawer();
+                } else {
+                    openDrawer();
+                }
+            });
 
-            // Store timeout in toast element
-            toast.dataset.timeout = timeout;
-        }
+            // Close drawer when clicking on backdrop
+            backdrop.addEventListener('click', function () {
+                closeDrawer();
+            });
 
-        function closeToast(toast) {
-            // Clear the timeout
-            clearTimeout(parseInt(toast.dataset.timeout));
+            // Handle escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && !drawer.classList.contains('translate-x-full')) {
+                    closeDrawer();
+                }
+            });
 
-            // Add sliding out animation
-            toast.style.animation = 'slideOut 0.5s ease forwards';
-
-            // Remove toast after animation
-            setTimeout(() => {
-                toast.remove();
-            }, 500);
-        }
-
+            // Prevent drawer from closing when clicking inside it
+            drawer.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        });
     </script>
 </body>
 
