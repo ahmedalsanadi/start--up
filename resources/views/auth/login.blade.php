@@ -3,12 +3,12 @@
         <form method="POST" action="{{ route('login') }}"
             class="w-full max-w-md p-6 bg-white rounded-lg shadow-md border border-gray-300 dark:bg-gray-800 dark:border-gray-700">
             @csrf
-            <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">Login to Your Account</h2>
+            <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">تسجيل الدخول إلى حسابك</h2>
 
             <!-- Email Input Field -->
             <div class="mb-5">
                 <label for="email-address-icon"
-                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your Email</label>
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">البريد الإلكتروني</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -21,11 +21,11 @@
                     </div>
                     <input type="text" id="email-address-icon" name="email"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="name@example.com" required>
+                        placeholder="example@example.com" required>
                 </div>
                 <!-- Handle errors here -->
                 @error('email')
-                <p class="mt-2 px-1 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oops!</span>
+                <p class="mt-2 px-1 text-sm text-red-600 dark:text-red-500"><span class="font-medium">خطأ!</span>
                     {{ $message }}
                 </p>
                 @enderror
@@ -34,8 +34,7 @@
 
             <!-- Password Input Field -->
             <div class="mb-5">
-                <label for="password-icon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
-                    Password</label>
+                <label for="password-icon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">كلمة المرور</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -50,21 +49,21 @@
                 </div>
                 <!-- Handle errors here -->
                 @error('password')
-                <p class="mt-2 px-1 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oops!</span>
+                <p class="mt-2 px-1 text-sm text-red-600 dark:text-red-500"><span class="font-medium">خطأ!</span>
                     {{ $message }}
                 </p>
                 @enderror
             </div>
 
             <button type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">تسجيل الدخول</button>
 
             <div class="mt-4 text-center">
-                <!-- <a href="#" class="text-sm text-blue-600 hover:underline dark:text-blue-500">Forgot Password?</a> -->
+                <!-- <a href="#" class="text-sm text-blue-600 hover:underline dark:text-blue-500">نسيت كلمة المرور؟</a> -->
             </div>
             <div class="mt-4 text-center">
-                <p class="text-sm text-gray-600 dark:text-gray-400">Don't have an account?
-                    <a href="/register" class="text-blue-600 hover:underline dark:text-blue-500">Sign Up</a>
+                <p class="text-sm text-gray-600 dark:text-gray-400">ليس لديك حساب؟
+                    <a href="/register" class="text-blue-600 hover:underline dark:text-blue-500">سجل الآن</a>
                 </p>
             </div>
         </form>

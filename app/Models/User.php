@@ -51,21 +51,21 @@ class User extends Authenticatable
     public function isAdmin()
     {
 
-        // return $this->user_type == 1;
-        return $this->user_type == self::ADMIN;
+        return $this->user_type == 1;
+
     }
 
     public function isInvestor()
     {
 
-        // return $this->user_type == 2;
-        return $this->user_type == self::INVESTOR;
+         return $this->user_type == 2;
+
     }
 
     public function isEntrepreneur()
     {
-        // return $this->user_type == 3;
-        return $this->user_type == self::ENTREPRENEUR;
+        return $this->user_type == 3;
+    
     }
     public function getUserTypeLabel()
     {

@@ -86,7 +86,7 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
     Route::get('/investor', function () {
         return view('investor.index');
-    })->name('investor.dashboard');
+    })->name('investor.index');
     // Add other investor routes here
 
 
@@ -102,4 +102,4 @@ Route::middleware(['auth', 'user_type:entrepreneur'])->group(function () {
 
 Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth')->name('logout');
 
-Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->middleware('auth')->name('notifications.markAsRead');
+// Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->middleware('auth')->name('notifications.markAsRead');

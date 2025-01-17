@@ -66,8 +66,8 @@ class CommercialRegistrationController extends Controller
               // Notify admins about the new registration
               $this->notificationService->notifyAdmins([
                 'type' => 'commercial_registration',
-                'title' => 'New Commercial Registration',
-                'message' => "New commercial registration request submitted by " . auth()->user()->name,
+                'title' => 'سجل تجاري جديد',
+                'message' => "تم انشاء سجل تجاري جديد من قبل " . auth()->user()->name,
                 'action_type' => 'commercial_registration',
                 'action_id' => $registration->id,
                 'initiator_id' => auth()->id(),

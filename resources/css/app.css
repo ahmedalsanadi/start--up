@@ -2,10 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply font-tajawal; /* Apply Tajawal globally */
-  }
-  
+
+
 /* Custom reusable Tailwind classes for forms */
 .form-container {
     @apply w-full max-w-3xl p-4 mt-4 bg-white rounded-lg shadow-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-700;

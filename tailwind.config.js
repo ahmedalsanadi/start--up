@@ -13,8 +13,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                tajawal: ['Tajawal', 'sans-serif'], // Add Tajawal font
-              },
+                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
         },
     },
     plugins: [

@@ -53,21 +53,21 @@ class ManageInvestorController extends Controller
 
 
         // $registration->user->notify(new RegistrationStatusUpdated($registration));
-        // Notify investor registration owner
+// Notify investor registration owner
         $this->notificationService->notify($registration->user, [
             'type' => 'registration_status_update',
-            'title' => 'Registration Status Updated',
-            'message' => "Your registration has been {$validated['status']}",
+            'title' => 'تم التحقق من السجل التجاري',
+            'message' => "تم " . ($validated['status'] == 'approved' ? 'الموافقة على' : 'رفض') . " تسجيلك",
             'action_type' => 'registration_status',
             'action_id' => $registration->id,
             'initiator_id' => auth()->id(),
             'initiator_type' => 'admin',
+            
             'additional_data' => [
                 'status' => $validated['status'],
                 'rejection_reason' => $validated['rejection_reason'] ?? null
             ],
         ]);
-
-        return back()->with('success', 'Registration status updated successfully');
+        return back()->with('success', 'تم تحديث حالة التسجيل بنجاح');
     }
 }

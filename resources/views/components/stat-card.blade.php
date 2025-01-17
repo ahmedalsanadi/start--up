@@ -30,7 +30,7 @@
                 <!-- Icon Glow Effect -->
                 <div class="absolute -inset-1 bg-{{ $color }}-500 rounded-full blur-sm opacity-30"></div>
                 <!-- Icon Background -->
-                <div class="relative bg-gradient-to-br from-{{ $color }}-50 to-{{ $color }}-100 dark:from-{{ $color }}-900 dark:to-{{ $color }}-800 p-3 rounded-full border border-{{ $color }}-200 dark:border-{{ $color }}-700 shadow-inner">
+                <div class="relative bg-gradient-to-br from-white to-{{ $color }}-200 dark:from-{{ $color }}-900 dark:to-{{ $color }}-800 p-3 rounded-full border border-{{ $color }}-300 dark:border-{{ $color }}-700 shadow-inner">
                     <!-- Lucide Icon -->
                     <i data-lucide="{{ $icon }}" class="h-6 w-6 text-{{ $color }}-500 dark:text-{{ $color }}-300"></i>
                 </div>
@@ -48,11 +48,11 @@
                     <!-- Value and Optional Slot (e.g., "new" or "unread") -->
                     <dd class="flex items-baseline mt-2">
                         <div class="flex items-center">
-                            <span class="text-3xl font-extrabold text-{{ $color }}-600 dark:text-{{ $color }}-400">
+                            <span class="text-3xl font-bold text-gray-900 dark:text-white mr-2">
                                 {{ $value }}
                             </span>
                             @if(!empty($slot->toHtml()))
-                                <span class="mr-2 px-2.5 py-0.5 text-sm bg-{{ $color }}-50 dark:bg-{{ $color }}-900/50 text-{{ $color }}-600 dark:text-{{ $color }}-400 rounded-full border border-{{ $color }}-200 dark:border-{{ $color }}-800">
+                                <span class="mr-2 px-4 py-1 text-sm bg-gray-100/50 dark:bg-gray-900/50 text-red-600 dark:text-red-200 rounded-full border  dark:border-gray-700">
                                     {{ $slot }}
                                 </span>
                             @endif

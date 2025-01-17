@@ -15,13 +15,12 @@
 
                 <!-- Status Message -->
                 <h2 class="mt-6 text-2xl font-bold text-gray-900 dark:text-white">
-                    Registration Under Review
+                    التسجيل قيد المراجعة
                 </h2>
 
                 <div class="mt-4 space-y-4">
                     <p class="text-gray-600 dark:text-gray-400">
-                        Your commercial registration number has been submitted and is pending approval from our
-                        administrative team.
+                        تم تقديم رقم السجل التجاري الخاص بك وهو قيد الانتظار للموافقة من قبل فريق الإدارة.
                     </p>
 
                     <!-- Status Timeline -->
@@ -34,8 +33,8 @@
                             <!-- Submitted Step -->
                             <div class="relative flex items-center mb-8">
                                 <div class="flex-1 text-right pr-4">
-                                    <h3 class="font-medium text-gray-900 dark:text-white">Registration Submitted</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Complete</p>
+                                    <h3 class="font-medium text-gray-900 dark:text-white">تم تقديم التسجيل</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">مكتمل</p>
                                 </div>
                                 <div
                                     class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-green-500 rounded-full">
@@ -50,16 +49,16 @@
                                     class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-yellow-500 rounded-full">
                                 </div>
                                 <div class="flex-1 pl-4">
-                                    <h3 class="font-medium text-gray-900 dark:text-white">Under Review</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">In Progress</p>
+                                    <h3 class="font-medium text-gray-900 dark:text-white">قيد المراجعة</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">قيد التنفيذ</p>
                                 </div>
                             </div>
 
                             <!-- Approval Step -->
                             <div class="relative flex items-center">
                                 <div class="flex-1 text-right pr-4">
-                                    <h3 class="font-medium text-gray-900 dark:text-white">Final Approval</h3>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">Pending</p>
+                                    <h3 class="font-medium text-gray-900 dark:text-white">الموافقة النهائية</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">قيد الانتظار</p>
                                 </div>
                                 <div
                                     class="absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 dark:bg-gray-600 rounded-full">
@@ -72,8 +71,8 @@
                     <!-- Additional Information -->
                     <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
                         <p class="text-sm text-gray-600 dark:text-gray-400">
-                            You'll receive an email notification once your registration has been approved.
-                            This process typically takes 1-2 business days.
+                            ستتلقى إشعارًا عبر البريد الإلكتروني بمجرد الموافقة على تسجيلك.
+                            تستغرق هذه العملية عادةً من 1 إلى 2 يوم عمل.
                         </p>
                     </div>
 
@@ -83,7 +82,7 @@
                             @csrf
                             <button type="submit"
                                 class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white ">
-                                Logout
+                                تسجيل الخروج
                             </button>
                         </form>
                     </div>
@@ -99,7 +98,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'approved') {
-                            window.location.href = '{{ route("investor.dashboard") }}';
+                            window.location.href = '{{ route("investor.index") }}';
                         } else if (data.status === 'rejected') {
                             window.location.href = '{{ route("commercial-registration.create") }}';
                         }

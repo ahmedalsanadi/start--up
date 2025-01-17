@@ -10,15 +10,13 @@
     <!-- Vite for CSS & JavaScript -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Add this in the <head> section -->
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
-
 </head>
 
 <body class="bg-white dark:bg-gray-900">
 
     <x-toast />
 
-    @if ($title != 'Login' && $title != 'Register' && $title != 'Commercial Registration' && $title != 'Registration Pending')
+    @if ($title != 'Login' && $title != 'Register' && $title != 'Commercial Registration' && $title != 'Registration Pending' && $title != 'Registration Rejected' )
 
 
         <!-- Navbar -->
@@ -30,8 +28,8 @@
         <!-- Sidebar -->
         <x-layout.sidebar />
 
-        <div class="p-4 sm:mr-64">
-            <div class="p-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-700 overflow-y-hidden mt-20">
+        <div class=" pt-4 pb-10 px-4 sm:mr-64">
+            <div class="p-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-700 overflow-y-hidden mt-16">
                 {{ $slot }}
             </div>
         </div>
