@@ -57,12 +57,12 @@ class ManageInvestorController extends Controller
         $this->notificationService->notify($registration->user, [
             'type' => 'registration_status_update',
             'title' => 'تم التحقق من السجل التجاري',
-            'message' => "تم " . ($validated['status'] == 'approved' ? 'الموافقة على' : 'رفض') . " تسجيلك",
+            'message' => "تم " . ($validated['status'] == 'approved' ? 'الموافقة على' : 'رفض') . " السجل التجاري الخاص بك.",
             'action_type' => 'registration_status',
             'action_id' => $registration->id,
             'initiator_id' => auth()->id(),
             'initiator_type' => 'admin',
-            
+
             'additional_data' => [
                 'status' => $validated['status'],
                 'rejection_reason' => $validated['rejection_reason'] ?? null

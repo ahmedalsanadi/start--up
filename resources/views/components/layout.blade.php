@@ -16,13 +16,12 @@
 
     <x-toast />
 
-    @if ($title != 'Login' && $title != 'Register' && $title != 'Commercial Registration' && $title != 'Registration Pending' && $title != 'Registration Rejected' )
+    <!-- Navbar -->
+    @auth
+        <x-layout.navbar />
+    @endauth
 
-
-        <!-- Navbar -->
-        @auth
-            <x-layout.navbar />
-        @endauth
+    @if ($title != 'Login' && $title != 'Register' && $title != 'Commercial Registration' && $title != 'Registration Pending' && $title != 'Registration Rejected')
 
 
         <!-- Sidebar -->
@@ -36,7 +35,11 @@
 
 
     @else
-        {{ $slot }}
+    <div class=" pt-4 pb-10 px-4 ">
+            <div class="p-4  overflow-y-hidden mt-10">
+                {{ $slot }}
+            </div>
+        </div>
     @endif
 
 

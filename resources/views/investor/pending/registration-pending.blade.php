@@ -107,7 +107,7 @@
             }
 
             // Check every 30 seconds
-            setInterval(checkRegistrationStatus, 30000);
+            setInterval(checkRegistrationStatus, 10000);
 
             // Also check immediately when page loads
             checkRegistrationStatus();
