@@ -43,21 +43,39 @@ class User extends Authenticatable
         ];
     }
 
+        // Constants for user types
+        const ADMIN = 1;
+        const INVESTOR = 2;
+        const ENTREPRENEUR = 3;
+
     public function isAdmin()
     {
 
         return $this->user_type == 1;
+
     }
 
     public function isInvestor()
     {
 
-        return $this->user_type == 2;
+         return $this->user_type == 2;
+
     }
 
     public function isEntrepreneur()
     {
         return $this->user_type == 3;
+    
+    }
+    public function getUserTypeLabel()
+    {
+        $types = [
+            self::ADMIN => 'Admin',
+            self::INVESTOR => 'Investor',
+            self::ENTREPRENEUR => 'Entrepreneur'
+        ];
+
+        return $types[$this->user_type] ?? 'Unknown';
     }
 
     // app/Models/User.php

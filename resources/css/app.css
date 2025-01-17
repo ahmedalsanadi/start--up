@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 /* Custom reusable Tailwind classes for forms */
 .form-container {
     @apply w-full max-w-3xl p-4 mt-4 bg-white rounded-lg shadow-lg border border-gray-300 dark:bg-gray-800 dark:border-gray-700;
@@ -145,3 +147,18 @@
         opacity: 0;
     }
 }
+
+/* sidebar */
+
+
+    .drawer-transition {
+        transition-property: transform, opacity;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @media (max-width: 640px) {
+        .overflow-hidden {
+            overflow: hidden;
+        }
+    }
+

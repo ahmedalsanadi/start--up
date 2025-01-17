@@ -18,14 +18,14 @@ class CheckCommercialRegistration
     {
         $user = Auth::user();
         if ($user->isInvestor()) {
-            $registration = $user->commercialRegistration; 
+            $registration = $user->commercialRegistration;
 
             if (!$registration) {
                 return redirect()->route('commercial-registration.create');
             }
 
             if ($registration->status !== 'approved') {
-                return redirect()->route('registration-pending');
+                return redirect()->route('pending-commercial-registration');
             }
         }
 

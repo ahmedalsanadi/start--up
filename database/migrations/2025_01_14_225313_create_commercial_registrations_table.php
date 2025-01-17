@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('registration_number');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('admin_notes')->nullable();
+            $table->text('rejection_reason')->nullable();
             $table->timestamps();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->foreignId('reviewed_by')->nullable()->constrained('users');
         });
     }
 

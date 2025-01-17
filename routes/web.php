@@ -1,12 +1,10 @@
 <?php
 
 
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\ManageInvestor;
 use App\Http\Controllers\Admin\ManageInvestorController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\RegistrationController; //investor
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\NotificationController;
 
 
 use App\Http\Controllers\Investor\CommercialRegistrationController;
@@ -33,6 +31,11 @@ Route::get('/', function () {
     return redirect()->route('login'); // Assuming 'login' is the name of your login route
 });
 
+
+
+
+
+
 // Auth Routes
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
@@ -42,21 +45,16 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [SessionController::class, 'store']);
 });
 
+
+
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.index');
-
-
-
 
     //list investors with their commercial registration number
     Route::get('/investors', [ManageInvestorController::class, 'index'])->name('admin.investors.index');
 
     Route::patch('/investors/{registration}', [ManageInvestorController::class, 'updateRegistrationStatus'])->name('admin.investor.updateStatus');
-
-
-    // Route::patch('/registrations/{registration}', [RegistrationController::class, 'updateStatus'])->name('admin.registrations.update');
-
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
@@ -66,6 +64,7 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
 // Commercial Registration Routes
 Route::middleware(['auth', 'user_type:investor'])->group(function () {
 
+    //allow investor to enter the commercial registration number
     Route::get('/commercial-registration', [CommercialRegistrationController::class, 'create'])
         ->name('commercial-registration.create');
 
@@ -73,11 +72,12 @@ Route::middleware(['auth', 'user_type:investor'])->group(function () {
     Route::post('/commercial-registration', [CommercialRegistrationController::class, 'store'])
         ->name('commercial-registration.store');
 
+    //display pending page
+    Route::get('/pending-commercial-registration', [CommercialRegistrationController::class, 'displayPendingPage']) ->name('pending-commercial-registration');
 
-    Route::get('/registration-pending', function () {
-        return view('investor.pending.registration-pending');
-    })->name('registration-pending');
-
+    //check registration status and refresh the pending page by ajax
+    Route::get('/check-registration-status', [CommercialRegistrationController::class, 'checkStatus'])
+    ->name('check.registration.status');
 
 });
 
@@ -85,8 +85,8 @@ Route::middleware(['auth', 'user_type:investor'])->group(function () {
 Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->group(function () {
 
     Route::get('/investor', function () {
-        return view('investor');
-    })->name('investor.dashboard');
+        return view('investor.index');
+    })->name('investor.index');
     // Add other investor routes here
 
 
@@ -101,3 +101,5 @@ Route::middleware(['auth', 'user_type:entrepreneur'])->group(function () {
 
 
 Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth')->name('logout');
+
+// Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->middleware('auth')->name('notifications.markAsRead');
