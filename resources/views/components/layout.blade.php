@@ -8,37 +8,46 @@
 
     <title>{{ $title ?? 'Home' }}</title>
     <!-- Vite for CSS & JavaScript -->
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- Add this in the <head> section -->
+
+    <!-- Inline script to set dark mode before rendering -->
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 
 <body class="bg-white dark:bg-gray-900">
-
     <x-toast />
-
     <!-- Navbar -->
     @auth
         <x-layout.navbar />
     @endauth
 
-    @if ($title != 'Login' && $title != 'Register' && $title != 'Commercial Registration' && $title != 'Registration Pending' && $title != 'Registration Rejected')
+    <!-- Content Area -->
+    @if (!in_array($title, ['Login', 'Register', 'Commercial Registration', 'Registration Pending', 'Registration Rejected']))
 
-
-        <!-- Sidebar -->
         <x-layout.sidebar />
-
-        <div class=" pt-4 pb-10 px-4 sm:mr-64">
-            <div class="p-4 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-700 overflow-y-hidden mt-16">
+        <div class="pt-4 pb-10 px-4 sm:mr-64">
+            <div
+                class="p-10 px-4 md:px-10 border-2 border-gray-300 border-dashed rounded-lg dark:border-gray-700 overflow-y-hidden mt-16">
                 {{ $slot }}
             </div>
         </div>
-
-
-    @else
-    <div class=" pt-4 pb-10 px-4 ">
-            <div class="p-4  overflow-y-hidden mt-10">
+    @elseif (!in_array($title, ['Login', 'Register']))
+        <div class="pt-4 pb-10 px-4">
+            <div class="p-4 overflow-y-hidden mt-10">
                 {{ $slot }}
             </div>
+        </div>
+    @else
+        <div class="overflow-y-hidden">
+            {{ $slot }}
         </div>
     @endif
 
@@ -52,6 +61,7 @@
         // Initialize Lucide Icons
         lucide.createIcons();
     </script>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -111,6 +121,7 @@
                 e.stopPropagation();
             });
         });
+
     </script>
 </body>
 
