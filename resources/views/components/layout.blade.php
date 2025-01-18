@@ -8,13 +8,22 @@
 
     <title>{{ $title ?? 'Home' }}</title>
     <!-- Vite for CSS & JavaScript -->
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- Add this in the <head> section -->
+
+    <!-- Inline script to set dark mode before rendering -->
+    <script>
+        // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
 </head>
 
 <body class="bg-white dark:bg-gray-900">
     <x-toast />
-
     <!-- Navbar -->
     @auth
         <x-layout.navbar />
@@ -22,6 +31,7 @@
 
     <!-- Content Area -->
     @if (!in_array($title, ['Login', 'Register', 'Commercial Registration', 'Registration Pending', 'Registration Rejected']))
+
         <x-layout.sidebar />
         <div class="pt-4 pb-10 px-4 sm:mr-64">
             <div
@@ -43,75 +53,76 @@
 
 
 
+    @stack('scripts')
 
-@stack('scripts')
+    <!-- Include Lucide Icons Script -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
 
-<!-- Include Lucide Icons Script -->
-<script src="https://unpkg.com/lucide@latest"></script>
-<script>
-    // Initialize Lucide Icons
-    lucide.createIcons();
-</script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const drawer = document.getElementById('logo-sidebar');
-        const drawerToggle = document.querySelector('[data-drawer-toggle="logo-sidebar"]');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const drawer = document.getElementById('logo-sidebar');
+            const drawerToggle = document.querySelector('[data-drawer-toggle="logo-sidebar"]');
 
-        // Create backdrop element
-        const backdrop = document.createElement('div');
-        backdrop.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 z-30 hidden transition-opacity duration-300 ease-in-out opacity-0';
-        document.body.appendChild(backdrop);
+            // Create backdrop element
+            const backdrop = document.createElement('div');
+            backdrop.className = 'fixed inset-0 bg-gray-900 bg-opacity-50 z-30 hidden transition-opacity duration-300 ease-in-out opacity-0';
+            document.body.appendChild(backdrop);
 
-        function openDrawer() {
-            drawer.classList.remove('translate-x-full');
-            drawer.classList.add('translate-x-0');
-            backdrop.classList.remove('hidden');
-            setTimeout(() => {
-                backdrop.classList.remove('opacity-0');
-            }, 10);
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeDrawer() {
-            drawer.classList.remove('translate-x-0');
-            drawer.classList.add('translate-x-full');
-            backdrop.classList.add('opacity-0');
-            setTimeout(() => {
-                backdrop.classList.add('hidden');
-            }, 300);
-            document.body.style.overflow = '';
-        }
-
-        drawerToggle.addEventListener('click', function (e) {
-            e.stopPropagation();
-            const isVisible = !drawer.classList.contains('translate-x-full');
-
-            if (isVisible) {
-                closeDrawer();
-            } else {
-                openDrawer();
+            function openDrawer() {
+                drawer.classList.remove('translate-x-full');
+                drawer.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                }, 10);
+                document.body.style.overflow = 'hidden';
             }
-        });
 
-        // Close drawer when clicking on backdrop
-        backdrop.addEventListener('click', function () {
-            closeDrawer();
-        });
-
-        // Handle escape key
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && !drawer.classList.contains('translate-x-full')) {
-                closeDrawer();
+            function closeDrawer() {
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                }, 300);
+                document.body.style.overflow = '';
             }
+
+            drawerToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                const isVisible = !drawer.classList.contains('translate-x-full');
+
+                if (isVisible) {
+                    closeDrawer();
+                } else {
+                    openDrawer();
+                }
+            });
+
+            // Close drawer when clicking on backdrop
+            backdrop.addEventListener('click', function () {
+                closeDrawer();
+            });
+
+            // Handle escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && !drawer.classList.contains('translate-x-full')) {
+                    closeDrawer();
+                }
+            });
+
+            // Prevent drawer from closing when clicking inside it
+            drawer.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
         });
 
-        // Prevent drawer from closing when clicking inside it
-        drawer.addEventListener('click', function (e) {
-            e.stopPropagation();
-        });
-    });
-</script>
+    </script>
 </body>
 
 </html>

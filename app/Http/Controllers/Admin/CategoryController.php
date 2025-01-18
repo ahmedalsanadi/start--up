@@ -139,6 +139,12 @@ class CategoryController extends Controller
                             $fail('لا يمكن تعيين قسم فرعي كقسم رئيسي.');
                             return;
                         }
+
+                        // Prevent a parent category from being assigned a parent
+                        if ($category->children()->exists()) {
+                            $fail('لا يمكن تعيين قسم رئيسي كقسم فرعي.');
+                            return;
+                        }
                     }
                 },
             ],

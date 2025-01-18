@@ -65,44 +65,53 @@
                             </div>
                         </div>
 
-                        <!-- Subcategories Section -->
-                        <div class="p-5 flex-1">
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">الأقسام الفرعية</h4>
-                            <div class="space-y-2">
-                                @forelse($category->children as $subcategory)
-                                    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                                        <span class="text-sm text-gray-700 dark:text-gray-300">{{ $subcategory->name }}</span>
-                                        <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                                            <a href="{{ route('categories.edit', $subcategory) }}"
-                                                class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-                                                    </path>
-                                                </svg>
-                                            </a>
-                                            <form action="{{ route('categories.destroy', $subcategory) }}" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
-                                                    onclick="return confirm('هل أنت متأكد من حذف هذا القسم الفرعي؟')">
-                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                                        </path>
-                                                    </svg>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                @empty
-                                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-2">
-                                        لا توجد أقسام فرعية
-                                    </p>
-                                @endforelse
-                            </div>
-                        </div>
+<!-- Subcategories Section -->
+<div class="p-5 flex-1">
+    <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">الأقسام الفرعية</h4>
+    <div class="space-y-2">
+        @forelse($category->children->take(3) as $subcategory)
+            <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{ $subcategory->name }}</span>
+                <div class="flex items-center space-x-2 rtl:space-x-reverse">
+                    <a href="{{ route('categories.edit', $subcategory) }}"
+                        class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                            </path>
+                        </svg>
+                    </a>
+                    <form action="{{ route('categories.destroy', $subcategory) }}" method="POST" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                            onclick="return confirm('هل أنت متأكد من حذف هذا القسم الفرعي؟')">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-2">
+                لا توجد أقسام فرعية
+            </p>
+        @endforelse
+
+        <!-- Show "View More" link if there are more than 3 subcategories -->
+        @if($category->children->count() > 3)
+            <div class="text-center mt-4">
+                <a href="{{ route('categories.show', $category) }}" class="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                    عرض المزيد
+                </a>
+            </div>
+        @endif
+    </div>
+</div>
 
                         <!-- Card Footer -->
                         <div class="px-5 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">

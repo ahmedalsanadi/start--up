@@ -1,7 +1,6 @@
 <x-layout title="Edit Category">
     <div class="flex items-center justify-center pt-4 pb-1">
-        <div
-            class="max-w-4xl w-full space-y-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 md:p-8">
+        <div class="max-w-4xl w-full space-y-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 md:p-8">
             <!-- Form Header -->
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white">
@@ -34,16 +33,24 @@
                         القسم الرئيسي
                     </label>
                     <div class="mt-1">
-                        <select name="parent_id" id="parent_id" class="form-input">
-                            <option value="">-- اختر القسم الرئيسي --</option>
-                            <option value="" {{ (old('parent_id', $category->parent_id) === null) ? 'selected' : '' }}>لا
-                                يوجد</option>
-                            @foreach ($parentCategories as $parent)
-                                <option value="{{ $parent->id }}" {{ (old('parent_id', $category->parent_id) == $parent->id) ? 'selected' : '' }}>
-                                    {{ $parent->name }}
-                                </option>
-                            @endforeach
-                        </select>
+                        @if ($category->children()->exists())
+                            <!-- If the category is already a parent, disable the dropdown -->
+                            <input type="hidden" name="parent_id" value="">
+                            <select name="parent_id" id="parent_id" class="form-input" disabled>
+                                <option value="">-- لا يمكن تعيين قسم رئيسي لقسم لديه أقسام فرعية --</option>
+                            </select>
+                        @else
+                            <!-- If the category is not a parent, show the dropdown -->
+                            <select name="parent_id" id="parent_id" class="form-input">
+                                <option value="">-- اختر القسم الرئيسي --</option>
+                                <option value="" {{ (old('parent_id', $category->parent_id) === null) ? 'selected' : '' }}>لا يوجد</option>
+                                @foreach ($parentCategories as $parent)
+                                    <option value="{{ $parent->id }}" {{ (old('parent_id', $category->parent_id) == $parent->id) ? 'selected' : '' }}>
+                                        {{ $parent->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
                     </div>
                     @error('parent_id')
                         <p class="form-error">{{ $message }}</p>
