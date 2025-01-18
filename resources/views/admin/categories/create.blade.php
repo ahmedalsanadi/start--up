@@ -1,10 +1,14 @@
+@php
+    use App\Models\Category;
+@endphp
 <x-layout title="Create Category">
     <div class=" flex items-center justify-center pt-4 pb-1 ">
-        <div class="max-w-4xl w-full space-y-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 md:p-8">
+        <div
+            class="max-w-4xl w-full space-y-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 md:p-8">
             <!-- Form Header -->
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white">
-                    إنشاء حساب جديد
+                    إنشاء قسم جديد
                 </h2>
                 <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
                     قم بإدخال المعلومات المطلوبة لإنشاء قسم جديد
@@ -26,20 +30,30 @@
                     @enderror
 
                 </div>
-
                 <!-- Parent Category Field -->
                 <div class="mt-6">
                     <label for="parent_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         القسم الرئيسي
                     </label>
                     <div class="mt-1">
-                        <select name="parent_id" id="parent_id" class=" form-input " >
-                            <option value="">-- اختر القسم الرئيسي --</option>
-                            <option value="">لا يوجد</option>
-                            @foreach ($parentCategories as $parent)
-                                <option value="{{ $parent->id }}">{{ $parent->name }}</option>
-                            @endforeach
-                        </select>
+                        @if(isset($parent_id))
+                            <input type="hidden" name="parent_id" value="{{ $parent_id }}">
+                            <select name="parent_id" id="parent_id" class="form-input" disabled>
+                                <option value="{{ $parent_id }}" selected>
+                                    {{ Category::find($parent_id)->name }}
+                                </option>
+                            </select>
+                        @else
+                            <select name="parent_id" id="parent_id" class="form-input">
+                                <option value="">-- اختر القسم الرئيسي --</option>
+                                <option value="">لا يوجد</option>
+                                @foreach ($parentCategories as $parent)
+                                    <option value="{{ $parent->id }}">
+                                        {{ $parent->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        @endif
                     </div>
                     @error('parent_id')
                         <p class="form-error">{{ $message }}</p>
@@ -64,9 +78,16 @@
                             </svg>
                         </div>
                         <div class="mr-3">
-                            <p class="text-sm text-blue-700 dark:text-blue-300">
-                                دع القسم الرئيسي فارغاً ليكون هذا القسم رئيسياً .
-                            </p>
+                            @if (isset($parent_id))
+                                <p class="text-sm text-blue-700 dark:text-blue-300">
+                                    أنت تقوم بإنشاء قسم فرعي تحت القسم الرئيسي
+                                    "<strong>{{ Category::find($parent_id)->name }}</strong>".
+                                </p>
+                            @else
+                                <p class="text-sm text-blue-700 dark:text-blue-300">
+                                    دع القسم الرئيسي فارغاً ليكون هذا القسم رئيسياً.
+                                </p>
+                            @endif
                         </div>
                     </div>
                 </div>

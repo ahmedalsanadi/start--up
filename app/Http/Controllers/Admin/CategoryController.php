@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-
 use App\Http\Controllers\Controller;
-
 
 class CategoryController extends Controller
 {
@@ -40,12 +37,15 @@ class CategoryController extends Controller
     /**
      * Show the form for creating a new category.
      */
-    public function create()
+    public function create(Request $request)
     {
         // Get only parent categories for the dropdown
         $parentCategories = Category::whereNull('parent_id')->get();
 
-        return view('admin.categories.create', compact('parentCategories'));
+        // Get the parent_id from the query parameters (if it exists)
+        $parent_id = $request->query('parent_id');
+
+        return view('admin.categories.create', compact('parentCategories', 'parent_id'));
     }
 
     /**
@@ -59,10 +59,8 @@ class CategoryController extends Controller
                 'required',
                 'string',
                 'max:255',
-                // Ensure the name is unique within the same parent_id scope
-                Rule::unique('categories')->where(function ($query) use ($request) {
-                    return $query->where('parent_id', $request->parent_id ?: null);
-                }),
+                // Ensure the name is unique across all categories, regardless of parent_id
+                Rule::unique('categories'),
             ],
             'parent_id' => [
                 'nullable',
@@ -72,7 +70,7 @@ class CategoryController extends Controller
                         // Check if the selected parent has a parent (prevent multi-level nesting)
                         $parent = Category::find($value);
                         if ($parent && $parent->parent_id !== null) {
-                            $fail('Cannot create a subcategory under another subcategory.');
+                            $fail('لا يمكن إنشاء قسم فرعي تحت قسم فرعي آخر.');
                         }
                     }
                 },
@@ -87,7 +85,7 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('categories.index')
-            ->with('success', 'Category created successfully.');
+            ->with('success', 'تم إنشاء القسم بنجاح.');
     }
 
     /**
@@ -116,9 +114,7 @@ class CategoryController extends Controller
                 'string',
                 'max:255',
                 // Ensure the name is unique within the same parent_id scope, excluding the current category
-                Rule::unique('categories')->where(function ($query) use ($request) {
-                    return $query->where('parent_id', $request->parent_id ?: null);
-                })->ignore($category->id),
+                Rule::unique('categories')->ignore($category->id),
             ],
             'parent_id' => [
                 'nullable',
@@ -127,20 +123,20 @@ class CategoryController extends Controller
                     if ($value) {
                         // Prevent category from being its own parent
                         if ($value == $category->id) {
-                            $fail('A category cannot be its own parent.');
+                            $fail('لا يمكن أن يكون القسم والداً لنفسه.');
                             return;
                         }
 
                         // Check if the selected parent has a parent (prevent multi-level nesting)
                         $parent = Category::find($value);
                         if ($parent && $parent->parent_id !== null) {
-                            $fail('Cannot create a subcategory under another subcategory.');
+                            $fail('لا يمكن إنشاء قسم فرعي تحت قسم فرعي آخر.');
                             return;
                         }
 
                         // Prevent circular references
                         if ($category->children->contains($value)) {
-                            $fail('Cannot set a child category as parent.');
+                            $fail('لا يمكن تعيين قسم فرعي كقسم رئيسي.');
                             return;
                         }
                     }
@@ -156,17 +152,18 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('categories.index')
-            ->with('success', 'Category updated successfully.');
+            ->with('success', 'تم تحديث القسم بنجاح.');
     }
 
+    /**
+     * Delete the specified category.
+     */
     public function destroy(Category $category)
     {
-
         // Delete the category
         $category->delete();
         return redirect()
             ->route('categories.index')
-            ->with('success', 'Category deleted successfully.');
+            ->with('success', 'تم حذف القسم بنجاح.');
     }
-
 }

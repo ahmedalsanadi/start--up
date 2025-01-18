@@ -116,7 +116,6 @@
                 @php
                     $user = Auth::user();
                 @endphp
-                @if (($user->isInvestor() && $user->commercialRegistration->status === 'approved') || $user->isAdmin() || $user->isEntrepreneur())
                     <!-- Profile Dropdown (Hidden on Small Screens) -->
                     <div class="hidden sm:flex items-center mx-2">
                         <button type="button"
@@ -154,8 +153,6 @@
                             </ul>
                         </div>
                     </div>
-                @endif
-
             </div>
         </div>
     </div>
