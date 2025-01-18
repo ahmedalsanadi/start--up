@@ -4,6 +4,7 @@
 use App\Http\Controllers\Admin\ManageInvestorController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\NotificationController;
 
 
@@ -58,6 +59,13 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+
+    // Category Routes
+    // Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
+    // Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
+    Route::resource('categories', CategoryController::class);
+
+
 });
 
 
@@ -73,11 +81,11 @@ Route::middleware(['auth', 'user_type:investor'])->group(function () {
         ->name('commercial-registration.store');
 
     //display pending page
-    Route::get('/pending-commercial-registration', [CommercialRegistrationController::class, 'displayPendingPage']) ->name('pending-commercial-registration');
+    Route::get('/pending-commercial-registration', [CommercialRegistrationController::class, 'displayPendingPage'])->name('pending-commercial-registration');
 
     //check registration status and refresh the pending page by ajax
     Route::get('/check-registration-status', [CommercialRegistrationController::class, 'checkStatus'])
-    ->name('check.registration.status');
+        ->name('check.registration.status');
 
 });
 
