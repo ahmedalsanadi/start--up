@@ -1,20 +1,26 @@
 <?php
+use Illuminate\Support\Facades\Route;
 
+// use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Admin\{
+    DashboardController,
+    ManageInvestorController,
+    UserController,
+    CategoriesController,
+    AdminAnnouncementController
+// IdeaController
+};
 
-use App\Http\Controllers\Admin\ManageInvestorController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\CategoriesController;
-use App\Http\Controllers\NotificationController;
-
-
-use App\Http\Controllers\Investor\CommercialRegistrationController;
+use App\Http\Controllers\Investor\{
+    CommercialRegistrationController,
+    AnnouncementController as InvestorAnnouncementController
+};
 
 
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 
-use Illuminate\Support\Facades\Route;
+
 
 
 // Route::get('/jobs/create', [JobController::class, 'create'])->middleware('auth');
@@ -64,14 +70,21 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
 
     // Resource route for categories with name prefix
     Route::resource('categories', CategoriesController::class)->names([
-        'index'   => 'admin.categories.index',
-        'create'  => 'admin.categories.create',
-        'store'   => 'admin.categories.store',
-        'show'    => 'admin.categories.show',
-        'edit'    => 'admin.categories.edit',
-        'update'  => 'admin.categories.update',
+        'index' => 'admin.categories.index',
+        'create' => 'admin.categories.create',
+        'store' => 'admin.categories.store',
+        'show' => 'admin.categories.show',
+        'edit' => 'admin.categories.edit',
+        'update' => 'admin.categories.update',
         'destroy' => 'admin.categories.destroy',
     ]);
+
+    Route::get('/announcements', [AdminAnnouncementController::class, 'index'])->name('admin.announcements.index');
+
+    Route::get('/announcements/{announcement}', [AdminAnnouncementController::class, 'show'])->name('admin.announcements.show');
+
+    Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])->name('admin.announcements.update-status');
+
 });
 
 
@@ -105,6 +118,8 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
         return view('investor.index');
     })->name('investor.home');
     // Add other investor routes here
+
+    Route::get('/announcements', [InvestorAnnouncementController::class, 'index'])->name('investor.announcements.index');
 
 });
 

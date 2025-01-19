@@ -6,7 +6,7 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class AnnouncementController extends Controller
+class AdminAnnouncementController extends Controller
 {
     public function index()
     {
