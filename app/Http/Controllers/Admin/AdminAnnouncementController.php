@@ -10,8 +10,12 @@ class AdminAnnouncementController extends Controller
 {
     public function index()
     {
-        $announcements = Announcement::with('investor')->latest()->paginate(10);
-        return view('admin.announcements.index', compact('announcements'));
+        $announcements = Announcement::with('investor')->latest()->paginate(6);
+        $total_announcements = Announcement::count();
+        $total_pending_announcements = Announcement::where('approval_status', 'pending')->count();
+        $total_active_announcements = Announcement::where('approval_status', 'approved')->count();
+        return view('admin.announcements.index', compact('announcements', 'total_announcements', 'total_active_announcements', 'total_pending_announcements'));
+
     }
 
     public function updateStatus(Request $request, Announcement $announcement)
