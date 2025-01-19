@@ -11,7 +11,7 @@
                 </p>
             </div>
 
-            <x-forms.form method="POST" action="{{ route('categories.update', $category->id) }}" class="mt-8 space-y-6">
+            <x-forms.form method="POST" action="{{ route('admin.categories.update', $category->id) }}" class="mt-8 space-y-6">
                 @method('PUT')
                 <!-- Category Name Field -->
                 <div>

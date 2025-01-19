@@ -5,7 +5,7 @@
         <ul class="space-y-1 text-md font-medium">
             <!-- Dashboard -->
             <li>
-                <a href={{ route('admin.index') }}
+                <a href={{ route('admin.home') }}
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <!-- Lucide Icon: Layout Dashboard -->
                     <i data-lucide="layout-dashboard"
@@ -16,7 +16,7 @@
 
             <!-- Manage Categories -->
             <li>
-                <a href="{{ route('categories.index') }}"
+                <a href="{{ route('admin.categories.index') }}"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <!-- Lucide Icon: Folder -->
                     <i data-lucide="folder"
@@ -41,7 +41,7 @@
             <!-- Manage Users (Admin Only) -->
             @can('is_admin')
                 <li>
-                    <a href="{{ route('users.index') }}"
+                    <a href="{{ route('admin.users.index') }}"
                         class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                         <!-- Lucide Icon: Users -->
                         <i data-lucide="users"

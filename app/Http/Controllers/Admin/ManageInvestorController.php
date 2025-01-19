@@ -6,7 +6,7 @@ use App\Models\CommercialRegistration;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use App\Notifications\RegistrationStatusUpdated;
+
 
 use App\Traits\NotificationTrait;
 

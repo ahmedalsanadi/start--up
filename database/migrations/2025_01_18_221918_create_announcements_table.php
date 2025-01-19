@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('announcements', function (Blueprint $table) {
+            $table->id();
+            $table->text('description'); // Details about the business idea
+            $table->string('location'); // Location of the business
+            $table->date('start_date'); // Start date of the project
+            $table->date('end_date'); // End date of the project
+            $table->decimal('budget', 10, 2); // Budget for the project
+            $table->foreignId('investor_id')->constrained('users')->onDelete('cascade'); // Investor who created the announcement
+            $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending'); // Approval status by admin
+            $table->text('rejection_reason')->nullable(); // Reason for rejection
+            $table->enum('status', ['active', 'inactive'])->default('active'); // Status of the announcement
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('announcements');
+    }
+};

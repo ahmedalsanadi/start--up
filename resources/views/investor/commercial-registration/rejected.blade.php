@@ -3,9 +3,12 @@
         <div class="w-full max-w-2xl p-8 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
             <div class="text-center">
                 <!-- Rejected Icon -->
-                <div class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-red-100 dark:bg-red-900/30">
-                    <svg class="h-12 w-12 text-red-600 dark:text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                <div
+                    class="mx-auto flex items-center justify-center h-24 w-24 rounded-full bg-red-100 dark:bg-red-900/30">
+                    <svg class="h-12 w-12 text-red-600 dark:text-red-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </div>
 
@@ -29,7 +32,8 @@
                     <form method="POST" action="{{ route('commercial-registration.store') }}" class="mt-8 space-y-6">
                         @csrf
                         <div>
-                            <label for="registration_number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label for="registration_number"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 رقم السجل التجاري الجديد
                             </label>
                             <input type="text" name="registration_number" id="registration_number" required
@@ -37,10 +41,12 @@
                         </div>
 
                         <div>
-                            <label for="registration_number_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            <label for="registration_number_confirmation"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                 تأكيد رقم السجل التجاري
                             </label>
-                            <input type="text" name="registration_number_confirmation" id="registration_number_confirmation" required
+                            <input type="text" name="registration_number_confirmation"
+                                id="registration_number_confirmation" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         </div>
 

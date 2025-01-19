@@ -4,7 +4,7 @@
 use App\Http\Controllers\Admin\ManageInvestorController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\NotificationController;
 
 
@@ -50,23 +50,32 @@ Route::middleware('guest')->group(function () {
 
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.index');
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.home');
 
-    //list investors with their commercial registration number
+    // List investors with their commercial registration number
     Route::get('/investors', [ManageInvestorController::class, 'index'])->name('admin.investors.index');
 
+    // Update Commercial registration status
     Route::patch('/investors/{registration}', [ManageInvestorController::class, 'updateRegistrationStatus'])->name('admin.investor.updateStatus');
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
 
-    // Category Routes
-    // Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
-    // Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
-    Route::resource('categories', CategoryController::class);
-
-
+    // Resource route for categories with name prefix
+    Route::resource('categories', CategoriesController::class)->names([
+        'index'   => 'admin.categories.index',
+        'create'  => 'admin.categories.create',
+        'store'   => 'admin.categories.store',
+        'show'    => 'admin.categories.show',
+        'edit'    => 'admin.categories.edit',
+        'update'  => 'admin.categories.update',
+        'destroy' => 'admin.categories.destroy',
+    ]);
 });
+
+
+
 
 
 // Commercial Registration Routes
@@ -94,17 +103,19 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
     Route::get('/investor', function () {
         return view('investor.index');
-    })->name('investor.index');
+    })->name('investor.home');
     // Add other investor routes here
-
 
 });
 
+
+
+
 // Entrepreneur Routes
-Route::middleware(['auth', 'user_type:entrepreneur'])->group(function () {
-    Route::get('/entrepreneur', function () {
+Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->group(function () {
+    Route::get('/', function () {
         return view('entrepreneur.index');
-    })->name('entrepreneur.dashboard');
+    })->name('entrepreneur.home');
 });
 
 

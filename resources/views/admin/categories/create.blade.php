@@ -15,7 +15,7 @@
                 </p>
             </div>
 
-            <x-forms.form method="POST" action="{{ route('categories.store') }}" class="mt-8 space-y-6">
+            <x-forms.form method="POST" action="{{ route('admin.categories.store') }}" class="mt-8 space-y-6">
                 <!-- Category Name Field -->
                 <div>
                     <label for="name" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
