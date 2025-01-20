@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Investor\InvestorHomeController;
 use Illuminate\Support\Facades\Route;
 
 // use App\Http\Controllers\NotificationController;
@@ -44,7 +45,7 @@ Route::get('/', function () {
 
 
 
-// Auth Routes
+// Auth Routes ---------------------------------
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
@@ -55,7 +56,8 @@ Route::middleware('guest')->group(function () {
 
 
 
-// Admin Routes
+// Admin Routes ---------------------------------------------------------------------
+
 Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('admin.home');
 
@@ -106,10 +108,8 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
 });
 
 
+// Commercial Registration Routes -----------------------------------------------------------------------
 
-
-
-// Commercial Registration Routes
 Route::middleware(['auth', 'user_type:investor'])->group(function () {
 
     //allow investor to enter the commercial registration number
@@ -129,15 +129,29 @@ Route::middleware(['auth', 'user_type:investor'])->group(function () {
 
 });
 
-// Protected Investor Routes
+// Protected Investor Routes -------------------------------------------------------
 Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->group(function () {
 
-    Route::get('/investor', function () {
-        return view('investor.index');
-    })->name('investor.home');
-    // Add other investor routes here
 
-    Route::get('/announcements', [InvestorAnnouncementController::class, 'index'])->name('investor.announcements.index');
+    Route::prefix('/investor')->group(function () {
+
+     // Investor Home (Display ideas with search/filter capabilities)
+
+        Route::get('/', [InvestorHomeController::class, 'index'])->name('investor.home');
+
+        // Investor Announcements
+        Route::resource('announcement', InvestorAnnouncementController::class)->names([
+            'index' => 'investor.announcements.index',
+            'create' => 'investor.announcements.create',
+            'store' => 'investor.announcements.store',
+            'show' => 'investor.announcements.show',
+            'edit' => 'investor.announcements.edit',
+            'update' => 'investor.announcements.update',
+            'destroy' => 'investor.announcements.destroy',
+        ]);
+
+    });
+
 
 });
 

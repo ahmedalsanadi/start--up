@@ -2,31 +2,65 @@
 namespace App\Http\Controllers\Investor;
 
 use App\Models\Announcement;
+use App\Models\Category;
+use App\Models\Idea;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class AnnouncementController extends Controller
 {
+    use AuthorizesRequests;
+
+    // Display all announcements created by the investor
     public function index()
     {
-        $announcements = Announcement::where('investor_id', auth()->id())->latest()->paginate(10);
-        return view('investor.announcements.index', compact('announcements'));
+        $investor = auth()->user();
+
+        $announcements = Announcement::with([
+            'categories',
+            'ideas' => function ($query) {
+                $query->where('approval_status', 'approved');
+            }
+        ])
+            ->where('investor_id', $investor->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $statistics = [
+            'total' => $announcements->count(),
+            'pending' => $announcements->where('approval_status', 'pending')->count(),
+            'approved' => $announcements->where('approval_status', 'approved')->count(),
+            'rejected' => $announcements->where('approval_status', 'rejected')->count(),
+            'active_ideas' => $announcements->flatMap->ideas->where('status', 'active')->count(),
+        ];
+
+        return view('investor.announcements.index', compact('announcements', 'statistics'));
     }
 
+    // Show the form to create a new announcement
     public function create()
     {
-        return view('investor.announcements.create');
+        // $categories = Category::all();
+        $categories = Category::whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+        return view('investor.announcements.create', compact('categories'));
     }
 
+    // Store a new announcement
     public function store(Request $request)
     {
         $request->validate([
-            'description' => 'required|string',
+            'description' => 'required|min:3',
             'location' => 'required|string',
-            'start_date' => 'required|date',
+            'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:start_date',
-            'budget' => 'required|numeric',
-            'categories' => 'required|array',
+                'budget' => 'required|numeric|min:1|max:1000000000',
+            'categories' => 'required|array|min:1|max:5',
+            'categories.*' => 'exists:categories,id'
         ]);
 
         $announcement = Announcement::create([
@@ -36,10 +70,32 @@ class AnnouncementController extends Controller
             'end_date' => $request->end_date,
             'budget' => $request->budget,
             'investor_id' => auth()->id(),
+            'approval_status' => 'pending',
+            'status' => 'active'
         ]);
 
         $announcement->categories()->attach($request->categories);
 
-        return redirect()->route('investor.announcements.index')->with('success', 'تم إنشاء الإعلان بنجاح.');
+        // // Notify admin about new announcement
+        // $admins = User::where('user_type', '1')->get();
+        // Notification::send($admins, new NewAnnouncementNotification($announcement));
+
+        return redirect()->route('investor.announcements.index')
+            ->with('success', 'تم إنشاء الإعلان بنجاح وسيتم مراجعته من قبل الإدارة');
+    }
+
+    // Show a specific announcement
+    public function show(Announcement $announcement)
+    {
+        $this->authorize('view', $announcement); // Ensure the investor owns the announcement
+        return view('investor.announcements.show', compact('announcement'));
+    }
+
+    // Show the form to edit an announcement
+    public function edit(Announcement $announcement)
+    {
+        $this->authorize('update', $announcement); // Ensure the investor owns the announcement
+        $categories = Category::all();
+        return view('investor.announcements.edit', compact('announcement', 'categories'));
     }
 }

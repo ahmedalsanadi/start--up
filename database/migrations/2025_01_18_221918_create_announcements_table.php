@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -17,7 +16,7 @@ return new class extends Migration
             $table->string('location'); // Location of the business
             $table->date('start_date'); // Start date of the project
             $table->date('end_date'); // End date of the project
-            $table->decimal('budget', 10, 2); // Budget for the project
+            $table->decimal('budget', 15, 2); // Precision 15, Scale 2
             $table->foreignId('investor_id')->constrained('users')->onDelete('cascade'); // Investor who created the announcement
             $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending'); // Approval status by admin
             $table->text('rejection_reason')->nullable(); // Reason for rejection

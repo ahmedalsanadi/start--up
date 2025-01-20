@@ -13,7 +13,7 @@ class AnnouncementSeeder extends Seeder
     public function run(): void
     {
         // Create 10 announcements
-        $announcements = Announcement::factory(10)->create();
+        $announcements = Announcement::factory(20)->create();
 
         // Link each announcement to 1-3 random categories
         $categories = Category::whereNotNull('parent_id')->get();

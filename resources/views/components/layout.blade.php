@@ -1,3 +1,4 @@
+<!-- resources/views/components/layout.blade.php -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
@@ -48,7 +49,12 @@
             } elseif ($user->isInvestor()) {
                 return [
                     ['route' => 'investor.home', 'icon' => 'layout-dashboard', 'label' => 'الصفحة الرئيسية'],
-                    ['route' => 'investor.announcement.index', 'icon' => 'lightbulb', 'label' => 'مشاريعي'],
+                    [
+                        'route' => 'investor.announcements.index',
+                        'icon' => 'megaphone',
+                        'label' => '
+                             الإعلانات'
+                    ],
                     ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
 
                 ];
