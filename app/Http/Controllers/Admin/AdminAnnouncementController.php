@@ -15,11 +15,11 @@ class AdminAnnouncementController extends Controller
         // Search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('description', 'like', "%{$search}%")
-                  ->orWhereHas('investor', function($q) use ($search) {
-                      $q->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('investor', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -50,7 +50,16 @@ class AdminAnnouncementController extends Controller
         ));
     }
 
-    
+    public function show(Announcement $announcement)
+    {
+        // The $announcement instance is already resolved by Laravel's route model binding
+        $announcement->load(['investor', 'categories']); // Eager load related data
+
+        // Pass the announcement to the view
+        return view('admin.announcements.show', compact('announcement'));
+    }
+
+
     public function updateStatus(Request $request, Announcement $announcement)
     {
         $request->validate([
@@ -63,6 +72,8 @@ class AdminAnnouncementController extends Controller
             'rejection_reason' => $request->rejection_reason,
         ]);
 
-        return redirect()->route('admin.announcements.index')->with('success', 'تم تحديث حالة الإعلان بنجاح.');
+        //redirect back with success message
+        return back()->with('success', 'تم تحديث حالة الإعلان بنجاح.');
     }
+
 }

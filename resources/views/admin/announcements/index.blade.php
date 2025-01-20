@@ -205,9 +205,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                                                                                                            {{ $announcement->approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : '' }}
-                                                                                                                                            {{ $announcement->approval_status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : '' }}
-                                                                                                                                            {{ $announcement->approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : '' }}">
+                                                                                                                                                {{ $announcement->approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : '' }}
+                                                                                                                                                {{ $announcement->approval_status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : '' }}
+                                                                                                                                                {{ $announcement->approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : '' }}">
                                         {{ __('announcements.status.' . $announcement->approval_status) }}
                                     </span>
                                 </td>
@@ -226,17 +226,17 @@
                                             </form>
 
                                             <!-- Reject Button -->
-                                            <button type="button" onclick="openRejectModal('{{ $announcement->id }}')"
+                                            <button type="button"    onclick="openRejectModal('{{ $announcement->id }}')"
                                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                                 <i data-lucide="x-circle" class="w-5 h-5"></i>
                                             </button>
                                         @endif
 
                                         <!-- View Details -->
-                                        <button type="button" onclick="viewDetails('{{ $announcement->id }}')"
+                                        <a href="{{ route('admin.announcements.show', $announcement) }}"
                                             class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                             <i data-lucide="eye" class="w-5 h-5"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>
@@ -258,67 +258,120 @@
             </div>
         </div>
     </div>
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                <div class="sm:flex sm:items-start">
+                    <div class="mt-3 text-center sm:mt-0 sm:text-right sm:w-full">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                            سبب الرفض
+                        </h3>
+                        <div class="mt-2">
+                            <form id="rejectForm" action="" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <input type="hidden" name="approval_status" value="rejected">
+                                <textarea name="rejection_reason"
+                                    class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                    rows="4" required></textarea>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    <button type="submit" form="rejectForm"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        تأكيد الرفض
+                    </button>
+                    <button type="button" onclick="closeRejectModal()"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @push('scripts')
-<script>
-    function handleDateInputs() {
-    const dateInputs = document.querySelectorAll('input[type="date"]');
-    dateInputs.forEach(input => {
-        if (!input.value) {
-            input.type = 'text';
-        }
-
-        input.addEventListener('focus', function () {
-            this.type = 'date';
-        });
-
-        input.addEventListener('blur', function () {
-            if (!this.value) {
-                this.type = 'text';
+        <script>
+            function openRejectModal(announcementId) {
+                const modal = document.getElementById('rejectModal');
+                const form = document.getElementById('rejectForm');
+                form.action = `/admin/announcements/${announcementId}`;
+                modal.classList.remove('hidden');
             }
-        });
-    });
-}
 
-function handleRealTimeSearch() {
-    let searchTimeout;
-    const searchInput = document.querySelector('input[name="search"]');
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                document.getElementById('filterForm').submit();
-            }, 500);
-        });
-    }
-}
+            function closeRejectModal() {
+                const modal = document.getElementById('rejectModal');
+                modal.classList.add('hidden');
+            }
 
-function handleExport() {
-    const exportBtn = document.getElementById('exportBtn');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', function () {
-            const filterForm = document.getElementById('filterForm');
-            const search = filterForm.querySelector('input[name="search"]').value;
-            const status = filterForm.querySelector('select[name="status"]').value;
-            const dateFrom = filterForm.querySelector('input[name="date_from"]').value;
-            const dateTo = filterForm.querySelector('input[name="date_to"]').value;
+            function viewDetails(announcementId) {
+                // Implement view details functionality
+                window.location.href = `/admin/announcements/${announcementId}`;
+            }
+        </script>
+        <script>
+            function handleDateInputs() {
+                const dateInputs = document.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    if (!input.value) {
+                        input.type = 'text';
+                    }
 
-            const exportForm = document.getElementById('exportForm');
-            exportForm.querySelector('input[name="search"]').value = search;
-            exportForm.querySelector('input[name="status"]').value = status;
-            exportForm.querySelector('input[name="date_from"]').value = dateFrom;
-            exportForm.querySelector('input[name="date_to"]').value = dateTo;
+                    input.addEventListener('focus', function () {
+                        this.type = 'date';
+                    });
 
-            exportForm.submit();
-        });
-    }
-}
+                    input.addEventListener('blur', function () {
+                        if (!this.value) {
+                            this.type = 'text';
+                        }
+                    });
+                });
+            }
 
-document.addEventListener('DOMContentLoaded', function () {
-    handleDateInputs();
-    handleRealTimeSearch();
-    handleExport();
-});
-    </script>
-@endpush
+            function handleRealTimeSearch() {
+                let searchTimeout;
+                const searchInput = document.querySelector('input[name="search"]');
+                if (searchInput) {
+                    searchInput.addEventListener('input', function () {
+                        clearTimeout(searchTimeout);
+                        searchTimeout = setTimeout(() => {
+                            document.getElementById('filterForm').submit();
+                        }, 500);
+                    });
+                }
+            }
+
+            function handleExport() {
+                const exportBtn = document.getElementById('exportBtn');
+                if (exportBtn) {
+                    exportBtn.addEventListener('click', function () {
+                        const filterForm = document.getElementById('filterForm');
+                        const search = filterForm.querySelector('input[name="search"]').value;
+                        const status = filterForm.querySelector('select[name="status"]').value;
+                        const dateFrom = filterForm.querySelector('input[name="date_from"]').value;
+                        const dateTo = filterForm.querySelector('input[name="date_to"]').value;
+
+                        const exportForm = document.getElementById('exportForm');
+                        exportForm.querySelector('input[name="search"]').value = search;
+                        exportForm.querySelector('input[name="status"]').value = status;
+                        exportForm.querySelector('input[name="date_from"]').value = dateFrom;
+                        exportForm.querySelector('input[name="date_to"]').value = dateTo;
+
+                        exportForm.submit();
+                    });
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                handleDateInputs();
+                handleRealTimeSearch();
+                handleExport();
+            });
+        </script>
+    @endpush
 </x-layout>

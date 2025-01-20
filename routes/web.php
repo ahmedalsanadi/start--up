@@ -80,11 +80,16 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
         'destroy' => 'admin.categories.destroy',
     ]);
 
-    Route::get('/announcements', [AdminAnnouncementController::class, 'index'])->name('admin.announcements.index');
+// Admin Announcement Routes
+Route::get('/announcements', [AdminAnnouncementController::class, 'index'])
+    ->name('admin.announcements.index'); // Display list of announcements
 
-    Route::get('/announcements/{announcement}', [AdminAnnouncementController::class, 'show'])->name('admin.announcements.show');
+Route::get('/announcements/{announcement}', [AdminAnnouncementController::class, 'show'])
+    ->name('admin.announcements.show'); // Show a single announcement
 
-    Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])->name('admin.announcements.update-status');
+Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])
+    ->name('admin.announcements.update-status'); // Update announcement status
+
 
     //excel export route
     Route::post('export/{type}', [ExportController::class, 'export'])->name('export');
