@@ -4,14 +4,12 @@
         <x-page-header>لوحة التحكم</x-page-header>
 
         <!-- Stats Grid -->
-        <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" dir="rtl">
+        <div class="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2" dir="rtl">
             <!-- Total Users -->
             <x-stat-card icon="users" title="إجمالي المستخدمين" value="{{ $stats['total_users'] }}" color="purple" />
 
-            <!-- Pending Investors -->
-            <x-stat-card icon="clock" title="المستثمرون " value="{{ $stats['pending_registrations'] }}" color="yellow">
-                <span>قيد الانتظار</span>
-            </x-stat-card>
+            <x-stat-card icon="megaphone" title="الإعلانات " value="{{ $stats['announcements'] }}" color="yellow" />
+
 
             <!-- Pending Ideas -->
             <x-stat-card icon="lightbulb" title="الأفكار " value="{{ $stats['pending_ideas'] ?? 0 }}" color="blue">
