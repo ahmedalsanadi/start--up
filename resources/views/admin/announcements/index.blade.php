@@ -25,7 +25,9 @@
         </div>
 
         <!-- Filters Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mt-6">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mt-6">
+            <!-- Filter Form -->
             <form id="filterForm" action="{{ route('admin.announcements.index') }}" method="GET" class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <!-- Search Input -->
@@ -36,7 +38,6 @@
                         <input type="text" name="search" value="{{ request('search') }}"
                             class="w-full pr-10 pl-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                             placeholder="البحث عن إعلان...">
-
                     </div>
 
                     <!-- Date Range Inputs -->
@@ -44,19 +45,23 @@
                         <input type="date" name="date_from" value="{{ request('date_from') }}"
                             class="w-full pr-10 pl-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                             placeholder="من تاريخ">
-                        <label class="absolute -top-2 right-2 text-xs text-gray-600 bg-white dark:text-gray-400 dark:bg-gray-800 px-2 py-0.5 rounded-full">من تاريخ</label>
+                        <label
+                            class="absolute -top-2 right-2 text-xs text-gray-600 bg-white dark:text-gray-400 dark:bg-gray-800 px-2 py-0.5 rounded-full">من
+                            تاريخ</label>
                     </div>
 
                     <div class="relative">
                         <input type="date" name="date_to" value="{{ request('date_to') }}"
                             class="w-full pr-10 pl-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
                             placeholder="إلى تاريخ">
-                        <label class="absolute -top-2 right-2 text-xs text-gray-600 bg-white dark:text-gray-400 dark:bg-gray-800 px-2 py-0.5 rounded-full">إلى تاريخ</label>
+                        <label
+                            class="absolute -top-2 right-2 text-xs text-gray-600 bg-white dark:text-gray-400 dark:bg-gray-800 px-2 py-0.5 rounded-full">إلى
+                            تاريخ</label>
                     </div>
 
                     <!-- Status Dropdown -->
                     <select name="status"
-                    class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+                        class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
                         <option value="">جميع الحالات</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>قيد المراجعة
                         </option>
@@ -87,6 +92,17 @@
                         <span>تصدير النتائج</span>
                     </button>
                 </div>
+            </form>
+
+            <!-- Export Form (Hidden) -->
+            <form id="exportForm" action="{{ route('export', ['type' => 'announcement']) }}" method="POST"
+                class="hidden">
+                @csrf
+                <!-- Hidden Inputs for Filters -->
+                <input type="hidden" name="search" value="{{ request('search') }}">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <input type="hidden" name="date_from" value="{{ request('date_from') }}">
+                <input type="hidden" name="date_to" value="{{ request('date_to') }}">
             </form>
         </div>
 
@@ -189,9 +205,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                                                                                            {{ $announcement->approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : '' }}
-                                                                                                                            {{ $announcement->approval_status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : '' }}
-                                                                                                                            {{ $announcement->approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : '' }}">
+                                                                                                                                            {{ $announcement->approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : '' }}
+                                                                                                                                            {{ $announcement->approval_status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : '' }}
+                                                                                                                                            {{ $announcement->approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : '' }}">
                                         {{ __('announcements.status.' . $announcement->approval_status) }}
                                     </span>
                                 </td>
@@ -244,49 +260,65 @@
     </div>
 
     @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                // Fix date inputs placeholder
-                const dateInputs = document.querySelectorAll('input[type="date"]');
-                dateInputs.forEach(input => {
-                    if (!input.value) {
-                        input.type = 'text';
-                    }
+<script>
+    function handleDateInputs() {
+    const dateInputs = document.querySelectorAll('input[type="date"]');
+    dateInputs.forEach(input => {
+        if (!input.value) {
+            input.type = 'text';
+        }
 
-                    input.addEventListener('focus', function () {
-                        this.type = 'date';
-                    });
+        input.addEventListener('focus', function () {
+            this.type = 'date';
+        });
 
-                    input.addEventListener('blur', function () {
-                        if (!this.value) {
-                            this.type = 'text';
-                        }
-                    });
-                });
+        input.addEventListener('blur', function () {
+            if (!this.value) {
+                this.type = 'text';
+            }
+        });
+    });
+}
 
-                // Export functionality
-                document.getElementById('exportBtn').addEventListener('click', function () {
-                    // Get current filters
-                    const formData = new FormData(document.getElementById('filterForm'));
-                    formData.append('export', 'true');
+function handleRealTimeSearch() {
+    let searchTimeout;
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                document.getElementById('filterForm').submit();
+            }, 500);
+        });
+    }
+}
 
-                    // Convert FormData to URL parameters
-                    const params = new URLSearchParams(formData);
+function handleExport() {
+    const exportBtn = document.getElementById('exportBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+            const filterForm = document.getElementById('filterForm');
+            const search = filterForm.querySelector('input[name="search"]').value;
+            const status = filterForm.querySelector('select[name="status"]').value;
+            const dateFrom = filterForm.querySelector('input[name="date_from"]').value;
+            const dateTo = filterForm.querySelector('input[name="date_to"]').value;
 
-                    // Redirect to export route
-                    window.location.href = `${window.location.pathname}/export?${params.toString()}`;
-                });
+            const exportForm = document.getElementById('exportForm');
+            exportForm.querySelector('input[name="search"]').value = search;
+            exportForm.querySelector('input[name="status"]').value = status;
+            exportForm.querySelector('input[name="date_from"]').value = dateFrom;
+            exportForm.querySelector('input[name="date_to"]').value = dateTo;
 
-                // Real-time search
-                let searchTimeout;
-                const searchInput = document.querySelector('input[name="search"]');
-                searchInput.addEventListener('input', function () {
-                    clearTimeout(searchTimeout);
-                    searchTimeout = setTimeout(() => {
-                        document.getElementById('filterForm').submit();
-                    }, 500);
-                });
-            });
-        </script>
-    @endpush
+            exportForm.submit();
+        });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    handleDateInputs();
+    handleRealTimeSearch();
+    handleExport();
+});
+    </script>
+@endpush
 </x-layout>

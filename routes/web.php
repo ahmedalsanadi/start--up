@@ -7,7 +7,8 @@ use App\Http\Controllers\Admin\{
     ManageInvestorController,
     UserController,
     CategoriesController,
-    AdminAnnouncementController
+    AdminAnnouncementController,
+    ExportController,
 // IdeaController
 };
 
@@ -84,6 +85,9 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
     Route::get('/announcements/{announcement}', [AdminAnnouncementController::class, 'show'])->name('admin.announcements.show');
 
     Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])->name('admin.announcements.update-status');
+
+    //excel export route
+    Route::post('export/{type}', [ExportController::class, 'export'])->name('export');
 
 });
 
