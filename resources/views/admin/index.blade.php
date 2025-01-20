@@ -38,7 +38,7 @@
         </x-list>
 
         <div class="px-4 py-3 bg-gray-100 dark:bg-gray-800 text-right sm:px-6">
-            <a href="{{ route('admin.investors.index') }}"
+            <a href="{{ route('admin.commerical-registrations.index') }}"
                 class="text-sm font-medium text-blue-700 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300">
                <span class="font-extrabold text-lg">→ </span>  استعرض جميع المستثمرون
             </a>

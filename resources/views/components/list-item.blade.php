@@ -17,7 +17,7 @@
                 </div>
             </div>
             <div class="flex gap-2">
-                <form action="{{ route('admin.investor.updateStatus', $registration) }}" method="POST">
+                <form action="{{ route('admin.commercial-registrations.updateStatus', $registration) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <input type="hidden" name="status" value="approved">
@@ -26,7 +26,7 @@
                         تأكيد
                     </button>
                 </form>
-                <form action="{{ route('admin.investor.updateStatus', $registration) }}" method="POST">
+                <form action="{{ route('admin.commercial-registrations.updateStatus', $registration) }}" method="POST">
                     @csrf
                     @method('PATCH')
                     <input type="hidden" name="status" value="rejected">

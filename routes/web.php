@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 // use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\{
     DashboardController,
-    ManageInvestorController,
+    AdminCommericalRegistrationController,
     UserController,
     CategoriesController,
     AdminAnnouncementController,
@@ -60,10 +60,10 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
     Route::get('/', [DashboardController::class, 'index'])->name('admin.home');
 
     // List investors with their commercial registration number
-    Route::get('/investors', [ManageInvestorController::class, 'index'])->name('admin.investors.index');
+    Route::get('/commercial-registrations', [AdminCommericalRegistrationController::class, 'index'])->name('admin.commerical-registrations.index');
 
     // Update Commercial registration status
-    Route::patch('/investors/{registration}', [ManageInvestorController::class, 'updateRegistrationStatus'])->name('admin.investor.updateStatus');
+    Route::patch('/commercial-registrations/{registration}', [AdminCommericalRegistrationController::class, 'updateRegistrationStatus'])->name('admin.commercial-registrations.updateStatus');
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
 
@@ -80,19 +80,28 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
         'destroy' => 'admin.categories.destroy',
     ]);
 
-// Admin Announcement Routes
-Route::get('/announcements', [AdminAnnouncementController::class, 'index'])
-    ->name('admin.announcements.index'); // Display list of announcements
+    // Admin Announcement Routes
+    Route::get('/announcements', [AdminAnnouncementController::class, 'index'])
+        ->name('admin.announcements.index'); // Display list of announcements
 
-Route::get('/announcements/{announcement}', [AdminAnnouncementController::class, 'show'])
-    ->name('admin.announcements.show'); // Show a single announcement
+    Route::get('/announcements/{announcement}', [AdminAnnouncementController::class, 'show'])
+        ->name('admin.announcements.show'); // Show a single announcement
 
-Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])
-    ->name('admin.announcements.update-status'); // Update announcement status
+    Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])
+        ->name('admin.announcements.update-status'); // Update announcement status
+
+    Route::get('/ideas', function () {
+        return "Manage Ideas";
+    })->name('admin.ideas.index');
 
 
     //excel export route
     Route::post('export/{type}', [ExportController::class, 'export'])->name('export');
+
+    //report route
+    Route::get('/reports', function () {
+        return view('admin.reports.index');
+    })->name('admin.reports.index');
 
 });
 
@@ -143,6 +152,18 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
 });
 
 
-Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth')->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', function () {
+        return "user profile";
+
+    })->name('user.profile');
+
+    Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
+    //notifications
+    Route::get('/notifications', function () {
+        return view('notifications.index');
+    })->name('notifications.index');
+});
+
 
 // Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->middleware('auth')->name('notifications.markAsRead');
