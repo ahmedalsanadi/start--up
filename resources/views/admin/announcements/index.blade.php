@@ -59,7 +59,7 @@
                             تاريخ</label>
                     </div>
 
-                    <!-- Status Dropdown -->
+                    <!-- Admin Approval Status Dropdown -->
                     <select name="status"
                         class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
                         <option value="">جميع الحالات</option>

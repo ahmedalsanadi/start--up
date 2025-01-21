@@ -5,9 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Idea extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name', 'brief_description', 'detailed_description', 'budget', 'image', 'location',
         'idea_type', 'feasibility_study', 'entrepreneur_id', 'announcement_id',

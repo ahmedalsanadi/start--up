@@ -150,6 +150,9 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
             'destroy' => 'investor.announcements.destroy',
         ]);
 
+        Route::get('/ideas/{idea}', function () {
+            return "Manage Ideas";
+        })->name('investor.ideas.show');
     });
 
 

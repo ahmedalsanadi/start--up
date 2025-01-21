@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->foreignId('investor_id')->constrained('users')->onDelete('cascade'); // Investor who created the announcement
             $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending'); // Approval status by admin
             $table->text('rejection_reason')->nullable(); // Reason for rejection
-            $table->enum('status', ['active', 'inactive'])->default('active'); // Status of the announcement
+            $table->enum('status', ['active', 'inactive'])->default('active'); // Status of the announcement , the investor can switch this into inactive when he got an idea 
             $table->timestamps();
         });
     }

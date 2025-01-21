@@ -99,7 +99,7 @@
                 <!-- Ideas Section -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <div class="p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">الأفكار المقترحة</h3>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">الأفكار المعروضة</h3>
                         <!-- Placeholder for Ideas - To be implemented -->
                         <div class="text-center py-8">
                             <div class="mx-auto w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">

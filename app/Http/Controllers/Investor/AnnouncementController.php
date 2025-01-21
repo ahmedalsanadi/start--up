@@ -85,12 +85,47 @@ class AnnouncementController extends Controller
     }
 
     // Show a specific announcement
-    public function show(Announcement $announcement)
-    {
-        $this->authorize('view', $announcement); // Ensure the investor owns the announcement
-        return view('investor.announcements.show', compact('announcement'));
+// InvestorAnnouncementController.php
+
+public function show(Announcement $announcement)
+{
+    // Security check to ensure the investor owns this announcement
+    if ($announcement->investor_id !== auth()->id()) {
+        abort(403);
     }
 
+    // Load the announcement with its categories and approved ideas (including stages)
+    $announcement->load([
+        'categories',
+        'ideas' => function ($query) {
+            $query->where('approval_status', 'approved')
+                  ->with('stages');
+        }
+    ]);
+
+    // Calculate statistics
+    $statistics = [
+        'total_ideas' => $announcement->ideas->count(),
+        'initial_approve' => $announcement->ideas->filter(function ($idea) {
+            // Get the latest stage for the idea
+            $latestStage = $idea->stages->sortByDesc('changed_at')->first();
+            return $latestStage?->stage === 'initial_approve';
+        })->count(),
+        'under_review' => $announcement->ideas->filter(function ($idea) {
+            // Get the latest stage for the idea
+            $latestStage = $idea->stages->sortByDesc('changed_at')->first();
+            return $latestStage?->stage === 'under_review';
+        })->count(),
+        'last_decision' => $announcement->ideas->filter(function ($idea) {
+            // Get the latest stage for the idea
+            $latestStage = $idea->stages->sortByDesc('changed_at')->first();
+            return $latestStage?->stage === 'last_decision';
+        })->count(),
+       'days_remaining' => round(now()->diffInDays($announcement->end_date, false))
+    ];
+
+    return view('investor.announcements.show', compact('announcement', 'statistics'));
+}
     // Show the form to edit an announcement
     public function edit(Announcement $announcement)
     {
