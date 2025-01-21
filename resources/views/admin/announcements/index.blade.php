@@ -13,15 +13,14 @@
 
 
         <!-- Stats Cards -->
-        <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-3" dir="rtl">
+        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <x-stat-card icon="megaphone" title="إجمالي الإعلانات" :value="$total_announcements" color="blue" />
-            <x-stat-card icon="clock" title="إعلانات قيد المراجعة" :value="$total_pending_announcements" color="yellow">
-                <span>قيد الانتظار</span>
-            </x-stat-card>
+            <x-stat-card icon="clock" title="إعلانات قيد المراجعة" :value="$total_pending_announcements"
+                color="yellow" />
             <x-stat-card icon="check-circle" title="الإعلانات النشطة" :value="$total_active_announcements"
-                color="green">
-                <span>نشط</span>
-            </x-stat-card>
+                color="green" />
+            <x-stat-card icon="x-circle" title="الإعلانات المرفوضة" :value="$total_rejected_announcements"
+                color="blue" />
         </div>
 
         <!-- Filters Section -->
@@ -205,9 +204,9 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                                                                                                                                {{ $announcement->approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : '' }}
-                                                                                                                                                {{ $announcement->approval_status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : '' }}
-                                                                                                                                                {{ $announcement->approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : '' }}">
+                                                                                                                                                        {{ $announcement->approval_status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300' : '' }}
+                                                                                                                                                        {{ $announcement->approval_status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300' : '' }}
+                                                                                                                                                        {{ $announcement->approval_status === 'rejected' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300' : '' }}">
                                         {{ __('announcements.status.' . $announcement->approval_status) }}
                                     </span>
                                 </td>
@@ -226,7 +225,7 @@
                                             </form>
 
                                             <!-- Reject Button -->
-                                            <button type="button"    onclick="openRejectModal('{{ $announcement->id }}')"
+                                            <button type="button" onclick="openRejectModal('{{ $announcement->id }}')"
                                                 class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
                                                 <i data-lucide="x-circle" class="w-5 h-5"></i>
                                             </button>

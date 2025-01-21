@@ -41,12 +41,14 @@ class AdminAnnouncementController extends Controller
         $total_announcements = Announcement::count();
         $total_pending_announcements = Announcement::where('approval_status', 'pending')->count();
         $total_active_announcements = Announcement::where('approval_status', 'approved')->count();
+        $total_rejected_announcements = Announcement::where('approval_status', 'rejected')->count();
 
         return view('admin.announcements.index', compact(
             'announcements',
             'total_announcements',
             'total_active_announcements',
-            'total_pending_announcements'
+            'total_pending_announcements',
+            'total_rejected_announcements'
         ));
     }
 

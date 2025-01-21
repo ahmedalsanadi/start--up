@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
 use App\Models\CommercialRegistration;
+use App\Models\Idea;
 use App\Models\User;
 use App\Models\Announcement;
 
@@ -29,6 +30,7 @@ class DashboardController extends Controller
 
         $stats = [
             'total_users' => User::count(),
+            'total_ideas' => Idea::count(),
             'pending_registrations' => CommercialRegistration::where('status', 'pending')->count(),
             'approved_registrations' => CommercialRegistration::where('status', 'approved')->count(),
             'rejected_registrations' => CommercialRegistration::where('status', 'rejected')->count(),
