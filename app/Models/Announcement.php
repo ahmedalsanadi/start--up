@@ -23,7 +23,7 @@ class Announcement extends Model
         'investor_id',
         'approval_status',
         'rejection_reason',
-        'status',
+        'is_closed',
     ];
 
     protected $casts = [

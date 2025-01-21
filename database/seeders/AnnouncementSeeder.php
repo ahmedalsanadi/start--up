@@ -13,14 +13,14 @@ class AnnouncementSeeder extends Seeder
     public function run(): void
     {
         // Create 10 announcements
-        $announcements = Announcement::factory(20)->create();
+        $announcements = Announcement::factory(30)->create();
 
         // Link each announcement to 1-3 random categories
-        $categories = Category::whereNotNull('parent_id')->get();
+        $categories = Category::all();
 
         $announcements->each(function ($announcement) use ($categories) {
             $announcement->categories()->attach(
-                $categories->random(rand(1, 3))->pluck('id')->toArray()
+                $categories->random(rand(3, 5))->pluck('id')->toArray()
             );
         });
     }

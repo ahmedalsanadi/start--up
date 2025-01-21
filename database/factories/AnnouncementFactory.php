@@ -39,7 +39,7 @@ class AnnouncementFactory extends Factory
             'investor_id' => User::where('user_type', '2')->inRandomOrder()->first()->id,
             'approval_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
             'rejection_reason' => $this->faker->optional()->sentence,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
+            'is_closed' => false,
             'created_at' => now(),
         ];
     }
