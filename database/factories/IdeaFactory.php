@@ -50,7 +50,7 @@ class IdeaFactory extends Factory
             'brief_description' => $this->faker->randomElement($briefDescriptions),
             'detailed_description' => $this->faker->randomElement($detailedDescriptions),
             'budget' => $this->faker->numberBetween(100000, 2000000),
-            'image' => $this->faker->optional()->imageUrl(),
+            'image' => $this->randomImageUrl(), // Use the randomImageUrl method
             'location' => $this->faker->randomElement($locations),
             'idea_type' => $this->faker->randomElement(['creative', 'traditional']),
             'feasibility_study' => $this->faker->optional()->word . '.pdf',
@@ -63,6 +63,17 @@ class IdeaFactory extends Factory
             'stage' => $this->faker->randomElement(['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision']),
             'created_at' => now(),
         ];
+    }
+
+    /**
+     * Generate a random image URL using picsum.photos.
+     *
+     * @return string
+     */
+    private function randomImageUrl(): string
+    {
+        $randomSeed = rand(0, 100000);
+        return "https://picsum.photos/seed/{$randomSeed}/500/400";
     }
 
     /**

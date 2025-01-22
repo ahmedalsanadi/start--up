@@ -31,7 +31,7 @@ class CommercialRegistrationController extends Controller
         }
 
         return match($commercialRegistration->status) {
-            'approved' => redirect()->route('investor.dashboard'),
+            'approved' => redirect()->route('investor.home'),
             'pending' => redirect()->route('pending-commercial-registration'),
             'rejected' => view('investor.commercial-registration.rejected', [
                 'reason' => $commercialRegistration->rejection_reason
@@ -88,7 +88,7 @@ class CommercialRegistrationController extends Controller
         }
 
         return match($commercialRegistration->status) {
-            'approved' => redirect()->route('investor.dashboard'),
+            'approved' => redirect()->route('investor.home'),
             'rejected' => redirect()->route('commercial-registration.create'),
             'pending' => view('investor.pending.registration-pending', [
                 'status' => $commercialRegistration->status

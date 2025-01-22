@@ -4,7 +4,7 @@
     $unreadCount = auth()->user()->unreadNotifications()->count();
 @endphp
 
-<nav class="fixed top-0 z-50 w-full border-b bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+<nav class="fixed top-0 z-50 w-full border-b bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300 ease-in-out"
     dir="rtl">
     <div class="px-3 py-2 lg:px-5 lg:pr-3">
         <div class="flex items-center justify-between">

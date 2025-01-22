@@ -160,6 +160,8 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
          Route::get('/ideas/{idea}', [InvestorIdeaController::class, 'show'])
          ->name('investor.ideas.show');
 
+         Route::patch('/ideas/{idea}/update-stage', [InvestorIdeaController::class, 'updateStage'])->name('ideas.updateStage');
+
     });
 
 
