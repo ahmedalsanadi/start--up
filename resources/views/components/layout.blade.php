@@ -93,7 +93,9 @@
     @endif
 
 
-
+    <!-- Delete Modal -->
+    <x-delete-modal />
+    
     @stack('scripts')
 
     <!-- Include Lucide Icons Script -->
