@@ -150,6 +150,9 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
             'destroy' => 'investor.announcements.destroy',
         ]);
 
+        Route::patch('/announcement/{announcement}/toggle-closed', [InvestorAnnouncementController::class, 'toggleClosed'])
+        ->name('investor.announcements.toggle-closed');
+      
         Route::patch('/idea/{idea}', [InvestorAnnouncementController::class, 'updateStatus'])->name('investor.ideas.update-stage');
 
         Route::get('/ideas/{idea}', function () {

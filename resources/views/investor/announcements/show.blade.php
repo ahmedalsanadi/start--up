@@ -10,13 +10,26 @@
                     تم النشر في {{ $announcement->created_at->format('Y/m/d') }}
                 </p>
             </div>
-            <div class="flex items-center gap-2">
-                @if(!$announcement->is_closed)
-                    <button type="button" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                        إغلاق الإعلان
-                    </button>
-                @endif
-            </div>
+<!-- resources/views/investor/announcements/show.blade.php -->
+<div class="flex items-center gap-2">
+    @if(!$announcement->is_closed)
+        <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                إغلاق الإعلان
+            </button>
+        </form>
+    @else
+        <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
+            @csrf
+            @method('PATCH')
+            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                فتح الإعلان
+            </button>
+        </form>
+    @endif
+</div>
         </div>
         <div class="relative ">
             <!-- Gradient Glow Effect -->

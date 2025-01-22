@@ -167,6 +167,24 @@ class AnnouncementController extends Controller
             ->with('success', 'تم تحديث الإعلان بنجاح');
     }
 
+    
+    public function toggleClosed(Announcement $announcement)
+    {
+        // Ensure the authenticated investor owns this announcement
+        if ($announcement->investor_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Toggle the is_closed status
+        $announcement->update([
+            'is_closed' => !$announcement->is_closed,
+        ]);
+
+        // Redirect back with a success message
+        return redirect()->back()
+            ->with('success', $announcement->is_closed ? 'تم إغلاق الإعلان بنجاح' : 'تم فتح الإعلان بنجاح');
+    }
+
     public function destroy(Announcement $announcement)
     {
         // Ensure the authenticated investor owns this announcement
