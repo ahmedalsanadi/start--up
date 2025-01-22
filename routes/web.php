@@ -15,7 +15,8 @@ use App\Http\Controllers\Admin\{
 
 use App\Http\Controllers\Investor\{
     CommercialRegistrationController,
-    AnnouncementController as InvestorAnnouncementController
+    AnnouncementController as InvestorAnnouncementController,
+    IdeaController as InvestorIdeaController,
 };
 
 
@@ -152,12 +153,12 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
         Route::patch('/announcement/{announcement}/toggle-closed', [InvestorAnnouncementController::class, 'toggleClosed'])
         ->name('investor.announcements.toggle-closed');
-      
+
         Route::patch('/idea/{idea}', [InvestorAnnouncementController::class, 'updateStatus'])->name('investor.ideas.update-stage');
 
-        Route::get('/ideas/{idea}', function () {
-            return "Manage Ideas";
-        })->name('investor.ideas.show');
+         // New route for showing idea details
+         Route::get('/ideas/{idea}', [InvestorIdeaController::class, 'show'])
+         ->name('investor.ideas.show');
 
     });
 

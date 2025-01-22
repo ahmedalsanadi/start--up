@@ -1,7 +1,6 @@
 <!--resources/views/investor/announcements/show.blade.php-->
 <x-layout title="تفاصيل الإعلان">
     <div class="space-y-6">
-
         <!-- Announcement Header -->
         <div class="flex justify-between items-center">
             <div>
@@ -373,8 +372,7 @@
                                             </div>
                                         </td>
 
-                                        <!-- Expiry Date -->
-                                        <!-- Expiry Date -->
+
                                         <!-- Expiry Date -->
                                         <td class="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
                                             <div class="text-sm text-gray-500 dark:text-gray-400">
@@ -427,8 +425,5 @@
                 </div>
             </div>
         </div>
-
     </div>
-
-
 </x-layout>

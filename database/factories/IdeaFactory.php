@@ -9,7 +9,6 @@ use App\Models\IdeaStage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
 
-
 class IdeaFactory extends Factory
 {
     /**
@@ -74,13 +73,21 @@ class IdeaFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Idea $idea) {
-            // Create a corresponding record in the idea_stages table
-            IdeaStage::create([
-                'idea_id' => $idea->id,
-                'stage' => $idea->stage,
-                'stage_status' => true,
-                'changed_at' => now(),
-            ]);
+            // Define the stages in order
+            $stages = ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'];
+
+            // Find the index of the current stage
+            $currentStageIndex = array_search($idea->stage, $stages);
+
+            // Loop through all stages up to the current stage
+            for ($i = 0; $i <= $currentStageIndex; $i++) {
+                IdeaStage::create([
+                    'idea_id' => $idea->id,
+                    'stage' => $stages[$i],
+                    'stage_status' => true,
+                    'changed_at' => Carbon::now()->subDays(($currentStageIndex - $i) * 3), // Incremental dates
+                ]);
+            }
         });
     }
 }
