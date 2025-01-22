@@ -189,77 +189,85 @@
 
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Categories Section -->
-            <div class="relative ">
-                <!-- Gradient Glow Effect -->
-                <div
-                    class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 ">
-                </div>
-                <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
-                    dir="rtl">
+    <!-- Categories Section -->
+    <div class="relative">
 
-                    <div class="p-6">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">التصنيفات</h2>
-                        <div class="flex flex-col justify-center gap-2">
-                            @foreach($announcement->categories as $category)
-                                <div>
-                                    <span
-                                        class=" mt-2 px-3 py-1  bg-purple-900  text-purple-200 rounded-full text-sm line-clamp-1">
-                                        {{ $category->name }}
-                                    </span>
-                                </div>
-
-                            @endforeach
-                        </div>
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
+            dir="rtl">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">التصنيفات</h2>
+            <div class="flex flex-col justify-center gap-2">
+                @foreach($announcement->categories as $category)
+                    <div>
+                        <span class="mt-2 px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm line-clamp-1">
+                            {{ $category->name }}
+                        </span>
                     </div>
-                </div>
+                @endforeach
             </div>
-
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
-                <div class="p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">الجدول الزمني</h2>
-                    <div class="relative">
-                        <div class="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 right-1.5"></div>
-                        <div class="space-y-6">
-                            <div class="relative flex items-center ">
-                                <div class="absolute right-0 h-3 w-3 rounded-full bg-green-500 dark:bg-green-400">
-                                </div>
-                                <div class="mr-6">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white">تم إنشاء الإعلان
-                                    </p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $announcement->created_at->format('Y/m/d H:i') }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            @if($announcement->approval_status !== 'pending')
-                                <div class="relative flex items-center">
-                                    <div
-                                        class="absolute right-0 h-3 w-3 rounded-full
-                                                                                {{ $announcement->approval_status === 'approved' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }}">
-                                    </div>
-                                    <div class="mr-6">
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                            {{ $announcement->approval_status === 'approved' ? 'تمت الموافقة على الإعلان' : 'تم رفض الإعلان' }}
-                                        </p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $announcement->updated_at->format('Y/m/d H:i') }}
-                                        </p>
-                                        @if($announcement->rejection_reason)
-                                            <p class="text-xs text-red-500 mt-1">
-                                                {{ $announcement->rejection_reason }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
+    </div>
+
+    <!-- Timeline Section -->
+    <div class="relative">
+
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
+            dir="rtl">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">الجدول الزمني</h2>
+            <div class="relative">
+                <div class="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 right-1.5"></div>
+                <div class="space-y-6">
+                    <!-- Created At Timeline -->
+                    <div class="relative flex items-center">
+                        <div class="absolute right-0 h-3 w-3 rounded-full bg-green-500 dark:bg-green-400"></div>
+                        <div class="mr-6">
+                            <p class="text-sm font-medium text-gray-900 dark:text-white">تم إنشاء الإعلان</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                {{ $announcement->created_at->format('Y/m/d H:i') }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Approval Status Timeline -->
+                    @if($announcement->approval_status !== 'pending')
+                        <div class="relative flex items-center">
+                            <div class="absolute right-0 h-3 w-3 rounded-full
+                                {{ $announcement->approval_status === 'approved' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }}">
+                            </div>
+                            <div class="mr-6">
+                                <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ $announcement->approval_status === 'approved' ? 'تمت الموافقة على الإعلان' : 'تم رفض الإعلان' }}
+                                </p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">
+                                    {{ $announcement->updated_at->format('Y/m/d H:i') }}
+                                </p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Rejection Reason or Status Message -->
+            <div class="mt-6">
+                @if($announcement->approval_status === 'rejected' && $announcement->rejection_reason)
+                    <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/20">
+                        <p class="text-sm font-medium text-red-600 dark:text-red-400">سبب الرفض:</p>
+                        <p class="text-sm text-red-500 dark:text-red-400 mt-1">
+                            {{ $announcement->rejection_reason }}
+                        </p>
+                    </div>
+                @elseif($announcement->approval_status === 'approved')
+                    <div class="bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-100 dark:border-green-900/20">
+                        <p class="text-sm font-medium text-green-600 dark:text-green-400">تمت الموافقة على الإعلان من قبل الإدارة.</p>
+                    </div>
+                @elseif($announcement->approval_status === 'pending')
+                    <div class="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-100 dark:border-yellow-900/20">
+                        <p class="text-sm font-medium text-yellow-600 dark:text-yellow-400">الإعلان قيد المراجعة من قبل الإدارة.</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
 
 
 

@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->boolean('is_closed')->default(false);
             // Status of the announcement , the investor can switch this into inactive when he got an idea
             $table->timestamps();
+            $table->softDeletes(); // Add deleted_at column
         });
     }
 
@@ -31,6 +32,12 @@ return new class extends Migration {
      */
     public function down(): void
     {
+        // Drop the soft deletes column (deleted_at)
+        Schema::table('announcements', function (Blueprint $table) {
+            $table->dropSoftDeletes(); // Remove deleted_at column
+        });
+
+        // Drop the entire table
         Schema::dropIfExists('announcements');
     }
 };

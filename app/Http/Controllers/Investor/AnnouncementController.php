@@ -18,6 +18,7 @@ class AnnouncementController extends Controller
     {
         $investor = auth()->user();
 
+        // Paginate announcements with 6 records per page
         $announcements = Announcement::with([
             'categories',
             'ideas' => function ($query) {
@@ -26,14 +27,15 @@ class AnnouncementController extends Controller
         ])
             ->where('investor_id', $investor->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(6); // Paginate with 6 records per page
 
+        // Calculate statistics
         $statistics = [
-            'total' => $announcements->count(),
+            'total' => $announcements->total(), // Total number of announcements (including paginated ones)
             'pending' => $announcements->where('approval_status', 'pending')->count(),
             'approved' => $announcements->where('approval_status', 'approved')->count(),
             'rejected' => $announcements->where('approval_status', 'rejected')->count(),
-            'active_ideas' => $announcements->flatMap->ideas->where('status', 'active')->count(),
+
         ];
 
         return view('investor.announcements.index', compact('announcements', 'statistics'));
@@ -58,7 +60,7 @@ class AnnouncementController extends Controller
             'location' => 'required|string',
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:start_date',
-                'budget' => 'required|numeric|min:1|max:1000000000',
+            'budget' => 'required|numeric|min:1|max:1000000000',
             'categories' => 'required|array|min:1|max:5',
             'categories.*' => 'exists:categories,id'
         ]);
@@ -110,13 +112,72 @@ class AnnouncementController extends Controller
         return view('investor.announcements.show', compact('announcement', 'stats'));
     }
 
-
-
-    // Show the form to edit an announcement
     public function edit(Announcement $announcement)
     {
-        $this->authorize('update', $announcement); // Ensure the investor owns the announcement
-        $categories = Category::all();
+        // Ensure the authenticated investor owns this announcement
+        if ($announcement->investor_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Get parent categories and their children
+        $categories = Category::whereNull('parent_id')
+            ->with('children')
+            ->get();
+
+        // Load the announcement with its relationships
+        $announcement->load('categories');
+
         return view('investor.announcements.edit', compact('announcement', 'categories'));
     }
+    // Show the form to edit an existing announcement
+
+
+    public function update(Request $request, Announcement $announcement)
+    {
+        // Ensure the authenticated investor owns this announcement
+        if ($announcement->investor_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $request->validate([
+            'description' => 'required|min:3',
+            'location' => 'required|string',
+            'start_date' => 'required|date|after:today',
+            'end_date' => 'required|date|after:start_date',
+            'budget' => 'required|numeric|min:1|max:1000000000',
+            'categories' => 'required|array|min:1|max:5',
+            'categories.*' => 'exists:categories,id',
+        ]);
+
+        // Update the announcement
+        $announcement->update([
+            'description' => $request->description,
+            'location' => $request->location,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'budget' => $request->budget,
+            'approval_status' => 'pending',
+            'is_active' => true,
+        ]);
+
+        // Sync the categories
+        $announcement->categories()->sync($request->categories);
+
+        return redirect()->route('investor.announcements.index')
+            ->with('success', 'تم تحديث الإعلان بنجاح');
+    }
+
+    public function destroy(Announcement $announcement)
+    {
+        // Ensure the authenticated investor owns this announcement
+        if ($announcement->investor_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $announcement->delete(); // Soft delete
+
+        return redirect()->route('investor.announcements.index')
+            ->with('success', 'تم حذف الإعلان بنجاح');
+    }
+
 }
