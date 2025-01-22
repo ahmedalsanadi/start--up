@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 
-class CategoryController extends Controller
+class CategoriesController extends Controller
 {
     /**
      * Display a listing of the categories.
@@ -84,7 +84,7 @@ class CategoryController extends Controller
         ]);
 
         return redirect()
-            ->route('categories.index')
+            ->route('admin.categories.index')
             ->with('success', 'تم إنشاء القسم بنجاح.');
     }
 
@@ -157,7 +157,7 @@ class CategoryController extends Controller
         ]);
 
         return redirect()
-            ->route('categories.index')
+            ->route('admin.categories.index')
             ->with('success', 'تم تحديث القسم بنجاح.');
     }
 
@@ -169,7 +169,7 @@ class CategoryController extends Controller
         // Delete the category
         $category->delete();
         return redirect()
-            ->route('categories.index')
+            ->route('admin.categories.index')
             ->with('success', 'تم حذف القسم بنجاح.');
     }
 }

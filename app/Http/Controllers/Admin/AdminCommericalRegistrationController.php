@@ -6,12 +6,12 @@ use App\Models\CommercialRegistration;
 use App\Models\User;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
-use App\Notifications\RegistrationStatusUpdated;
+
 
 use App\Traits\NotificationTrait;
 
 
-class ManageInvestorController extends Controller
+class AdminCommericalRegistrationController extends Controller
 {
     use NotificationTrait;
 
@@ -28,13 +28,13 @@ class ManageInvestorController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.investors.index', compact('registrations'));
+        return view('admin.commercial-registrations.index', compact('registrations'));
     }
 
     public function show(CommercialRegistration $registration)
     {
         $registration->load('user');
-        return view('admin.investors.show', compact('registration'));
+        return view('admin.commercial-registrations.show', compact('registration'));
     }
 
     public function updateRegistrationStatus(Request $request, CommercialRegistration $registration)

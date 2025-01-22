@@ -106,4 +106,3 @@ class CommercialRegistrationController extends Controller
         ]);
     }
 }
-

@@ -27,24 +27,24 @@ class CheckUserType
         switch ($type) {
             case 'admin':
                 if (!$user->isAdmin()) {
-                    return redirect('/'); // Redirect if not an admin
+                    abort(403, 'You are not authorized to visit this page.'); // Return 403 Forbidden
                 }
                 break;
 
             case 'investor':
                 if (!$user->isInvestor()) {
-                    return redirect('/'); // Redirect if not an investor
+                    abort(403, 'You are not authorized to visit this page.'); // Return 403 Forbidden
                 }
                 break;
 
             case 'entrepreneur':
                 if (!$user->isEntrepreneur()) {
-                    return redirect('/'); // Redirect if not an entrepreneur
+                    abort(403, 'You are not authorized to visit this page.'); // Return 403 Forbidden
                 }
                 break;
 
             default:
-                return redirect('/'); // Default fallback
+                abort(403, 'You are not authorized to visit this page.'); // Default fallback
         }
 
         return $next($request);

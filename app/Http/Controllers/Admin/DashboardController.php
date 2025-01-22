@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 
 use App\Models\CommercialRegistration;
+use App\Models\Idea;
 use App\Models\User;
+use App\Models\Announcement;
 
 class DashboardController extends Controller
 {
@@ -23,11 +25,16 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        //3- announcements
+        $announcements = Announcement::all()->count();
+
         $stats = [
             'total_users' => User::count(),
+            'total_ideas' => Idea::count(),
             'pending_registrations' => CommercialRegistration::where('status', 'pending')->count(),
             'approved_registrations' => CommercialRegistration::where('status', 'approved')->count(),
             'rejected_registrations' => CommercialRegistration::where('status', 'rejected')->count(),
+            'announcements' => $announcements
         ];
 
         return view('admin.index', compact('pendingRegistrations', 'recentUsers', 'stats'));

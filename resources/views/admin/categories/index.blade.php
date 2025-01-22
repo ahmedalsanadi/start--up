@@ -2,7 +2,7 @@
     <div class="flex flex-col gap-4 px-2">
         <div class="flex justify-between items-center">
             <x-page-header>إدارة الأقسام</x-page-header>
-            <a href="{{ route('categories.create') }}"
+            <a href="{{ route('admin.categories.create') }}"
                 class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition duration-150 ease-in-out">
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -28,7 +28,7 @@
                                 </h3>
                                 <div class="flex items-center space-x-2 rtl:space-x-reverse">
                                     <!-- View Button -->
-                                    <a href="{{ route('categories.show', $category) }}"
+                                    <a href="{{ route('admin.categories.show', $category) }}"
                                         class="p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -39,7 +39,7 @@
                                         </svg>
                                     </a>
                                     <!-- Edit Button -->
-                                    <a href="{{ route('categories.edit', $category) }}"
+                                    <a href="{{ route('admin.categories.edit', $category) }}"
                                         class="p-2 text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors duration-200">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -48,7 +48,7 @@
                                         </svg>
                                     </a>
                                     <!-- Delete Button -->
-                                    <form action="{{ route('categories.destroy', $category) }}" method="POST" class="inline">
+                                    <form action="{{ route('admin.categories.destroy', $category) }}" method="POST" class="inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -73,7 +73,7 @@
             <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                 <span class="text-sm text-gray-700 dark:text-gray-300">{{ $subcategory->name }}</span>
                 <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                    <a href="{{ route('categories.edit', $subcategory) }}"
+                    <a href="{{ route('admin.categories.edit', $subcategory) }}"
                         class="text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -81,7 +81,7 @@
                             </path>
                         </svg>
                     </a>
-                    <form action="{{ route('categories.destroy', $subcategory) }}" method="POST" class="inline">
+                    <form action="{{ route('admin.categories.destroy', $subcategory) }}" method="POST" class="inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit"
@@ -105,7 +105,7 @@
         <!-- Show "View More" link if there are more than 3 subcategories -->
         @if($category->children->count() > 3)
             <div class="text-center mt-4">
-                <a href="{{ route('categories.show', $category) }}" class="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
+                <a href="{{ route('admin.categories.show', $category) }}" class="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
                     عرض المزيد
                 </a>
             </div>
@@ -120,7 +120,7 @@
                                     عدد الأقسام الفرعية: {{ $category->children->count() }}
                                 </span>
                                 @if($category->children->count() < 5)
-                                    <a href="{{ route('categories.create', ['parent_id' => $category->id]) }}"
+                                    <a href="{{ route('admin.categories.create', ['parent_id' => $category->id]) }}"
                                         class="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
                                         إضافة قسم فرعي +
                                     </a>
@@ -140,7 +140,7 @@
                         <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">لا توجد أقسام</h3>
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">ابدأ بإضافة قسم جديد لموقعك</p>
                         <div class="mt-6">
-                            <a href="{{ route('categories.create') }}"
+                            <a href="{{ route('admin.categories.create') }}"
                                 class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg">
                                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

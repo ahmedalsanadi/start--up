@@ -98,7 +98,7 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.status === 'approved') {
-                            window.location.href = '{{ route("investor.index") }}';
+                            window.location.href = '{{ route("investor.home") }}';
                         } else if (data.status === 'rejected') {
                             window.location.href = '{{ route("commercial-registration.create") }}';
                         }
