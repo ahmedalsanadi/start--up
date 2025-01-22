@@ -4,7 +4,11 @@ namespace Database\Factories;
 
 use App\Models\User;
 use App\Models\Announcement;
+use App\Models\Idea;
+use App\Models\IdeaStage;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Carbon\Carbon;
+
 
 class IdeaFactory extends Factory
 {
@@ -55,9 +59,28 @@ class IdeaFactory extends Factory
             'announcement_id' => Announcement::inRandomOrder()->first()->id,
             'approval_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
             'rejection_reason' => $this->faker->optional()->sentence,
-            'status' => $this->faker->randomElement(['active', 'inactive']),
-            'expiry_date' => $this->faker->dateTimeBetween('+1 month', '+3 months'),
+            'is_active' => true,
+            'expiry_date' => Carbon::now()->addMonth(), // Set expiry_date to 1 month from today
+            'stage' => $this->faker->randomElement(['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision']),
             'created_at' => now(),
         ];
+    }
+
+    /**
+     * Configure the model factory.
+     *
+     * @return $this
+     */
+    public function configure()
+    {
+        return $this->afterCreating(function (Idea $idea) {
+            // Create a corresponding record in the idea_stages table
+            IdeaStage::create([
+                'idea_id' => $idea->id,
+                'stage' => $idea->stage,
+                'stage_status' => true,
+                'changed_at' => now(),
+            ]);
+        });
     }
 }

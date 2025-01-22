@@ -10,7 +10,8 @@
 
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        
+
+    
         <div class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -110,8 +111,9 @@
                                 {{ $announcement->start_date->format('Y-m-d') }}
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                <x-badge :type="$announcement->approval_status" :label="$announcement->approval_status" />
+                                <x-badge :type="$announcement->approval_status" :label="__('announcements.status.' . $announcement->approval_status)" />
                             </td>
+
 
                             <td class="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
                                 {{ $announcement->ideas->count() }}

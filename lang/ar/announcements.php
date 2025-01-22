@@ -1,5 +1,5 @@
 <?php
-
+// resources/lang/ar/announcements.php
 return [
     'status' => [
         'pending' => 'قيد المراجعة',

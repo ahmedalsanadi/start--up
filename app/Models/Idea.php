@@ -12,9 +12,24 @@ class Idea extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'brief_description', 'detailed_description', 'budget', 'image', 'location',
-        'idea_type', 'feasibility_study', 'entrepreneur_id', 'announcement_id',
-        'approval_status', 'rejection_reason', 'status', 'expiry_date',
+        'name',
+        'brief_description',
+        'detailed_description',
+        'budget',
+        'image',
+        'location',
+        'idea_type',
+        'feasibility_study',
+        'entrepreneur_id',
+        'announcement_id',
+        'approval_status',
+        'rejection_reason',
+        'is_active',
+        'expiry_date',
+        'stage',
+    ];
+    protected $casts = [
+        'expiry_date' => 'datetime', // Cast expiry_date as a Carbon instance
     ];
 
     // Relationship with Entrepreneur (User)
