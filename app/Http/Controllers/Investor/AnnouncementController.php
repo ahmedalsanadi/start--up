@@ -78,6 +78,7 @@ class AnnouncementController extends Controller
             'investor_id' => auth()->id(),
             'approval_status' => 'pending', //admin approve
             'is_closed' => false,
+            'status' => 'in-progress'
         ]);
 
         $announcement->categories()->attach($request->categories);
