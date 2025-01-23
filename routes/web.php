@@ -38,7 +38,29 @@ use App\Http\Controllers\SessionController;
 // Acessable Route
 // Route::get('/', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/', function () {
-    return redirect()->route('login'); // Assuming 'login' is the name of your login route
+    if (Auth::check()) {
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.home');
+        } elseif ($user->isInvestor()) {
+            $commercialRegistration = $user->commercialRegistration;
+
+            if (!$commercialRegistration) {
+                return redirect()->route('commercial-registration.create');
+            } elseif ($commercialRegistration->status == 'pending') {
+                return redirect()->route('pending-commercial-registration');
+            } elseif ($commercialRegistration->status == 'approved') {
+                return redirect()->route('investor.home');
+            } else {
+                return redirect()->route('commercial-registration.create');
+            }
+        } elseif ($user->isEntrepreneur()) {
+            return redirect()->route('entrepreneur.home');
+        }
+    }
+
+    return redirect()->route('login');
 });
 
 

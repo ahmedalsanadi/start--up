@@ -30,31 +30,32 @@ class SessionController extends Controller
 
         $user = Auth::user();
 
+        // Get the intended URL if it exists
+        $intended = session()->pull('url.intended', null);
+
+        if ($intended) {
+            return redirect()->to($intended);
+        }
+
         // Redirect based on user type
         if ($user->isAdmin()) {
             return redirect()->route('admin.home');
         } elseif ($user->isInvestor()) {
-            // Check the investor's commercial registration status
             $commercialRegistration = $user->commercialRegistration;
 
             if (!$commercialRegistration) {
-                // Redirect to the commercial registration page if no registration exists
                 return redirect()->route('commercial-registration.create');
             } elseif ($commercialRegistration->status == 'pending') {
-                // Redirect to the pending page if the registration is pending
                 return redirect()->route('pending-commercial-registration');
             } elseif ($commercialRegistration->status === 'approved') {
-                // Redirect to the investor dashboard if the registration is approved
                 return redirect()->route('investor.home');
-            } elseif ($commercialRegistration->status === 'rejected') {
-                // Redirect to the commercial registration page if the registration is rejected
+            } else {
                 return redirect()->route('commercial-registration.create');
             }
         } elseif ($user->isEntrepreneur()) {
             return redirect()->route('entrepreneur.home');
         }
 
-        // Fallback if user type is not recognized
         return redirect('/');
     }
 
