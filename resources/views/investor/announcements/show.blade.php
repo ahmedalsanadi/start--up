@@ -2,34 +2,53 @@
 <x-layout title="تفاصيل الإعلان">
     <div class="space-y-6">
         <!-- Announcement Header -->
-        <div class="flex justify-between items-center">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">تفاصيل الإعلان</h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    تم النشر في {{ $announcement->created_at->format('Y/m/d') }}
-                </p>
-            </div>
-<!-- resources/views/investor/announcements/show.blade.php -->
-<div class="flex items-center gap-2">
-    @if(!$announcement->is_closed)
-        <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
+<!-- Announcement Header -->
+<div class="flex justify-between items-center">
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">بيانات الإعلان</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            تم النشر في {{ $announcement->created_at->format('Y/m/d') }}
+        </p>
+    </div>
+
+    <!-- Action Buttons: Edit, Delete, and Close/Open -->
+    <div class="flex items-center gap-2">
+        <!-- Edit Icon -->
+        <a href="{{ route('investor.announcements.edit', $announcement) }}" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <i data-lucide="edit" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
+        </a>
+
+        <!-- Delete Icon -->
+        <form action="{{ route('investor.announcements.destroy', $announcement) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا الإعلان؟');">
             @csrf
-            @method('PATCH')
-            <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                إغلاق الإعلان
+            @method('DELETE')
+            <button type="submit" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                <i data-lucide="trash-2" class="w-5 h-5 text-red-600 dark:text-red-400"></i>
             </button>
         </form>
-    @else
-        <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
-            @csrf
-            @method('PATCH')
-            <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                فتح الإعلان
-            </button>
-        </form>
-    @endif
+
+        <!-- Close/Open Button -->
+        @if(!$announcement->is_closed)
+            <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    إغلاق الإعلان
+                </button>
+            </form>
+        @else
+            <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    فتح الإعلان
+                </button>
+            </form>
+        @endif
+    </div>
 </div>
-        </div>
+
+
         <div class="relative ">
             <!-- Gradient Glow Effect -->
             <div

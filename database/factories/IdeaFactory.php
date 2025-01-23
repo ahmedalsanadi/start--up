@@ -58,9 +58,10 @@ class IdeaFactory extends Factory
             'announcement_id' => Announcement::inRandomOrder()->first()->id,
             'approval_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
             'rejection_reason' => $this->faker->optional()->sentence,
-            'is_active' => true,
+            'status' => 'pending',
             'expiry_date' => Carbon::now()->addMonth(), // Set expiry_date to 1 month from today
             'stage' => $this->faker->randomElement(['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision']),
+            'is_reusable' => false,
             'created_at' => now(),
         ];
     }

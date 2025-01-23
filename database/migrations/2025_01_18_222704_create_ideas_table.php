@@ -25,9 +25,12 @@ return new class extends Migration
             $table->foreignId('announcement_id')->nullable()->constrained('announcements')->onDelete('cascade'); // Linked announcement (for creative ideas)
             $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending'); // Approval status by admin
             $table->text('rejection_reason')->nullable(); // Reason for rejection
-            $table->boolean('is_active')->default(true);
+            $table->enum('status', ['pending', 'approved', 'rejected', 'deleted_by_entrepreneur','expired'])->default('pending'); // Status of the idea
+
             $table->date('expiry_date')->nullable(); // Expiry date for creative ideas (1 month)
             $table->enum('stage', ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'])->default('new'); // Stage of the idea
+            $table->boolean('is_reusable')->default(false); // Whether the idea is reusable
+            $table->softDeletes(); // Add deleted_at column
             $table->timestamps();
         });
     }
@@ -35,8 +38,15 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+
     public function down(): void
     {
+        // Drop the soft deletes column (deleted_at)
+        Schema::table('ideas', function (Blueprint $table) {
+            $table->dropSoftDeletes(); // Remove deleted_at column
+        });
+
+        // Drop the entire table
         Schema::dropIfExists('ideas');
     }
 };

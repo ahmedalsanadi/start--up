@@ -19,15 +19,18 @@ class AnnouncementController extends Controller
         $investor = auth()->user();
 
         // Paginate announcements with 6 records per page
+
         $announcements = Announcement::with([
             'categories',
             'ideas' => function ($query) {
-                $query->where('approval_status', 'approved');
+                $query->where('approval_status', 'approved')
+                    ->whereDate('expiry_date', '>', now())
+                    ->whereIn('status', ['pending', 'approved']);
             }
         ])
             ->where('investor_id', $investor->id)
             ->orderBy('created_at', 'desc')
-            ->paginate(6); // Paginate with 6 records per page
+            ->paginate(10); // Paginate with 10 records per page
 
         // Calculate statistics
         $statistics = [
@@ -72,15 +75,15 @@ class AnnouncementController extends Controller
             'end_date' => $request->end_date,
             'budget' => $request->budget,
             'investor_id' => auth()->id(),
-            'approval_status' => 'pending',
-            'is_active' => true
+            'approval_status' => 'pending', //admin approve
+            'is_closed' => false,
         ]);
 
         $announcement->categories()->attach($request->categories);
 
-        // // Notify admin about new announcement
-        // $admins = User::where('user_type', '1')->get();
-        // Notification::send($admins, new NewAnnouncementNotification($announcement));
+        //TODO: notify the admin that there is a new announcement wants to be approved
+
+
 
         return redirect()->route('investor.announcements.index')
             ->with('success', 'تم إنشاء الإعلان بنجاح وسيتم مراجعته من قبل الإدارة');
@@ -99,15 +102,20 @@ class AnnouncementController extends Controller
             'categories',
             'ideas' => function ($query) {
                 $query->where('approval_status', 'approved')
-                    ->where('is_active', true)
+                    ->whereIn('status', ['pending', 'approved'])
                     ->whereDate('expiry_date', '>', now());
             }
         ]);
 
         // Get statistics
         $stats = [
-            'total_ideas' => $announcement->ideas->count()
+            'total_ideas' => $announcement->ideas()
+                ->where('approval_status', 'approved')
+                ->whereIn('status', ['pending', 'approved'])
+                ->whereDate('expiry_date', '>', now())
+                ->count(),
         ];
+
 
         return view('investor.announcements.show', compact('announcement', 'stats'));
     }
@@ -117,6 +125,11 @@ class AnnouncementController extends Controller
         // Ensure the authenticated investor owns this announcement
         if ($announcement->investor_id !== auth()->id()) {
             abort(403);
+        }
+
+        // Prevent editing if the announcement is closed
+        if ($announcement->is_closed == "true") {
+            abort(403, 'This announcement is closed and cannot be edited.');
         }
 
         // Get parent categories and their children
@@ -129,6 +142,7 @@ class AnnouncementController extends Controller
 
         return view('investor.announcements.edit', compact('announcement', 'categories'));
     }
+
     // Show the form to edit an existing announcement
 
 
@@ -137,6 +151,11 @@ class AnnouncementController extends Controller
         // Ensure the authenticated investor owns this announcement
         if ($announcement->investor_id !== auth()->id()) {
             abort(403);
+        }
+
+        // Prevent updating if the announcement is closed
+        if ($announcement->is_closed == "true") {
+            abort(403, 'This announcement is closed and cannot be updated.');
         }
 
         $request->validate([
@@ -157,8 +176,10 @@ class AnnouncementController extends Controller
             'end_date' => $request->end_date,
             'budget' => $request->budget,
             'approval_status' => 'pending',
-            'is_active' => true,
         ]);
+
+        //TODO: notify the admin that there is a new announcement wants to be approved
+        
 
         // Sync the categories
         $announcement->categories()->sync($request->categories);
@@ -167,7 +188,23 @@ class AnnouncementController extends Controller
             ->with('success', 'تم تحديث الإعلان بنجاح');
     }
 
-    
+
+
+
+
+    public function destroy(Announcement $announcement)
+    {
+        // Ensure the authenticated investor owns this announcement
+        if ($announcement->investor_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $announcement->delete(); // Soft delete
+
+        return redirect()->route('investor.announcements.index')
+            ->with('success', 'تم حذف الإعلان بنجاح');
+    }
+
     public function toggleClosed(Announcement $announcement)
     {
         // Ensure the authenticated investor owns this announcement
@@ -183,19 +220,6 @@ class AnnouncementController extends Controller
         // Redirect back with a success message
         return redirect()->back()
             ->with('success', $announcement->is_closed ? 'تم إغلاق الإعلان بنجاح' : 'تم فتح الإعلان بنجاح');
-    }
-
-    public function destroy(Announcement $announcement)
-    {
-        // Ensure the authenticated investor owns this announcement
-        if ($announcement->investor_id !== auth()->id()) {
-            abort(403);
-        }
-
-        $announcement->delete(); // Soft delete
-
-        return redirect()->route('investor.announcements.index')
-            ->with('success', 'تم حذف الإعلان بنجاح');
     }
 
 }

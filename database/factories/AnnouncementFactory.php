@@ -40,6 +40,8 @@ class AnnouncementFactory extends Factory
             'approval_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
             'rejection_reason' => $this->faker->optional()->sentence,
             'is_closed' => false,
+            'closed_at' => null,
+            'status' => 'pending', //pending , compeleted, deleted_by_investor
             'created_at' => now(),
         ];
     }

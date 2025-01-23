@@ -19,8 +19,13 @@ class IdeaSeeder extends Seeder
 
         // Create 5 ideas for each announcement
         $announcements->each(function ($announcement) {
-            Idea::factory(5)->create([
+            Idea::factory(6
+            )->create([
                 'announcement_id' => $announcement->id,
+                'approval_status' => 'approved',
+                'status' => 'pending',
+                'is_reusable' => false,
+
             ])->each(function ($idea) {
                 // Link each idea to 3-5 random categories
                 $categories = Category::inRandomOrder()->limit(rand(3, 5))->get();

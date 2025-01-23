@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use  Illuminate\Database\Eloquent\SoftDeletes;
 
 class Idea extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -24,10 +25,12 @@ class Idea extends Model
         'announcement_id',
         'approval_status',
         'rejection_reason',
-        'is_active',
+        'statud', // ['pending', 'approved', 'rejected', 'deleted_by_entrepreneur','expired']
         'expiry_date',
         'stage',
+        'is_reusable'
     ];
+
     protected $casts = [
         'expiry_date' => 'datetime', // Cast expiry_date as a Carbon instance
     ];
