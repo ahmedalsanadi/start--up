@@ -26,7 +26,7 @@ class Announcement extends Model
         'rejection_reason',
         'is_closed',
         'closed_at',
-        'status', // $table->enum('status', ['pending', 'compeleted','deleted_by_investor'])
+        'status', // $table->enum('status', ['in-progress', 'compeleted','deleted_by_investor'])
     ];
 
     protected $casts = [

@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->text('rejection_reason')->nullable(); // Reason for rejection
             $table->boolean('is_closed')->default(false); // when announcement is completed it becomes closed
             $table->date('closed_at')->nullable();
-            $table->enum('status', ['pending', 'compeleted','deleted_by_investor'])->default('pending'); // Status of the announcement
+            $table->enum('status', ['in-progress', 'completed', 'deleted_by_investor'])->default('in-progress'); // Corrected default value
             $table->timestamps();
             $table->softDeletes(); // Add deleted_at column
         });

@@ -30,7 +30,7 @@ class AnnouncementController extends Controller
         ])
             ->where('investor_id', $investor->id)
             ->orderBy('created_at', 'desc')
-            ->paginate(10); // Paginate with 10 records per page
+            ->paginate(6); // Paginate with 10 records per page
 
         // Calculate statistics
         $statistics = [
@@ -38,6 +38,7 @@ class AnnouncementController extends Controller
             'pending' => $announcements->where('approval_status', 'pending')->count(),
             'approved' => $announcements->where('approval_status', 'approved')->count(),
             'rejected' => $announcements->where('approval_status', 'rejected')->count(),
+            'completed' => $announcements->where('status', 'completed')->count(),
 
         ];
 
@@ -179,7 +180,7 @@ class AnnouncementController extends Controller
         ]);
 
         //TODO: notify the admin that there is a new announcement wants to be approved
-        
+
 
         // Sync the categories
         $announcement->categories()->sync($request->categories);
