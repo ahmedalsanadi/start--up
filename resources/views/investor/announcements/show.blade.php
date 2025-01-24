@@ -2,51 +2,41 @@
 <x-layout title="تفاصيل الإعلان">
     <div class="space-y-6">
         <!-- Announcement Header -->
-<!-- Announcement Header -->
-<div class="flex justify-between items-center">
-    <div>
-        <h2 class="text-2xl font-bold text-gray-900 dark:text-white">بيانات الإعلان</h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            تم النشر في {{ $announcement->created_at->format('Y/m/d') }}
-        </p>
-    </div>
+        <!-- Announcement Header -->
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">بيانات الإعلان</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    تم النشر في {{ $announcement->created_at->format('Y/m/d') }}
+                </p>
+            </div>
 
-    <!-- Action Buttons: Edit, Delete, and Close/Open -->
-    <div class="flex items-center gap-2">
-        <!-- Edit Icon -->
-        <a href="{{ route('investor.announcements.edit', $announcement) }}" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-            <i data-lucide="edit" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
-        </a>
+            <!-- Action Buttons: Edit, Delete, and Close/Open -->
+            <div class="flex items-center gap-2">
 
-        <!-- Delete Icon -->
-        <form action="{{ route('investor.announcements.destroy', $announcement) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا الإعلان؟');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                <i data-lucide="trash-2" class="w-5 h-5 text-red-600 dark:text-red-400"></i>
-            </button>
-        </form>
+                @if($announcement->status == 'in-progress')
+                    <!-- Edit Icon -->
+                    <a href="{{ route('investor.announcements.edit', $announcement) }}"
+                        class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i data-lucide="edit" class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
+                    </a>
 
-        <!-- Close/Open Button -->
-        @if(!$announcement->is_closed)
-            <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-                    إغلاق الإعلان
-                </button>
-            </form>
-        @else
-            <form action="{{ route('investor.announcements.toggle-closed', $announcement) }}" method="POST">
-                @csrf
-                @method('PATCH')
-                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                    فتح الإعلان
-                </button>
-            </form>
-        @endif
-    </div>
-</div>
+                    <!-- Delete Icon -->
+                    <form action="{{ route('investor.announcements.destroy', $announcement) }}" method="POST"
+                        onsubmit="return confirm('هل أنت متأكد من رغبتك في حذف هذا الإعلان؟');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                            <i data-lucide="trash-2" class="w-5 h-5 text-red-600 dark:text-red-400"></i>
+                        </button>
+                    </form>
+                @endif
+
+
+
+            </div>
+        </div>
 
 
         <div class="relative ">
@@ -103,10 +93,9 @@
                             </div>
 
                             <!-- Status Badge -->
-                            <span
-                                class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $announcement->is_closed ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' }}">
-                                {{ $announcement->is_closed ? 'مغلق' : 'عام' }}
-                            </span>
+                            <td class="px-4 py-3 text-sm">
+                                <x-badge :type="$announcement->status" :label="__('announcements.status.' . $announcement->status)" />
+                            </td>
                         </div>
                     </div>
 
@@ -206,9 +195,11 @@
                                     <i data-lucide="lock" class="w-5 h-5 text-gray-500 dark:text-gray-400"></i>
                                 </div>
                                 <div class="flex flex-col justify-center">
-                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">الحالة</span>
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">حالة
+                                        الإعلان</span>
                                     <p class="text-gray-600 dark:text-gray-400">
-                                        {{ $announcement->is_closed ? 'مغلق' : 'مفتوح' }}
+
+                                        {{ __("announcements.status.{$announcement->status}") }}
                                     </p>
                                 </div>
                             </div>
@@ -220,85 +211,92 @@
 
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <!-- Categories Section -->
-    <div class="relative">
-
-        <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
-            dir="rtl">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">التصنيفات</h2>
-            <div class="flex flex-col justify-center gap-2">
-                @foreach($announcement->categories as $category)
-                    <div>
-                        <span class="mt-2 px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm line-clamp-1">
-                            {{ $category->name }}
-                        </span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div>
-
-    <!-- Timeline Section -->
-    <div class="relative">
-
-        <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
-            dir="rtl">
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">الجدول الزمني</h2>
+            <!-- Categories Section -->
             <div class="relative">
-                <div class="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 right-1.5"></div>
-                <div class="space-y-6">
-                    <!-- Created At Timeline -->
-                    <div class="relative flex items-center">
-                        <div class="absolute right-0 h-3 w-3 rounded-full bg-green-500 dark:bg-green-400"></div>
-                        <div class="mr-6">
-                            <p class="text-sm font-medium text-gray-900 dark:text-white">تم إنشاء الإعلان</p>
-                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                {{ $announcement->created_at->format('Y/m/d H:i') }}
-                            </p>
-                        </div>
-                    </div>
 
-                    <!-- Approval Status Timeline -->
-                    @if($announcement->approval_status !== 'pending')
-                        <div class="relative flex items-center">
-                            <div class="absolute right-0 h-3 w-3 rounded-full
-                                {{ $announcement->approval_status === 'approved' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }}">
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
+                    dir="rtl">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">التصنيفات</h2>
+                    <div class="flex flex-col justify-center gap-2">
+                        @foreach($announcement->categories as $category)
+                            <div>
+                                <span
+                                    class="mt-2 px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm line-clamp-1">
+                                    {{ $category->name }}
+                                </span>
                             </div>
-                            <div class="mr-6">
-                                <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                    {{ $announcement->approval_status === 'approved' ? 'تمت الموافقة على الإعلان' : 'تم رفض الإعلان' }}
-                                </p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">
-                                    {{ $announcement->updated_at->format('Y/m/d H:i') }}
-                                </p>
-                            </div>
-                        </div>
-                    @endif
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
-            <!-- Rejection Reason or Status Message -->
-            <div class="mt-6">
-                @if($announcement->approval_status === 'rejected' && $announcement->rejection_reason)
-                    <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/20">
-                        <p class="text-sm font-medium text-red-600 dark:text-red-400">سبب الرفض:</p>
-                        <p class="text-sm text-red-500 dark:text-red-400 mt-1">
-                            {{ $announcement->rejection_reason }}
-                        </p>
+            <!-- Timeline Section -->
+            <div class="relative">
+
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
+                    dir="rtl">
+                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">الجدول الزمني</h2>
+                    <div class="relative">
+                        <div class="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 right-1.5"></div>
+                        <div class="space-y-6">
+                            <!-- Created At Timeline -->
+                            <div class="relative flex items-center">
+                                <div class="absolute right-0 h-3 w-3 rounded-full bg-green-500 dark:bg-green-400"></div>
+                                <div class="mr-6">
+                                    <p class="text-sm font-medium text-gray-900 dark:text-white">تم إنشاء الإعلان</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                        {{ $announcement->created_at->format('Y/m/d H:i') }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Approval Status Timeline -->
+                            @if($announcement->approval_status !== 'pending')
+                                <div class="relative flex items-center">
+                                    <div
+                                        class="absolute right-0 h-3 w-3 rounded-full
+                                    {{ $announcement->approval_status === 'approved' ? 'bg-green-500 dark:bg-green-400' : 'bg-red-500 dark:bg-red-400' }}">
+                                    </div>
+                                    <div class="mr-6">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ $announcement->approval_status === 'approved' ? 'تمت الموافقة على الإعلان' : 'تم رفض الإعلان' }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ $announcement->updated_at->format('Y/m/d H:i') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     </div>
-                @elseif($announcement->approval_status === 'approved')
-                    <div class="bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-100 dark:border-green-900/20">
-                        <p class="text-sm font-medium text-green-600 dark:text-green-400">تمت الموافقة على الإعلان من قبل الإدارة.</p>
+
+                    <!-- Rejection Reason or Status Message -->
+                    <div class="mt-6">
+                        @if($announcement->approval_status === 'rejected' && $announcement->rejection_reason)
+                            <div
+                                class="bg-red-50 dark:bg-red-900/10 p-4 rounded-lg border border-red-100 dark:border-red-900/20">
+                                <p class="text-sm font-medium text-red-600 dark:text-red-400">سبب الرفض:</p>
+                                <p class="text-sm text-red-500 dark:text-red-400 mt-1">
+                                    {{ $announcement->rejection_reason }}
+                                </p>
+                            </div>
+                        @elseif($announcement->approval_status === 'approved')
+                            <div
+                                class="bg-green-50 dark:bg-green-900/10 p-4 rounded-lg border border-green-100 dark:border-green-900/20">
+                                <p class="text-sm font-medium text-green-600 dark:text-green-400">تمت الموافقة على الإعلان
+                                    من قبل الإدارة.</p>
+                            </div>
+                        @elseif($announcement->approval_status === 'pending')
+                            <div
+                                class="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-100 dark:border-yellow-900/20">
+                                <p class="text-sm font-medium text-yellow-600 dark:text-yellow-400">الإعلان قيد المراجعة من
+                                    قبل الإدارة.</p>
+                            </div>
+                        @endif
                     </div>
-                @elseif($announcement->approval_status === 'pending')
-                    <div class="bg-yellow-50 dark:bg-yellow-900/10 p-4 rounded-lg border border-yellow-100 dark:border-yellow-900/20">
-                        <p class="text-sm font-medium text-yellow-600 dark:text-yellow-400">الإعلان قيد المراجعة من قبل الإدارة.</p>
-                    </div>
-                @endif
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
 
 
@@ -413,11 +411,7 @@
                                                     <i data-lucide="eye"
                                                         class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
                                                 </a>
-                                                <button type="button" onclick="openUpdateStageModal('{{ $idea->id }}')"
-                                                    class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                                    <i data-lucide="refresh-cw"
-                                                        class="w-5 h-5 text-green-600 dark:text-green-400"></i>
-                                                </button>
+                     
                                             </div>
                                         </td>
                                     </tr>

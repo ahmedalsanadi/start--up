@@ -158,7 +158,7 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
     Route::prefix('/investor')->group(function () {
 
-     // Investor Home (Display ideas with search/filter capabilities)
+        // Investor Home (Display ideas with search/filter capabilities)
 
         Route::get('/', [InvestorHomeController::class, 'index'])->name('investor.home');
 
@@ -174,15 +174,19 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
         ]);
 
         Route::patch('/announcement/{announcement}/toggle-closed', [InvestorAnnouncementController::class, 'toggleClosed'])
-        ->name('investor.announcements.toggle-closed');
+            ->name('investor.announcements.toggle-closed');
 
         Route::patch('/idea/{idea}', [InvestorAnnouncementController::class, 'updateStatus'])->name('investor.ideas.update-stage');
 
-         // New route for showing idea details
-         Route::get('/ideas/{idea}', [InvestorIdeaController::class, 'show'])
-         ->name('investor.ideas.show');
+        // New route for showing idea details
+        Route::get('/ideas/{idea}', [InvestorIdeaController::class, 'show'])
+            ->name('investor.ideas.show');
 
-         Route::patch('/ideas/{idea}/update-stage', [InvestorIdeaController::class, 'updateStage'])->name('investor.ideas.updateStage');
+        // New route for rejecting an idea
+        Route::patch('/ideas/{idea}/reject', [InvestorIdeaController::class, 'rejectIdea'])
+            ->name('investor.ideas.reject-idea');
+        Route::patch('/ideas/{idea}/approve', [InvestorIdeaController::class, 'approveIdea'])
+            ->name('investor.ideas.approve-idea');
 
     });
 
