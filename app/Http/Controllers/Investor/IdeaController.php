@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Investor;
 use App\Models\Idea;
 use App\Http\Controllers\Controller;
 use App\Models\IdeaStage;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 
 class IdeaController extends Controller
 {
     public function show(Idea $idea)
     {
-        // Ensure the idea is related to an announcement owned by the authenticated investor
-        //ensure the idea has status pending or approved
+                //ensure the idea has status pending or approved
         if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['pending', 'approved'])) {
             abort(403);
         }
@@ -35,7 +35,7 @@ class IdeaController extends Controller
 
     public function rejectIdea(Request $request, Idea $idea)
     {
-        // Ensure the idea is related to an announcement owned by the authenticated investor
+
         // Ensure the idea has status pending or approved
         if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['pending', 'approved'])) {
             abort(403);
@@ -48,8 +48,17 @@ class IdeaController extends Controller
         ]);
 
 
-        // TODO Notify the entrepreneur that their idea has been rejected
-
+        // Notify the entrepreneur that their idea has been rejected
+        app(NotificationService::class)->notify($idea->entrepreneur, [
+            'type' => 'idea_rejected',
+            'title' => 'تم رفض الفكرة',
+            'message' => 'تم رفض فكرتك للإعلان: ' . $idea->announcement->description,
+            'action_type' => 'idea_rejected',
+            'action_id' => $idea->id,
+            'action_url' => route('entrepreneur.ideas.show', $idea->id),
+            'initiator_id' => auth()->id(),
+            'initiator_type' => 'investor',
+        ]);
 
 
 
@@ -60,7 +69,6 @@ class IdeaController extends Controller
 
     public function approveIdea(Request $request, Idea $idea)
     {
-
         // Ensure the idea has status pending or approved
         if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['pending', 'approved'])) {
             abort(403);
@@ -72,9 +80,38 @@ class IdeaController extends Controller
             Idea::where('announcement_id', $idea->announcement_id)
                 ->where('id', '!=', $idea->id)
                 ->update([
-                        'status' => 'rejected',
-                        'is_reusable' => true,
+                    'status' => 'rejected',
+                    'is_reusable' => true,
+                ]);
+
+            // Notify the entrepreneur that their idea has been rejected
+            foreach ($idea->announcement->ideas as $otherIdea) {
+                if ($otherIdea->id !== $idea->id) {
+                    app(NotificationService::class)->notify($otherIdea->entrepreneur, [
+                        'type' => 'idea_rejected',
+                        'title' => 'تم رفض الفكرة',
+                        'message' => 'تم رفض فكرتك للإعلان: ' . $idea->announcement->description,
+                        'action_type' => 'idea_rejected',
+                        'action_id' => $otherIdea->id,
+                        'action_url' => route('entrepreneur.ideas.show', $otherIdea->id),
+                        'initiator_id' => auth()->id(),
+                        'initiator_type' => 'investor',
                     ]);
+                }
+            }
+
+            //Notify the admin that an idea has been approved
+            app(NotificationService::class)->notifyAdmins([
+                'type' => 'idea_approved_final',
+                'title' => 'تمت الموافقة على فكرة نهائية',
+                'message' => 'تمت الموافقة على الفكرة: ' . $idea->name . ' للإعلان: ' . $idea->announcement->description,
+                'action_type' => 'idea_approved_final',
+                'action_id' => $idea->id,
+                'action_url' => route('admin.announcements.show', $idea->announcement), // Route for admin to view the idea
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'investor',
+            ]);
+
 
             // Approve the selected idea
             $idea->update([
@@ -82,11 +119,23 @@ class IdeaController extends Controller
                 'stage' => 'final_decision',
             ]);
 
+            // Notify the entrepreneur that their idea has been approved
+            app(NotificationService::class)->notify($idea->entrepreneur, [
+                'type' => 'idea_approved',
+                'title' => 'تمت الموافقة على الفكرة',
+                'message' => 'تمت الموافقة على فكرتك للإعلان: ' . $idea->announcement->description,
+                'action_type' => 'idea_approved',
+                'action_id' => $idea->id,
+                'action_url' => route('entrepreneur.ideas.show', $idea->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'investor',
+            ]);
+
             IdeaStage::create([
                 'idea_id' => $idea->id,
                 'stage' => $idea->stage,
                 'stage_status' => true,
-                'changed_at' => now()
+                'changed_at' => now(),
             ]);
 
             // Update the announcement
@@ -113,7 +162,19 @@ class IdeaController extends Controller
             'idea_id' => $idea->id,
             'stage' => $nextStage,
             'stage_status' => true,
-            'changed_at' => now()
+            'changed_at' => now(),
+        ]);
+
+        // Notify the entrepreneur that their idea has been moved to the next stage
+        app(NotificationService::class)->notify($idea->entrepreneur, [
+            'type' => 'idea_stage_updated',
+            'title' => 'تم نقل الفكرة إلى المرحلة التالية',
+            'message' => 'تم نقل فكرتك للإعلان: ' . $idea->announcement->description . ' إلى المرحلة: ' . __("ideas.stages.$nextStage"),
+            'action_type' => 'idea_stage_updated',
+            'action_id' => $idea->id,
+            'action_url' => route('entrepreneur.ideas.show', $idea->id),
+            'initiator_id' => auth()->id(),
+            'initiator_type' => 'investor',
         ]);
 
         return redirect()->route('investor.ideas.show', $idea)

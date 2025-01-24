@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Announcement;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -69,12 +70,40 @@ class AdminAnnouncementController extends Controller
             'rejection_reason' => 'nullable|string',
         ]);
 
+        // Update the announcement status
         $announcement->update([
             'approval_status' => $request->approval_status,
             'rejection_reason' => $request->rejection_reason,
         ]);
 
-        //redirect back with success message
+        // Notify the investor about the status change
+        if ($request->approval_status === 'approved') {
+            // Notify the investor that their announcement has been approved
+            app(NotificationService::class)->notify($announcement->investor, [
+                'type' => 'announcement_approved',
+                'title' => 'تمت الموافقة على الإعلان',
+                'message' => 'تمت الموافقة على إعلانك: ' . $announcement->description,
+                'action_type' => 'announcement_approved',
+                'action_id' => $announcement->id,
+                'action_url' => route('investor.announcements.show', $announcement->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
+        } elseif ($request->approval_status === 'rejected') {
+            // Notify the investor that their announcement has been rejected
+            app(NotificationService::class)->notify($announcement->investor, [
+                'type' => 'announcement_rejected',
+                'title' => 'تم رفض الإعلان',
+                'message' => 'تم رفض إعلانك: ' . $announcement->description . ($request->rejection_reason ? ' بسبب: ' . $request->rejection_reason : ''),
+                'action_type' => 'announcement_rejected',
+                'action_id' => $announcement->id,
+                'action_url' => route('investor.announcements.show', $announcement->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
+        }
+
+        // Redirect back with success message
         return back()->with('success', 'تم تحديث حالة الإعلان بنجاح.');
     }
 

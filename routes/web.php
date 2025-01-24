@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Investor\InvestorHomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationController;
 
 // use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\{
@@ -201,6 +202,10 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
     Route::get('/', function () {
         return view('entrepreneur.index');
     })->name('entrepreneur.home');
+
+    Route::get('/ideas/{idea}', function () {
+        return "adfasd";
+    })->name('entrepreneur.ideas.show');
 });
 
 
@@ -215,7 +220,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', function () {
         return view('notifications.index');
     })->name('notifications.index');
+
 });
 
 
 // Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->middleware('auth')->name('notifications.markAsRead');
+
+//routes/web.php
+Route::get('/notifications', [NotificationController::class, 'index'])
+    ->name('notifications.index')
+    ->middleware('auth');
+
+// Mark all notifications as read
+Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAllAsRead'])
+    ->name('notifications.mark-as-read');
+
+// Mark a single notification as read
+Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])
+    ->name('notifications.mark-as-read-single');
+
+    // Fetch unread notifications count
+Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
+->name('notifications.unread-count')
+->middleware('auth');
