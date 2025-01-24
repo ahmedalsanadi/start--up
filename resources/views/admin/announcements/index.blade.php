@@ -62,9 +62,10 @@
                     <select name="status"
                         class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
                         <option value="">جميع الحالات</option>
-                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>قيد المراجعة
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+                            معلق (قيد المراجعة)
                         </option>
-                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>معتمد</option>
+                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>مقبول</option>
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوض</option>
                     </select>
                 </div>
@@ -164,7 +165,10 @@
                         @forelse($announcements as $announcement)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center gap-3">
+                                        <!-- Investor Profile Image -->
+                                        <x-profile-img :src="$announcement->investor->profile_image ?? 'images/default-profile.png'" :alt="$announcement->investor->name" size="sm" />
+                                        <!-- Investor Name -->
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">
                                             {{ $announcement->investor->name }}
                                         </div>

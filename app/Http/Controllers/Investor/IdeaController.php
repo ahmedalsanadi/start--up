@@ -13,7 +13,7 @@ class IdeaController extends Controller
     public function show(Idea $idea)
     {
                 //ensure the idea has status pending or approved
-        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['pending', 'approved'])) {
+        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['in-progress', 'approved'])) {
             abort(403);
         }
         // dd($idea->status);
@@ -37,7 +37,7 @@ class IdeaController extends Controller
     {
 
         // Ensure the idea has status pending or approved
-        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['pending', 'approved'])) {
+        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['in-progress', 'approved'])) {
             abort(403);
         }
 
@@ -70,7 +70,7 @@ class IdeaController extends Controller
     public function approveIdea(Request $request, Idea $idea)
     {
         // Ensure the idea has status pending or approved
-        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['pending', 'approved'])) {
+        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['in-progress', 'approved'])) {
             abort(403);
         }
 
@@ -181,24 +181,4 @@ class IdeaController extends Controller
             ->with('success', 'تم نقل الفكرة إلى المرحلة التالية.');
     }
 
-    // public function updateStage(Request $request, Idea $idea)
-    // {
-    //     // Validate the request
-    //     $request->validate([
-    //         'stage' => 'required|in:new,initial_acceptance,under_review,expert_consultation,final_decision'
-    //     ]);
-
-    //     // Update the idea stage
-    //     $idea->update(['stage' => $request->stage]);
-
-    //     // Create new stage record
-    //     IdeaStage::create([
-    //         'idea_id' => $idea->id,
-    //         'stage' => $request->stage,
-    //         'stage_status' => true,
-    //         'changed_at' => now()
-    //     ]);
-
-    //     return redirect()->back()->with('success', 'تم تحديث مرحلة الفكرة بنجاح');
-    // }
 }

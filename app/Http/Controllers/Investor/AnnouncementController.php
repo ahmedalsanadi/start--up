@@ -25,7 +25,7 @@ class AnnouncementController extends Controller
             'ideas' => function ($query) {
                 $query->where('approval_status', 'approved')
                     ->whereDate('expiry_date', '>', now())
-                    ->whereIn('status', ['pending', 'approved']);
+                    ->whereIn('status', ['in-progress', 'approved']);
             }
         ])
             ->where('investor_id', $investor->id)
@@ -104,7 +104,7 @@ class AnnouncementController extends Controller
             'categories',
             'ideas' => function ($query) {
                 $query->where('approval_status', 'approved')
-                    ->whereIn('status', ['pending', 'approved'])
+                    ->whereIn('status', ['in-progress', 'approved'])
                     ->whereDate('expiry_date', '>', now());
             }
         ]);
@@ -113,7 +113,7 @@ class AnnouncementController extends Controller
         $stats = [
             'total_ideas' => $announcement->ideas()
                 ->where('approval_status', 'approved')
-                ->whereIn('status', ['pending', 'approved'])
+                ->whereIn('status', ['in-progress', 'approved'])
                 ->whereDate('expiry_date', '>', now())
                 ->count(),
         ];
@@ -205,23 +205,6 @@ class AnnouncementController extends Controller
 
         return redirect()->route('investor.announcements.index')
             ->with('success', 'تم حذف الإعلان بنجاح');
-    }
-
-    public function toggleClosed(Announcement $announcement)
-    {
-        // Ensure the authenticated investor owns this announcement
-        if ($announcement->investor_id !== auth()->id()) {
-            abort(403);
-        }
-
-        // Toggle the is_closed status
-        $announcement->update([
-            'is_closed' => !$announcement->is_closed,
-        ]);
-
-        // Redirect back with a success message
-        return redirect()->back()
-            ->with('success', $announcement->is_closed ? 'تم إغلاق الإعلان بنجاح' : 'تم فتح الإعلان بنجاح');
     }
 
 }

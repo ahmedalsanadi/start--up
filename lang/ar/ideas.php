@@ -2,9 +2,13 @@
 // lang/ar/ideas.php
 return [
     'status' => [
-        'pending' => 'قيد المراجعة',
-        'approved' => 'تمت الموافقة',
-        'rejected' => 'مرفوض',
+        'pending' => 'معلق', // Pending
+        'approved' => 'مقبول', // Approved
+        'rejected' => 'مرفوض', // Rejected
+        'in-progress' => 'جاري ', // In Progress
+        'completed' => 'مكتمل', // Completed
+        'deleted_by_entrepreneur' => 'محذوف', // Deleted
+        'expired' => 'منتهي', // Expired
     ],
     'stages' => [
         'new' => 'جديدة',

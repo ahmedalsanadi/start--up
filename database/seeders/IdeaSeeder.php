@@ -23,7 +23,7 @@ class IdeaSeeder extends Seeder
             )->create([
                 'announcement_id' => $announcement->id,
                 'approval_status' => 'approved',
-                'status' => 'pending',
+                'status' => 'in-progress',
                 'is_reusable' => false,
 
             ])->each(function ($idea) {

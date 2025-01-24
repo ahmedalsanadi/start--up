@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreignId('announcement_id')->nullable()->constrained('announcements')->onDelete('cascade'); // Linked announcement (for creative ideas)
             $table->enum('approval_status', ['pending', 'approved', 'rejected'])->default('pending'); // Approval status by admin
             $table->text('rejection_reason')->nullable(); // Reason for rejection
-            $table->enum('status', ['pending', 'approved', 'rejected', 'deleted_by_entrepreneur','expired'])->default('pending'); // Status of the idea
+            $table->enum('status', ['in-progress', 'approved', 'rejected', 'deleted_by_entrepreneur','expired'])->default('in-progress'); // Status of the idea
 
             $table->date('expiry_date')->nullable(); // Expiry date for creative ideas (1 month)
             $table->enum('stage', ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'])->default('new'); // Stage of the idea

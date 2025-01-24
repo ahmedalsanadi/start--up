@@ -55,11 +55,19 @@ class AdminAnnouncementController extends Controller
 
     public function show(Announcement $announcement)
     {
-        // The $announcement instance is already resolved by Laravel's route model binding
-        $announcement->load(['investor', 'categories']); // Eager load related data
 
-        // Pass the announcement to the view
+        // Fetch the announcement, including soft-deleted ones
+        $announcement = Announcement::withTrashed()
+            ->with([
+                'investor',
+                'categories',
+                'ideas' => function ($query) {
+                    $query->withTrashed(); // Include soft-deleted ideas
+                }
+            ])->findOrFail($announcement->id);
+
         return view('admin.announcements.show', compact('announcement'));
+
     }
 
 

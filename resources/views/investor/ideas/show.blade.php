@@ -80,7 +80,7 @@
                                                                         @endif
                                                                     </div>
 
-                                                                    @if($isCurrent)
+                                                                    @if($isCurrent && $idea->status !== 'approved')
                                                                         <div class="flex items-center gap-2 mt-1">
                                                                             <!-- Approve Button -->
 
@@ -150,7 +150,7 @@
 
                                 <!-- Status Badge -->
 
-                                @if($idea->status == 'pending')
+                                @if($idea->status == 'in-progress')
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
                                                                              bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
                                                                              border border-amber-200 dark:border-amber-800
@@ -521,3 +521,4 @@
 
 
 </x-layout>
+

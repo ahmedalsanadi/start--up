@@ -25,7 +25,7 @@ class Idea extends Model
         'announcement_id',
         'approval_status',
         'rejection_reason',
-        'status', // ['pending', 'approved', 'rejected', 'deleted_by_entrepreneur','expired']
+        'status', // ['in-progress', 'approved', 'rejected', 'deleted_by_entrepreneur','expired']
         'expiry_date',
         'stage',
         'is_reusable'

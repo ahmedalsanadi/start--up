@@ -11,7 +11,7 @@ use App\Http\Controllers\Admin\{
     CategoriesController,
     AdminAnnouncementController,
     ExportController,
-// IdeaController
+    IdeaController as AdminIdeaController
 };
 
 use App\Http\Controllers\Investor\{
@@ -20,6 +20,10 @@ use App\Http\Controllers\Investor\{
     IdeaController as InvestorIdeaController,
 };
 
+use App\Http\Controllers\Entrepreneur\{
+
+    IdeaController as EntrepreneurIdeaController
+};
 
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
@@ -114,11 +118,18 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
         ->name('admin.announcements.show'); // Show a single announcement
 
     Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])
-        ->name('admin.announcements.update-status'); // Update announcement status
+        ->name('admin.announcements.update-status'); // Update announcement approval status
 
     Route::get('/ideas', function () {
         return "Manage Ideas";
     })->name('admin.ideas.index');
+
+    Route::get('/ideas/{idea}', [AdminIdeaController::class, 'show'])->name('admin.ideas.show');
+
+    Route::patch('/ideas/{idea}', [AdminIdeaController::class, 'updateStatus'])
+        ->name('admin.ideas.update-status'); // Update idea approval status
+
+
 
 
     //excel export route
@@ -173,6 +184,7 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
             'update' => 'investor.announcements.update',
             'destroy' => 'investor.announcements.destroy',
         ]);
+
 
         Route::patch('/announcement/{announcement}/toggle-closed', [InvestorAnnouncementController::class, 'toggleClosed'])
             ->name('investor.announcements.toggle-closed');
@@ -239,7 +251,7 @@ Route::post('/notifications/mark-as-read', [NotificationController::class, 'mark
 Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])
     ->name('notifications.mark-as-read-single');
 
-    // Fetch unread notifications count
+// Fetch unread notifications count
 Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
-->name('notifications.unread-count')
-->middleware('auth');
+    ->name('notifications.unread-count')
+    ->middleware('auth');

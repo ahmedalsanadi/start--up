@@ -13,6 +13,37 @@ class IdeaController extends Controller
         return view('admin.ideas.index', compact('ideas'));
     }
 
+    public function show(Idea $idea)
+    {
+        // Ensure the idea is retrieved even if it's soft-deleted
+        $idea = Idea::withTrashed()->findOrFail($idea->id);
+
+        if ($idea->idea_type == 'creative' && $idea->announcement_id != null) {
+            // Eager load relationships for creative ideas with announcements
+            $idea->load([
+                'entrepreneur',
+                'stages',
+                'categories',
+                'announcement' => function ($query) {
+                    $query->withTrashed(); // Include soft-deleted announcements
+                },
+            ]);
+
+            return view('admin.ideas.show', compact('idea'));
+
+        } else {
+
+            // Eager load relationships for traditional ideas or creative ideas without announcements
+            $idea->load([
+                'entrepreneur',
+                'stages',
+                'categories',
+            ]);
+
+            return view('admin.ideas.show', compact('idea'));
+        }
+    }
+
     public function updateStatus(Request $request, Idea $idea)
     {
         $request->validate([
@@ -25,6 +56,9 @@ class IdeaController extends Controller
             'rejection_reason' => $request->rejection_reason,
         ]);
 
-        return redirect()->route('admin.ideas.index')->with('success', 'تم تحديث حالة الفكرة بنجاح.');
+            //redirect back with success message
+            return back()->with('success', 'تم تحديث حالة الفكرة بنجاح.');
     }
 }
+
+
