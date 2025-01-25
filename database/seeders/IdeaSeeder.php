@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Announcement;
 use App\Models\Idea;
-use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class IdeaSeeder extends Seeder
 {
@@ -17,20 +17,25 @@ class IdeaSeeder extends Seeder
         // Get all approved announcements
         $announcements = Announcement::where('approval_status', 'approved')->get();
 
-        // Create 5 ideas for each announcement
+        // Create 6 creative ideas for each announcement
         $announcements->each(function ($announcement) {
-            Idea::factory(6
-            )->create([
+            Idea::factory(6)->create([
                 'announcement_id' => $announcement->id,
                 'approval_status' => 'approved',
                 'status' => 'in-progress',
                 'is_reusable' => false,
-
-            ])->each(function ($idea) {
-                // Link each idea to 3-5 random categories
-                $categories = Category::inRandomOrder()->limit(rand(3, 5))->get();
-                $idea->categories()->attach($categories);
-            });
+                'idea_type' => 'creative',
+                'expiry_date' => Carbon::now()->addMonth(),
+            ]);
         });
+
+        // Create 6 traditional ideas
+        Idea::factory(20)->create([
+            'approval_status' => 'approved',
+            'status' => 'in-progress',
+            'is_reusable' => true,
+            'idea_type' => 'traditional',
+            'expiry_date' => Carbon::now()->addMonth(),
+        ]);
     }
 }

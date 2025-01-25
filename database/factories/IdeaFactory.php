@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Announcement;
 use App\Models\Idea;
 use App\Models\IdeaStage;
+use App\Models\Category; // Import the Category model
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
 
@@ -55,7 +56,7 @@ class IdeaFactory extends Factory
             'idea_type' => $this->faker->randomElement(['creative', 'traditional']),
             'feasibility_study' => $this->faker->optional()->word . '.pdf',
             'entrepreneur_id' => User::where('user_type', '3')->inRandomOrder()->first()->id,
-            'announcement_id' => Announcement::inRandomOrder()->first()->id,
+            'announcement_id' => null,
             'approval_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
             'rejection_reason' => $this->faker->optional()->sentence,
             'status' => 'in-progress',
@@ -85,21 +86,28 @@ class IdeaFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Idea $idea) {
-            // Define the stages in order
-            $stages = ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'];
+            // Only create IdeaStages if the idea_type is 'creative'
+            if ($idea->idea_type === 'creative') {
+                // Define the stages in order
+                $stages = ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'];
 
-            // Find the index of the current stage
-            $currentStageIndex = array_search($idea->stage, $stages);
+                // Find the index of the current stage
+                $currentStageIndex = array_search($idea->stage, $stages);
 
-            // Loop through all stages up to the current stage
-            for ($i = 0; $i <= $currentStageIndex; $i++) {
-                IdeaStage::create([
-                    'idea_id' => $idea->id,
-                    'stage' => $stages[$i],
-                    'stage_status' => true,
-                    'changed_at' => Carbon::now()->subDays(($currentStageIndex - $i) * 3), // Incremental dates
-                ]);
+                // Loop through all stages up to the current stage
+                for ($i = 0; $i <= $currentStageIndex; $i++) {
+                    IdeaStage::create([
+                        'idea_id' => $idea->id,
+                        'stage' => $stages[$i],
+                        'stage_status' => true,
+                        'changed_at' => Carbon::now()->subDays(($currentStageIndex - $i) * 3), // Incremental dates
+                    ]);
+                }
             }
+
+            // Link the idea to 3-5 random categories
+            $categories = Category::inRandomOrder()->limit(rand(3, 5))->get();
+            $idea->categories()->attach($categories);
         });
     }
 }

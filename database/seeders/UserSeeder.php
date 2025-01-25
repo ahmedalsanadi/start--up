@@ -50,15 +50,15 @@ class UserSeeder extends Seeder
         foreach ($users as $user) {
             $createdUser = User::factory()->create($user);
 
-            // If the user is an investor, create a commercial registration record
-            // if ($createdUser->user_type == 2) {
-            //     CommercialRegistration::factory()->create([
-            //         'user_id' => $createdUser->id,
-            //         'registration_number' => 'CR123456', // Example registration number
-            //         'status' => 'approved',
-            //         'reviewed_at' => now(),
-            //     ]);
-            // }
+          //  If the user is an investor, create a commercial registration record
+            if ($createdUser->user_type == 2) {
+                CommercialRegistration::factory()->create([
+                    'user_id' => $createdUser->id,
+                    'registration_number' => 'CR123456', // Example registration number
+                    'status' => 'approved',
+                    'reviewed_at' => now(),
+                ]);
+            }
         }
 
     }
