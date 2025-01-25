@@ -108,12 +108,10 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                         <tr>
+
                             <th
                                 class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                الصورة</th>
-                            <th
-                                class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                الاسم</th>
+                                المستخدم</th>
                             <th
                                 class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 البريد الإلكتروني</th>
@@ -134,13 +132,18 @@
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($users as $user)
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                    <a href="{{ route('admin.users.show', $user) }}" class="flex items-center gap-2">
+
                                     <x-profile-img :src="$user->profile_image ?? 'images/default-profile.png'"
-                                        :alt="$user->name" size="sm" />
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                                    {{ $user->name }}
-                                </td>
+                                    :alt="$user->name" size="sm" />
+
+                                    <div class=" text-sm text-gray-900 dark:text-white ">
+
+                                             {{ $user->name }}
+                                    </div>
+                                </a>
+                            </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                     {{ $user->email }}
                                 </td>
@@ -159,25 +162,23 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <x-badge :type="$user->is_active ? 'success' : 'danger'" :label="$user->is_active ? 'نشط' : 'غير نشط'" />
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-left text-sm font-medium">
-                                    <div class="flex items-center gap-3">
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+
                                         <!-- Toggle Active/Inactive -->
-                                        <form action="{{ route('admin.users.toggle-active', $user) }}" method="POST">
+                                    <form action="{{ route('admin.users.toggle-active', $user) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit"
-                                                class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300">
-                                                <i data-lucide="{{ $user->is_active ? 'x-circle' : 'check-circle' }}"
-                                                    class="w-5 h-5"></i>
+                                                class="{{ $user->is_active ? 'bg-red-600 hover:bg-red-500' : 'bg-green-500 hover:bg-green-600' }} text-white font-bold py-2 px-4 rounded-full flex items-center">
+                                                @if($user->is_active)
+
+                                                    <span>تعطيل</span> <!-- Inactivate in Arabic -->
+                                                @else
+                                               
+                                                    <span>تفعيل</span> <!-- Activate in Arabic -->
+                                                @endif
                                             </button>
                                         </form>
-
-                                        <!-- View Details -->
-                                        <a href="{{ route('admin.users.show', $user) }}"
-                                            class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
-                                            <i data-lucide="eye" class="w-5 h-5"></i>
-                                        </a>
-                                    </div>
                                 </td>
                             </tr>
                         @empty

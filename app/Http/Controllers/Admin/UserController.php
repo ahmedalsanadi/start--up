@@ -75,10 +75,14 @@ class UserController extends Controller
         return view('admin.users.show', compact('user', 'statistics'));
     }
 
-    public function toggleStatus(User $user)
+    public function toggleActive(User $user)
     {
-        $user->update(['is_active' => !$user->is_active]);
+        // Toggle the is_active status
+        $user->update([
+            'is_active' => !$user->is_active,
+        ]);
 
-        return back()->with('success', 'تحديث حالة المستخدم بنجاح');
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'تم تعديل حالة المستخدم بنجاح');
     }
 }
