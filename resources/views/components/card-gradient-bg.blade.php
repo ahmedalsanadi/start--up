@@ -1,6 +1,7 @@
 <!-- views/components/card-gradient-bg.blade.php -->
 @props([
     'withGradient' => true, // Default value for the prop
+    
 ])
 
 <div class="relative">

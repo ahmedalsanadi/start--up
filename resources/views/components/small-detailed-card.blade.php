@@ -14,7 +14,7 @@
         </div>
 
         <!-- Label and Value -->
-        <div class="flex flex-col justify-center">
+        <div class="flex flex-col justify-center gap-1">
             <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $label }}</span>
             <p class="text-gray-600 dark:text-gray-400">{{ $value }}</p>
         </div>

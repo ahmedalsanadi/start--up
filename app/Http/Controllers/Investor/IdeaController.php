@@ -12,25 +12,38 @@ class IdeaController extends Controller
 {
     public function show(Idea $idea)
     {
-                //ensure the idea has status pending or approved
-        if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['in-progress', 'approved'])) {
-            abort(403);
+        if ($idea->idea === 'creative') {
+            //ensure the idea has status pending or approved
+            if ($idea->announcement->investor_id !== auth()->id() || !in_array($idea->status, ['in-progress', 'approved'])) {
+                abort(403);
+            }
+            // dd($idea->status);
+
+            $stagesCount = 5; // Total number of stages
+            $completedStages = $idea->stages->where('stage_status', true)->count();
+            $progressPercentage = ($completedStages / $stagesCount) * 100;
+
+            // Load the idea with its relationships
+            $idea->load([
+                'categories',
+                'entrepreneur',
+                'announcement',
+                'stages',
+            ]);
+
+            return view('investor.ideas.show', compact('idea', 'progressPercentage'));
+
         }
-        // dd($idea->status);
+        else
+        {
+            $idea->load([
+                'categories',
+                'entrepreneur',
+            ]);
+            return view('investor.ideas.show', compact('idea'));
 
-        $stagesCount = 5; // Total number of stages
-        $completedStages = $idea->stages->where('stage_status', true)->count();
-        $progressPercentage = ($completedStages / $stagesCount) * 100;
+        }
 
-        // Load the idea with its relationships
-        $idea->load([
-            'categories',
-            'entrepreneur',
-            'announcement',
-            'stages',
-        ]);
-
-        return view('investor.ideas.show', compact('idea', 'progressPercentage'));
     }
 
     public function rejectIdea(Request $request, Idea $idea)
@@ -80,9 +93,9 @@ class IdeaController extends Controller
             Idea::where('announcement_id', $idea->announcement_id)
                 ->where('id', '!=', $idea->id)
                 ->update([
-                    'status' => 'rejected',
-                    'is_reusable' => true,
-                ]);
+                        'status' => 'rejected',
+                        'is_reusable' => true,
+                    ]);
 
             // Notify the entrepreneur that their idea has been rejected
             foreach ($idea->announcement->ideas as $otherIdea) {

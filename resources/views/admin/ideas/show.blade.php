@@ -48,17 +48,19 @@
 
                                 <!-- Status Badge -->
                                 @if($idea->status == 'in-progress')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                             bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
-                                                             border border-amber-200 dark:border-amber-800">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
+                                                                                             bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
+                                                                                             border border-amber-200 dark:border-amber-800">
                                         جاري
                                     </span>
                                 @endif
 
                                 @if($idea->status == 'approved')
-                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                             bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
-                                                             border border-green-200 dark:border-green-800">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
+                                                                                             bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
+                                                                                             border border-green-200 dark:border-green-800">
                                         تمت الموافقة
                                     </span>
                                 @endif
@@ -89,55 +91,13 @@
                             </div>
 
                             <!-- Key Details Grid -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                @foreach ([['icon' => 'map-pin', 'label' => 'الموقع', 'value' => $idea->location, 'iconColor' => 'text-blue-500 dark:text-blue-300'], ['icon' => 'dollar-sign', 'label' => 'الميزانية', 'value' => number_format($idea->budget, 2) . ' ريال', 'iconColor' => 'text-green-500 dark:text-green-300'], ['icon' => 'lightbulb', 'label' => 'نوع الفكرة', 'value' => $idea->idea_type === 'creative' ? 'إبداعية' : 'تقليدية', 'iconColor' => 'text-purple-500 dark:text-purple-300'],
-                                        ['icon' => 'calendar', 'label' => 'تاريخ الانتهاء', 'value' => $idea->expiry_date ? $idea->expiry_date->format('Y/m/d') : 'غير محدد', 'iconColor' => 'text-yellow-500 dark:text-yellow-300'],
-                                        ['icon' => 'alert-circle', 'label' => 'حالة الموافقة', 'value' => __("ideas.status.{$idea->approval_status}"), 'iconColor' => 'text-red-500 dark:text-red-300'],
-                                        ['icon' => 'trending-up', 'label' => 'المرحلة', 'value' => __("ideas.stages.{$idea->stage}"), 'iconColor' => 'text-gray-500 dark:text-gray-400'],
-                                    ] as $card)
-                                                                    <x-small-detailed-card :icon="$card['icon']" :label="$card['label']"
-                                                                        :value="$card['value']" :iconColor="$card['iconColor']" />
-                                @endforeach
-                            </div>
+                            <x-key-details-grid :idea="$idea" />
 
-                            <!-- Feasibility Study -->
-                            @if ($idea->feasibility_study)
-                                <div class="bg-white/50 dark:bg-gray-800/50 rounded-lg p-6">
-                                    <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">دراسة الجدوى</h2>
-                                    <div
-                                        class="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
-                                        <div class="flex items-center gap-3">
-                                            <div class="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-                                                <i data-lucide="file-text"
-                                                    class="w-6 h-6 text-blue-500 dark:text-blue-400"></i>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-900 dark:text-white">دراسة
-                                                    الجدوى.pdf</p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">PDF Document</p>
-                                            </div>
-                                        </div>
-                                        <a href="{{ filter_var($idea->feasibility_study, FILTER_VALIDATE_URL) ? $idea->feasibility_study : asset('storage/' . $idea->feasibility_study) }}"
-                                            target="_blank"
-                                            class="inline-flex items-center px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 ">
-                                            <i data-lucide="download" class="w-4 h-4 mr-2"></i>
-                                            تحميل
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
+                            <x-feasibility-study :feasibilityStudy="$idea->feasibility_study"
+                                title="دراسة الجدوى المالية" fileName="الجدوى_المالية.pdf" />
 
                             <!-- Categories Section -->
-                            <div class="bg-white/50 dark:bg-gray-800/50 rounded-lg p-6">
-                                <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">التصنيفات</h2>
-                                <div class="flex flex-wrap gap-2">
-                                    @foreach($idea->categories as $category)
-                                        <span class="px-3 py-1 bg-purple-900 text-purple-200 rounded-full text-sm">
-                                            {{ $category->name }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            </div>
+                            <x-categories-section :categories="$idea->categories" />
 
 
                         </div>
@@ -184,22 +144,29 @@
                     </div>
                 </div>
 
-
-
                 @if($idea->announcement)
                     <x-card-gradient-bg :withGradient="false">
-                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-right">
+                        <!-- Section Title -->
+                        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-right">
                             تفاصيل الإعلان المرتبط
                         </h2>
+
+                        <!-- Announcement Details -->
                         <div class="space-y-6">
                             <!-- Announcement Title -->
-                            <a href="{{ route('admin.announcements.show', $idea->announcement) }}">
+                            <a href="{{ route('admin.announcements.show', $idea->announcement) }}"
+                                class="group block p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300">
                                 <div class="flex items-center gap-4">
-                                    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-                                        <i data-lucide="megaphone" class="w-10 h-10 text-blue-500 dark:text-blue-400"></i>
+                                    <!-- Icon -->
+                                    <div
+                                        class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg flex-shrink-0 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/50 transition-colors duration-300">
+                                        <i data-lucide="megaphone" class="w-6 h-6 text-blue-500 dark:text-blue-400"></i>
                                     </div>
-                                    <div class="flex flex-col gap-2">
-                                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+
+                                    <!-- Details -->
+                                    <div class="flex flex-col gap-1">
+                                        <p
+                                            class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                                             الإعلان: {{ $idea->announcement->description }}
                                         </p>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -210,29 +177,28 @@
                             </a>
 
                             <!-- Investor Information -->
-                            <div>
-                                <a href="#">
-                                    <div class="flex items-center gap-4">
-                                        <!-- Profile Image -->
-                                        <x-profile-img :src="$idea->announcement->investor->profile_image"
-                                            alt="Investor Image" size="lg" />
+                            <a href="#"
+                                class="group block p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300">
+                                <div class="flex items-center gap-4">
+                                    <!-- Profile Image -->
+                                    <x-profile-img :src="$idea->announcement->investor->profile_image" alt="Investor Image"
+                                        size="md" />
 
-                                        <div class="flex flex-col gap-2">
-                                            <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                                المستثمر: {{ $idea->announcement->investor->name }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                البريد الإلكتروني: {{ $idea->announcement->investor->email }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                رقم الهاتف: {{ $idea->announcement->investor->phone_number }}
-                                            </p>
-                                        </div>
+                                    <!-- Details -->
+                                    <div class="flex flex-col gap-1">
+                                        <p
+                                            class="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                                            المستثمر: {{ $idea->announcement->investor->name }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            البريد الإلكتروني: {{ $idea->announcement->investor->email }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                                            رقم الهاتف: {{ $idea->announcement->investor->phone_number }}
+                                        </p>
                                     </div>
-
-                                </a>
-                            </div>
-
+                                </div>
+                            </a>
                         </div>
                     </x-card-gradient-bg>
 
@@ -267,8 +233,8 @@
                                                                     <!-- Stage Indicator -->
                                                                     <div
                                                                         class="absolute right-0 flex items-center justify-center h-8 w-8 rounded-full border-2
-                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
-                                                                                                                                                                    dark:border-opacity-50 z-10">
+                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
                                                                         @if($isCompleted)
                                                                             <i data-lucide="check" class="w-4 h-4 text-white"></i>
                                                                         @elseif($isCurrent)
@@ -282,7 +248,7 @@
                                                                     <div class="mr-12 flex-1">
                                                                         <div
                                                                             class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4
-                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
 
                                                                             <div class="flex items-center justify-between mb-2">
                                                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
