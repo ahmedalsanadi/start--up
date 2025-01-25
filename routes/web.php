@@ -96,8 +96,9 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
     Route::patch('/commercial-registrations/{registration}', [AdminCommericalRegistrationController::class, 'updateRegistrationStatus'])->name('admin.commercial-registrations.updateStatus');
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('admin.users.toggle-active');
 
-    Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 
     // Resource route for categories with name prefix
     Route::resource('categories', CategoriesController::class)->names([

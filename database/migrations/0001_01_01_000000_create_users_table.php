@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer(column: 'user_type')->default(3); // 1 = admin, 2 = investor, 3 = entrepreneur
             $table->string('phone_number', 20)->nullable();
-            $table->boolean('is_pending')->default(true);
-            $table->boolean('is_approved')->default(true);
+            $table->string('is_active')->default(0);
             $table->string('city')->nullable();
             $table->string('address')->nullable();
             $table->string('profile_image')->nullable();

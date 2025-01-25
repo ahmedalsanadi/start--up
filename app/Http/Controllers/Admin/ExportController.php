@@ -64,8 +64,33 @@ class ExportController extends Controller
 
     protected function getUsersQuery($request)
     {
-        $query = User::latest();
-        // Add filters as needed
+        $query = User::withCount([
+            'announcements' => function ($query) {
+                $query->where('user_type', 2); // Only count announcements for investors
+            },
+            'ideas' => function ($query) {
+                $query->where('user_type', 3); // Only count ideas for entrepreneurs
+            },
+        ])->latest();
+
+        // Apply filters
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone_number', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('user_type')) {
+            $query->where('user_type', $request->input('user_type'));
+        }
+
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->input('is_active'));
+        }
+
         return $query;
     }
 

@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller
 
 
         $user = User::create(array_merge($userAttributes, [
-            'is_approved' => $request->user_type !== '2', // Automatically approve non-investors
+            'is_active' => true
         ]));
 
         // dd($user->user_type);
