@@ -16,25 +16,18 @@
                     </div>
                 </div>
             </div>
-            <div class="flex gap-2">
-                <form action="{{ route('admin.commercial-registrations.updateStatus', $registration) }}" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <input type="hidden" name="status" value="approved">
-                    <button type="submit"
+            <div>
+                @if ($registration->status == 'approved')
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        مقبول
+                    </span>
+                @else
+                    <button onclick="openModal('{{ $registration->id }}')"
                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        تأكيد
+
+                        مراجعة
                     </button>
-                </form>
-                <form action="{{ route('admin.commercial-registrations.updateStatus', $registration) }}" method="POST">
-                    @csrf
-                    @method('PATCH')
-                    <input type="hidden" name="status" value="rejected">
-                    <button type="submit"
-                        class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                        رفض
-                    </button>
-                </form>
+                @endif
             </div>
         </div>
     </div>

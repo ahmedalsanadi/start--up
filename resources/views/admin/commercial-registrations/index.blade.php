@@ -183,67 +183,9 @@
         </div>
     </div>
 
-    <!-- Review Modal -->
-    <div id="reviewModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden overflow-y-auto h-full w-full">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <div class="mt-3">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                    تحديث حالة التسجيل
-                </h3>
-                <form id="updateForm" method="POST" class="mt-4">
-                    @csrf
-                    @method('PATCH')
-
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">الحالة</label>
-                        <select name="status" id="status" class="mt-1 block w-full rounded-md border-gray-300"
-                                onchange="toggleRejectionReason()">
-                            <option value="approved">قبول</option>
-                            <option value="rejected">رفض</option>
-                        </select>
-                    </div>
-
-                    <div id="rejectionReasonDiv" class="mb-4 hidden">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                            سبب الرفض
-                        </label>
-                        <textarea name="rejection_reason"
-                                  class="mt-1 block w-full rounded-md border-gray-300"
-                                  rows="3"></textarea>
-                    </div>
-
-                    <div class="flex justify-end gap-4">
-                        <button type="button" onclick="closeModal()"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
-                            إلغاء
-                        </button>
-                        <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
-                            تحديث
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
+<x-commericial-review-modal />
     @push('scripts')
-    <script>
-        function openModal(registrationId) {
-            document.getElementById('reviewModal').classList.remove('hidden');
-            document.getElementById('updateForm').action = `/admin/commercial-registrations/${registrationId}`;
-        }
 
-        function closeModal() {
-            document.getElementById('reviewModal').classList.add('hidden');
-        }
-
-        function toggleRejectionReason() {
-            const status = document.getElementById('status').value;
-            const rejectionDiv = document.getElementById('rejectionReasonDiv');
-            rejectionDiv.classList.toggle('hidden', status !== 'rejected');
-        }
-    </script>
 
 <script>
             function handleDateInputs() {
