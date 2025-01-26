@@ -1,29 +1,28 @@
 <?php
 
-namespace App\Http\Controllers\Investor;
+namespace App\Http\Controllers\Entrepreneur;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Idea;
+use App\Models\Announcement;
 use App\Models\Category;
 
-class InvestorHomeController extends Controller
+class EntrepreneurHomeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Idea::query()
-            ->where('idea_type', 'traditional')
-            ->where('approval_status', 'approved')
-            ->with(['categories', 'entrepreneur']);
+        $query = Announcement::query()
+            ->where('approval_status', 'approved') // Only show approved announcements
+            ->where('is_closed', false) // Only show open announcements
+            ->with(['categories', 'investor']);
 
         // Search functionality
         if ($request->has('search')) {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('name', 'like', "%{$searchTerm}%")
-                  ->orWhere('brief_description', 'like', "%{$searchTerm}%")
+                $q->where('description', 'like', "%{$searchTerm}%")
                   ->orWhere('location', 'like', "%{$searchTerm}%")
-                  ->orWhereHas('entrepreneur', function ($q) use ($searchTerm) {
+                  ->orWhereHas('investor', function ($q) use ($searchTerm) {
                       $q->where('name', 'like', "%{$searchTerm}%");
                   });
             });
@@ -41,7 +40,7 @@ class InvestorHomeController extends Controller
             }
         }
 
-        $ideas = $query->latest()->paginate(10)->withQueryString();
+        $announcements = $query->latest()->paginate(10)->withQueryString();
 
         // Get all parent categories with their children for the filter
         $categories = Category::with('children')->whereNull('parent_id')->get();
@@ -49,6 +48,6 @@ class InvestorHomeController extends Controller
         // Get selected categories for maintaining state
         $selectedCategories = $request->has('categories') ? explode(',', $request->categories) : [];
 
-        return view('investor.home', compact('ideas', 'categories', 'selectedCategories'));
+        return view('entrepreneur.home', compact('announcements', 'categories', 'selectedCategories'));
     }
 }

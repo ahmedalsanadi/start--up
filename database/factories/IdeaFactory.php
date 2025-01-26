@@ -106,7 +106,7 @@ class IdeaFactory extends Factory
             }
 
             // Link the idea to 3-5 random categories
-            $categories = Category::inRandomOrder()->limit(rand(3, 5))->get();
+            $categories = Category::whereNotNull('parent_id')->inRandomOrder()->limit(rand(3, 5))->get();
             $idea->categories()->attach($categories);
         });
     }
