@@ -61,6 +61,13 @@
             } elseif ($user->isEntrepreneur()) {
                 return [
                     ['route' => 'entrepreneur.home', 'icon' => 'layout-dashboard', 'label' => 'الصفحة الرئيسية'],
+                    [
+                        'route' => 'entrepreneur.ideas.index',
+                        'icon' => 'lightbulb',
+                        'label' => '
+                             الأفكار'
+                    ],
+                    ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
                 ];
             }
 
@@ -95,7 +102,7 @@
 
     <!-- Delete Modal -->
     <x-delete-modal />
-    
+
     @stack('scripts')
 
     <!-- Include Lucide Icons Script -->

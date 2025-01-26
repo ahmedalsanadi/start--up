@@ -223,7 +223,7 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
 
     ]);
 
-    Route::resource('/ideas', EntrepreneurIdeaController::class)->names([
+    Route::resource('ideas', EntrepreneurIdeaController::class)->names([
 
         'index' => 'entrepreneur.ideas.index',
         'create' => 'entrepreneur.ideas.create',
@@ -236,14 +236,6 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
 
     ]);
 
-    // Custom route for creating an idea with announcement_id
-Route::get('/ideas/create/{announcement}', [EntrepreneurIdeaController::class, 'create'])
-->name('entrepreneur.ideas.create.with_announcement');
-
-
-    Route::get('/ideas/{idea}', function () {
-        return "adfasd";
-    })->name('entrepreneur.ideas.show');
 });
 
 
