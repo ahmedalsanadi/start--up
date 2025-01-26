@@ -22,7 +22,8 @@ use App\Http\Controllers\Investor\{
 
 use App\Http\Controllers\Entrepreneur\{
 
-    IdeaController as EntrepreneurIdeaController
+    IdeaController as EntrepreneurIdeaController,
+    EntrepreneurHomeController
 };
 
 use App\Http\Controllers\RegisteredUserController;
@@ -212,9 +213,33 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
 // Entrepreneur Routes
 Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->group(function () {
-    Route::get('/', function () {
-        return view('entrepreneur.index');
-    })->name('entrepreneur.home');
+
+    Route::get('/', [EntrepreneurHomeController::class, 'index'])->name('entrepreneur.home');
+
+
+
+    Route::resource('announcement', EntrepreneurIdeaController::class)->names([
+        'show' => 'entrepreneur.announcement.show',
+
+    ]);
+
+    Route::resource('/ideas', EntrepreneurIdeaController::class)->names([
+
+        'index' => 'entrepreneur.ideas.index',
+        'create' => 'entrepreneur.ideas.create',
+        'store' => 'entrepreneur.ideas.store',
+        'show' => 'entrepreneur.ideas.show',
+        'edit' => 'entrepreneur.ideas.edit',
+        'update' => 'entrepreneur.ideas.update',
+        'destroy' => 'entrepreneur.ideas.destroy',
+
+
+    ]);
+
+    // Custom route for creating an idea with announcement_id
+Route::get('/ideas/create/{announcement}', [EntrepreneurIdeaController::class, 'create'])
+->name('entrepreneur.ideas.create.with_announcement');
+
 
     Route::get('/ideas/{idea}', function () {
         return "adfasd";
@@ -256,3 +281,7 @@ Route::post('/notifications/{notification}/mark-as-read', [NotificationControlle
 Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
     ->name('notifications.unread-count')
     ->middleware('auth');
+
+
+
+
