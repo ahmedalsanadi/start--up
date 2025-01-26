@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Announcement;
 use App\Models\User;
 use App\Models\Idea;
+use App\Models\CommercialRegistration;
 
 class ExportController extends Controller
 {
@@ -34,6 +35,8 @@ class ExportController extends Controller
                 return $this->getUsersQuery($request)->get();
             case 'idea':
                 return $this->getIdeasQuery($request)->get();
+            case 'commercial-registration':
+                    return $this->getCommercialRegistrationsQuery($request)->get();
             default:
                 abort(404);
         }
@@ -94,6 +97,37 @@ class ExportController extends Controller
         return $query;
     }
 
+    protected function getCommercialRegistrationsQuery($request)
+    {
+        $query = CommercialRegistration::with(['user', 'reviewedBy' => function ($query) {
+            $query->withDefault([
+                'name' => 'لم تتم المراجعة بعد',
+            ]);
+        }])->latest();
+
+        // Apply filters
+        if ($request->filled('search')) {
+            $query->where('registration_number', 'like', "%{$request->search}%")
+                  ->orWhereHas('user', function ($q) use ($request) {
+                      $q->where('name', 'like', "%{$request->search}%")
+                        ->orWhere('email', 'like', "%{$request->search}%");
+                  });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        return $query;
+    }
     protected function getIdeasQuery($request)
     {
         $query = Idea::latest();

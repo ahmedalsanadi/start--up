@@ -22,13 +22,26 @@ class CommercialRegistrationFactory extends Factory
      */
     public function definition()
     {
+        // Randomly assign a status
+        $status = $this->faker->randomElement(['pending', 'approved', 'rejected']);
+
+        // If status is pending, reviewed_by and reviewed_at should be null
+        if ($status === 'pending') {
+            $reviewedBy = null;
+            $reviewedAt = null;
+        } else {
+            // For approved or rejected, assign a reviewer and a review date
+            $reviewedBy = User::where('user_type', 1)->inRandomOrder()->first()->id;
+            $reviewedAt = $this->faker->dateTimeBetween('-1 year', 'now');
+        }
+
         return [
             'user_id' => User::where('user_type', 2)->inRandomOrder()->first()->id,
             'registration_number' => $this->faker->unique()->numerify('CR#####'), // Example: CR12345
-            'status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
-            'rejection_reason' => null,
-            'reviewed_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'reviewed_by' => User::where('user_type', 1)->first()->id,
+            'status' => $status,
+            'rejection_reason' => $status === 'rejected' ? $this->faker->sentence() : null, // Only add rejection reason for rejected status
+            'reviewed_at' => $reviewedAt,
+            'reviewed_by' => $reviewedBy,
         ];
     }
 
@@ -44,6 +57,7 @@ class CommercialRegistrationFactory extends Factory
                 'status' => 'approved',
                 'rejection_reason' => null, // No rejection reason for approved registrations
                 'reviewed_at' => now(), // Set reviewed_at to the current timestamp
+                'reviewed_by' => User::where('user_type', 1)->inRandomOrder()->first()->id, // Assign a reviewer
             ];
         });
     }
@@ -60,6 +74,7 @@ class CommercialRegistrationFactory extends Factory
                 'status' => 'rejected',
                 'rejection_reason' => $this->faker->sentence(), // Add a rejection reason
                 'reviewed_at' => now(), // Set reviewed_at to the current timestamp
+                'reviewed_by' => User::where('user_type', 1)->inRandomOrder()->first()->id, // Assign a reviewer
             ];
         });
     }

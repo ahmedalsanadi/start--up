@@ -22,11 +22,40 @@ class AdminCommericalRegistrationController extends Controller
         $this->notificationService = $notificationService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        // Start the query
         $registrations = CommercialRegistration::with('user')
-            ->latest()
-            ->paginate(10);
+            ->latest();
+
+        // Apply status filter
+        if ($request->filled('status')) {
+            $registrations->where('status', $request->status);
+        }
+
+        // Apply search filter by registration number or user name or email
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $registrations->where(function ($query) use ($search) {
+                $query->where('registration_number', 'like', "%{$search}%")
+                      ->orWhereHas('user', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                      });
+            });
+        }
+
+        // Apply date range filter
+        if ($request->filled('date_from')) {
+            $registrations->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $registrations->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Paginate the results
+        $registrations = $registrations->paginate(10);
 
         return view('admin.commercial-registrations.index', compact('registrations'));
     }
@@ -52,8 +81,8 @@ class AdminCommericalRegistrationController extends Controller
         ]);
 
 
-        // $registration->user->notify(new RegistrationStatusUpdated($registration));
-// Notify investor registration owner
+
+    // Notify investor registration owner
         $this->notificationService->notify($registration->user, [
             'type' => 'registration_status_update',
             'title' => 'تم التحقق من السجل التجاري',
@@ -62,7 +91,6 @@ class AdminCommericalRegistrationController extends Controller
             'action_id' => $registration->id,
             'initiator_id' => auth()->id(),
             'initiator_type' => 'admin',
-
             'additional_data' => [
                 'status' => $validated['status'],
                 'rejection_reason' => $validated['rejection_reason'] ?? null
