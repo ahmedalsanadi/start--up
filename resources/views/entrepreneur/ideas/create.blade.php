@@ -1,4 +1,9 @@
 <x-layout title="إنشاء فكرة جديدة">
+    @php
+        $ideaType = isset($announcement_id) ? 'creative' : 'traditional';
+        $formTitle = isset($announcement_id) ? 'فكرة مبتكرة' : 'فكرة تقليدية';
+        $announcementDescription = isset($announcement_id) ? $announcement->description : null;
+    @endphp
 
     <div class="flex items-center justify-center pt-4 pb-1">
         <div
@@ -6,11 +11,31 @@
             <!-- Form Header -->
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white">
-                    إنشاء فكرة جديدة
+                    انشاء {{ $formTitle }}
                 </h2>
                 <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
-                    قم بملء البيانات التالية لإنشاء فكرة جديدة
+                    قم بملء البيانات التالية لإنشاء ({{ $formTitle }}) جديدة
                 </p>
+
+                <!-- Notice for Creative Ideas -->
+                @if ($ideaType === 'creative')
+                    <div
+                        class="mt-4 p-4 bg-purple-50 dark:bg-purple-900 rounded-lg border border-purple-200 dark:border-purple-700">
+                        <p class="text-purple-800 dark:text-purple-200">
+                            <span class="font-semibold">ملاحظة:</span> هذه الفكرة مرتبطة بالإعلان التالي:
+                            <span class="font-semibold">{{ $announcementDescription }}</span>.
+                            سيتم تطبيق مراحل التقييم والموافقة الخاصة بالأفكار المبتكرة.
+                        </p>
+                    </div>
+                @else
+                    <div
+                        class="mt-4 p-4 bg-blue-50 dark:bg-blue-900 rounded-lg border border-blue-200 dark:border-blue-700">
+                        <p class="text-blue-800 dark:text-blue-200">
+                            <span class="font-semibold">ملاحظة:</span> هذه فكرة تقليدية ولا ترتبط بأي إعلان. سيتم تقييمها
+                            بشكل مستقل.
+                        </p>
+                    </div>
+                @endif
             </div>
 
             <!-- Form -->
@@ -18,11 +43,17 @@
                 enctype="multipart/form-data">
                 @csrf
 
-             
                 <!-- Hidden Announcement ID (if provided) -->
-                @if(isset($announcement_id))
+                @if (isset($announcement_id))
                     <input type="hidden" name="announcement_id" value="{{ $announcement_id }}">
                 @endif
+
+                <!-- Hidden Idea Type -->
+                <input type="hidden" id="idea_type" name="idea_type" value="{{ $ideaType }}" />
+
+                @error('idea_type')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
 
                 <!-- Idea Name -->
                 <div>
@@ -61,90 +92,51 @@
                     @enderror
                 </div>
 
-                <!-- Budget -->
-                <div>
-                    <label for="budget" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        الميزانية (بالريال)
-                    </label>
-                    <input type="number" id="budget" name="budget" class="form-input"
-                        placeholder="أدخل الميزانية المطلوبة" required>
-                    @error('budget')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                </div>
 
-                <!-- Location -->
-                <div>
-                    <label for="location" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        الموقع
-                    </label>
-                    <input type="text" id="location" name="location" class="form-input" placeholder="أدخل موقع الفكرة"
-                        required>
-                    @error('location')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Idea Type -->
-                <div>
-                    <label for="idea_type" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        نوع الفكرة
-                    </label>
-                    @if (isset($announcement_id))
-                        <input type="text" class="form-input" name="idea_type" value="creative" disabled />
-                    @else
-                        <input type="text" id="idea_type" name="idea_type" value="traditional" class="form-input"
-                            disabled />
-                    @endif
-                    @error('idea_type')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <!-- Categories Section -->
-                <div class="mt-6">
+                                <!-- Categories Section -->
+                                <div class="mt-6">
                     <label for="categories" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         التصنيفات
                     </label>
 
                     <div x-data="{
-                        search: '',
-                        selectedCategories: [],
-                        showDropdown: false,
-                        categories: {{ $categories->toJson() }},
+        search: '',
+        selectedCategories: [],
+        showDropdown: false,
+        categories: {{ $categories->toJson() }},
 
-                        get filteredCategories() {
-                            if (this.selectedCategories.length >= 5) {
-                                return []; // Hide all categories when the limit is reached
-                            }
+        get filteredCategories() {
+            if (this.selectedCategories.length >= 5) {
+                return []; // Hide all categories when the limit is reached
+            }
 
-                            if (this.search === '') {
-                                // Show categories not selected, limit to 5
-                                return this.categories
-                                    .filter(cat => !this.selectedCategories.find(sc => sc.id === cat.id))
-                                    .slice(0, 5);
-                            } else {
-                                // Filter categories based on search input
-                                const filtered = this.categories.filter(cat =>
-                                    cat.name.toLowerCase().includes(this.search.toLowerCase()) &&
-                                    !this.selectedCategories.find(sc => sc.id === cat.id)
-                                );
-                                return filtered.length > 0 ? filtered : null; // Return null if no matches
-                            }
-                        },
+            if (this.search === '') {
+                // Show categories not selected, limit to 5
+                return this.categories
+                    .filter(cat => !this.selectedCategories.find(sc => sc.id === cat.id))
+                    .slice(0, 5);
+            } else {
+                // Filter categories based on search input
+                const filtered = this.categories.filter(cat =>
+                    cat.name.toLowerCase().includes(this.search.toLowerCase()) &&
+                    !this.selectedCategories.find(sc => sc.id === cat.id)
+                );
+                return filtered.length > 0 ? filtered : null; // Return null if no matches
+            }
+        },
 
-                        addCategory(category) {
-                            if (this.selectedCategories.length < 5) {
-                                this.selectedCategories.push(category);
-                                this.showDropdown = false;
-                                this.search = '';
-                            }
-                        },
+        addCategory(category) {
+            if (this.selectedCategories.length < 5) {
+                this.selectedCategories.push(category);
+                this.showDropdown = false;
+                this.search = '';
+            }
+        },
 
-                        removeCategory(category) {
-                            this.selectedCategories = this.selectedCategories.filter(c => c.id !== category.id);
-                        }
-                    }">
+        removeCategory(category) {
+            this.selectedCategories = this.selectedCategories.filter(c => c.id !== category.id);
+        }
+    }">
                         <!-- Search Input -->
                         <div class="relative mb-4">
                             <input type="text" x-model="search" @focus="showDropdown = true"
@@ -219,29 +211,61 @@
                     </div>
                 </div>
 
-                <!-- Feasibility Study (PDF) -->
-                <div>
-                    <label for="feasibility_study"
-                        class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        دراسة الجدوى (PDF)
-                    </label>
-                    <input type="file" id="feasibility_study" name="feasibility_study" class="form-input"
-                        accept="application/pdf">
-                    @error('feasibility_study')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
+
+                <!-- Grid Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Location  -->
+                    <div>
+                        <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            الموقع
+                        </label>
+                        <input type="text" id="location" name="location" value="{{ old('location') }}"
+                            class="form-input" placeholder="المدينة، الدولة">
+                        @error('location')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Budget  -->
+                    <div>
+                        <label for="budget" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            الميزانية (بالريال)
+                        </label>
+                        <input type="number" id="budget" name="budget" value="{{ old('budget') }}" class="form-input"
+                            placeholder="أدخل الميزانية المتاحة">
+                        @error('budget')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Feasibility Study (PDF) -->
+                    <div>
+                        <label for="feasibility_study"
+                            class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            دراسة الجدوى (PDF)
+                        </label>
+                        <input type="file" id="feasibility_study" name="feasibility_study" class="form-input-file "
+                            accept="application/pdf">
+                        @error('feasibility_study')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Image -->
+                    <div>
+                        <label for="image" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            صورة الفكرة
+                        </label>
+                        <input type="file" id="image" name="image" class="form-input-file" accept="image/*">
+                        @error('image')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
-                <!-- Image -->
-                <div>
-                    <label for="image" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        صورة الفكرة
-                    </label>
-                    <input type="file" id="image" name="image" class="form-input" accept="image/*">
-                    @error('image')
-                        <p class="form-error">{{ $message }}</p>
-                    @enderror
-                </div>
+
+
+
 
                 <!-- Submit Button -->
                 <div class="mt-8">
