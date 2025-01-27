@@ -13,14 +13,94 @@
 
         <!-- Stats Cards -->
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <x-stat-card icon="megaphone" title="إجمالي الإعلانات" :value="$total_announcements" color="blue" />
-            <x-stat-card icon="clock" title="إعلانات قيد المراجعة" :value="$total_pending_announcements"
-                color="yellow" />
-            <x-stat-card icon="check-circle" title="الإعلانات النشطة" :value="$total_active_announcements"
-                color="green" />
-            <x-stat-card icon="x-circle" title="الإعلانات المرفوضة" :value="$total_rejected_announcements"
-                color="blue" />
+    <!-- إجمالي الإعلانات -->
+    <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+        <div class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col gap-1 p-4">
+                <p class="text-gray-950 dark:text-blue-200 text-md font-medium truncate">إجمالي الإعلانات</p>
+                <div class="flex items-center justify-between px-4">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-950 dark:text-blue-200">{{ $total_announcements }}</h3>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30"></div>
+                        <div class="relative bg-gradient-to-br from-white to-blue-200 dark:from-blue-900 dark:to-gray-800 p-3 rounded-full border border-blue-300 dark:border-blue-700 shadow-inner">
+                            <i data-lucide="megaphone" class="h-6 w-6 text-blue-500 dark:text-blue-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800"></div>
         </div>
+    </div>
+
+    <!-- إعلانات قيد المراجعة -->
+    <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+        <div class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col gap-1 p-4">
+                <p class="text-gray-950 dark:text-yellow-200 text-md font-medium truncate">إعلانات قيد المراجعة</p>
+                <div class="flex items-center justify-between px-4">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-950 dark:text-yellow-200">{{ $total_pending_announcements }}</h3>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30"></div>
+                        <div class="relative bg-gradient-to-br from-white to-yellow-200 dark:from-yellow-900 dark:to-gray-800 p-3 rounded-full border border-yellow-300 dark:border-yellow-700 shadow-inner">
+                            <i data-lucide="clock" class="h-6 w-6 text-yellow-500 dark:text-yellow-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800"></div>
+        </div>
+    </div>
+
+    <!-- الإعلانات النشطة -->
+    <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+        <div class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col gap-1 p-4">
+                <p class="text-gray-950 dark:text-green-200 text-md font-medium truncate">الإعلانات النشطة</p>
+                <div class="flex items-center justify-between px-4">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-950 dark:text-green-200">{{ $total_active_announcements }}</h3>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30"></div>
+                        <div class="relative bg-gradient-to-br from-white to-green-200 dark:from-green-900 dark:to-gray-800 p-3 rounded-full border border-green-300 dark:border-green-700 shadow-inner">
+                            <i data-lucide="check-circle" class="h-6 w-6 text-green-500 dark:text-green-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800"></div>
+        </div>
+    </div>
+
+    <!-- الإعلانات المرفوضة -->
+    <div class="relative group">
+        <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
+        <div class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="flex flex-col gap-1 p-4">
+                <p class="text-gray-950 dark:text-blue-200 text-md font-medium truncate">الإعلانات المرفوضة</p>
+                <div class="flex items-center justify-between px-4">
+                    <div>
+                        <h3 class="text-3xl font-bold text-gray-950 dark:text-blue-200">{{ $total_rejected_announcements }}</h3>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30"></div>
+                        <div class="relative bg-gradient-to-br from-white to-blue-200 dark:from-blue-900 dark:to-gray-800 p-3 rounded-full border border-blue-300 dark:border-blue-700 shadow-inner">
+                            <i data-lucide="x-circle" class="h-6 w-6 text-blue-500 dark:text-blue-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800"></div>
+        </div>
+    </div>
+</div>
 
         <!-- Filters Section -->
         <div

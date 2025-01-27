@@ -13,13 +13,132 @@
 
         <!-- Stats Cards -->
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <x-stat-card icon="users" title="إجمالي المستخدمين النشطين" :value="$statistics['totalActiveUsers']"
-                color="green" />
-            <x-stat-card icon="users" title="إجمالي المستخدمين غير النشطين" :value="$statistics['totalInactiveUsers']"
-                color="red" />
-            <x-stat-card icon="users" title="إجمالي المستثمرين" :value="$statistics['totalInvestors']" color="blue" />
-            <x-stat-card icon="users" title="إجمالي رواد الأعمال" :value="$statistics['totalEntrepreneurs']"
-                color="yellow" />
+            <!-- إجمالي المستخدمين النشطين -->
+            <div class="relative group">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300">
+                </div>
+                <div
+                    class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col gap-1 p-4">
+                        <p class="text-gray-950 dark:text-green-200 text-md font-medium truncate">إجمالي المستخدمين
+                            النشطين</p>
+                        <div class="flex items-center justify-between px-4">
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-950 dark:text-green-200">
+                                    {{ $statistics['totalActiveUsers'] }}</h3>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30">
+                                </div>
+                                <div
+                                    class="relative bg-gradient-to-br from-white to-green-200 dark:from-green-900 dark:to-gray-800 p-3 rounded-full border border-green-300 dark:border-green-700 shadow-inner">
+                                    <i data-lucide="users" class="h-6 w-6 text-green-500 dark:text-green-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800">
+                    </div>
+                </div>
+            </div>
+
+            <!-- إجمالي المستخدمين غير النشطين -->
+            <div class="relative group">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300">
+                </div>
+                <div
+                    class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col gap-1 p-4">
+                        <p class="text-gray-950 dark:text-red-200 text-md font-medium truncate">إجمالي المستخدمين غير
+                            النشطين</p>
+                        <div class="flex items-center justify-between px-4">
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-950 dark:text-red-200">
+                                    {{ $statistics['totalInactiveUsers'] }}</h3>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30">
+                                </div>
+                                <div
+                                    class="relative bg-gradient-to-br from-white to-red-200 dark:from-red-900 dark:to-gray-800 p-3 rounded-full border border-red-300 dark:border-red-700 shadow-inner">
+                                    <i data-lucide="users" class="h-6 w-6 text-red-500 dark:text-red-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800">
+                    </div>
+                </div>
+            </div>
+
+            <!-- إجمالي المستثمرين -->
+            <div class="relative group">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300">
+                </div>
+                <div
+                    class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col gap-1 p-4">
+                        <p class="text-gray-950 dark:text-blue-200 text-md font-medium truncate">إجمالي المستثمرين</p>
+                        <div class="flex items-center justify-between px-4">
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-950 dark:text-blue-200">
+                                    {{ $statistics['totalInvestors'] }}</h3>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30">
+                                </div>
+                                <div
+                                    class="relative bg-gradient-to-br from-white to-blue-200 dark:from-blue-900 dark:to-gray-800 p-3 rounded-full border border-blue-300 dark:border-blue-700 shadow-inner">
+                                    <i data-lucide="users" class="h-6 w-6 text-blue-500 dark:text-blue-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800">
+                    </div>
+                </div>
+            </div>
+
+            <!-- إجمالي رواد الأعمال -->
+            <div class="relative group">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300">
+                </div>
+                <div
+                    class="relative bg-gray-100 dark:bg-gray-800/95 overflow-hidden rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col gap-1 p-4">
+                        <p class="text-gray-950 dark:text-yellow-200 text-md font-medium truncate">إجمالي رواد الأعمال
+                        </p>
+                        <div class="flex items-center justify-between px-4">
+                            <div>
+                                <h3 class="text-3xl font-bold text-gray-950 dark:text-yellow-200">
+                                    {{ $statistics['totalEntrepreneurs'] }}</h3>
+                            </div>
+                            <div class="relative">
+                                <div
+                                    class="absolute -inset-1 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full blur-sm opacity-30">
+                                </div>
+                                <div
+                                    class="relative bg-gradient-to-br from-white to-yellow-200 dark:from-yellow-900 dark:to-gray-800 p-3 rounded-full border border-yellow-300 dark:border-yellow-700 shadow-inner">
+                                    <i data-lucide="users" class="h-6 w-6 text-yellow-500 dark:text-yellow-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gray-500 to-gray-300 dark:from-purple-600 dark:to-gray-800">
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -132,18 +251,18 @@
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         @forelse($users as $user)
                             <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                    <a href="{{ route('admin.users.show', $user) }}" class="flex items-center gap-2">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <a href="{{ route('admin.users.show', $user) }}" class="flex items-center gap-2">
 
-                                    <x-profile-img :src="$user->profile_image ?? 'images/default-profile.png'"
-                                    :alt="$user->name" size="sm" />
+                                        <x-profile-img :src="$user->profile_image ?? 'images/default-profile.png'"
+                                            :alt="$user->name" size="sm" />
 
-                                    <div class=" text-sm text-gray-900 dark:text-white ">
+                                        <div class=" text-sm text-gray-900 dark:text-white ">
 
-                                             {{ $user->name }}
-                                    </div>
-                                </a>
-                            </td>
+                                            {{ $user->name }}
+                                        </div>
+                                    </a>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                                     {{ $user->email }}
                                 </td>
@@ -164,21 +283,21 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
 
-                                        <!-- Toggle Active/Inactive -->
+                                    <!-- Toggle Active/Inactive -->
                                     <form action="{{ route('admin.users.toggle-active', $user) }}" method="POST">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit"
-                                                class="{{ $user->is_active ? 'bg-red-600 hover:bg-red-500' : 'bg-green-500 hover:bg-green-600' }} text-white font-bold py-2 px-4 rounded-full flex items-center">
-                                                @if($user->is_active)
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="{{ $user->is_active ? 'bg-red-600 hover:bg-red-500' : 'bg-green-500 hover:bg-green-600' }} text-white font-bold py-2 px-4 rounded-full flex items-center">
+                                            @if($user->is_active)
 
-                                                    <span>تعطيل</span> <!-- Inactivate in Arabic -->
-                                                @else
-                                               
-                                                    <span>تفعيل</span> <!-- Activate in Arabic -->
-                                                @endif
-                                            </button>
-                                        </form>
+                                                <span>تعطيل</span> <!-- Inactivate in Arabic -->
+                                            @else
+
+                                                <span>تفعيل</span> <!-- Activate in Arabic -->
+                                            @endif
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty
