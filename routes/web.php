@@ -122,14 +122,14 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
     Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])
         ->name('admin.announcements.update-status'); // Update announcement approval status
 
-    Route::get('/ideas', function () {
-        return "Manage Ideas";
-    })->name('admin.ideas.index');
+    Route::get('/ideas', [AdminIdeaController::class, 'index'])->name('admin.ideas.index');
 
     Route::get('/ideas/{idea}', [AdminIdeaController::class, 'show'])->name('admin.ideas.show');
 
     Route::patch('/ideas/{idea}', [AdminIdeaController::class, 'updateStatus'])
         ->name('admin.ideas.update-status'); // Update idea approval status
+
+
 
 
 

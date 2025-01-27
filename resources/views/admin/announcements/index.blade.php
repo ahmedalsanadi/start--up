@@ -1,6 +1,5 @@
 <x-layout title="إدارة الإعلانات">
     <div class="flex flex-col gap-4 px-2">
-
         <!-- Page Header with Breadcrumb -->
         <div class="flex justify-between items-center mb-6">
             <x-page-header>إدارة الإعلانات</x-page-header>

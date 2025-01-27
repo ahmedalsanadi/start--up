@@ -2,13 +2,13 @@
 // lang/ar/ideas.php
 return [
     'status' => [
-        'pending' => 'معلق', // Pending
-        'approved' => 'مقبول', // Approved
-        'rejected' => 'مرفوض', // Rejected
-        'in-progress' => 'جاري ', // In Progress
-        'completed' => 'مكتمل', // Completed
-        'deleted_by_entrepreneur' => 'محذوف', // Deleted
-        'expired' => 'منتهي', // Expired
+        'pending' => 'معلق',
+        'approved' => 'مقبول',
+        'rejected' => 'مرفوض',
+        'in-progress' => 'جاري',
+        'completed' => 'مكتمل',
+        'deleted_by_entrepreneur' => 'محذوف',
+        'expired' => 'منتهي', // Ensure this matches the key used in the component
     ],
     'stages' => [
         'new' => 'جديدة',
@@ -18,3 +18,4 @@ return [
         'final_decision' => 'قرار نهائي',
     ],
 ];
+

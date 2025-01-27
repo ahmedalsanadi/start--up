@@ -15,7 +15,12 @@ class ExportService
             throw new \Exception("Export class for type '{$type}' not found");
         }
 
-        $columns = $columns ?? $exportClass::getDefaultColumns();
+        // Use default columns if not provided
+        if (method_exists($exportClass, 'getDefaultColumns')) {
+            $columns = $columns ?? $exportClass::getDefaultColumns();
+        } else {
+            $columns = $columns ?? [];
+        }
 
         return Excel::download(
             new $exportClass($data, $columns),

@@ -37,5 +37,14 @@ class IdeaSeeder extends Seeder
             'idea_type' => 'traditional',
             'expiry_date' => Carbon::now()->addMonth(),
         ]);
+
+        // Create 10 traditional ideas
+        Idea::factory(10)->create([
+            'approval_status' => 'pending',
+            'status' => 'in-progress',
+            'is_reusable' => true,
+            'idea_type' => 'traditional',
+            'expiry_date' => Carbon::now()->addMonth(),
+        ]);
     }
 }

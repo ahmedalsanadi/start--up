@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
 use App\Services\ExportService;
 use Illuminate\Http\Request;
 use App\Models\Announcement;
@@ -36,7 +35,7 @@ class ExportController extends Controller
             case 'idea':
                 return $this->getIdeasQuery($request)->get();
             case 'commercial-registration':
-                    return $this->getCommercialRegistrationsQuery($request)->get();
+                return $this->getCommercialRegistrationsQuery($request)->get();
             default:
                 abort(404);
         }
@@ -128,10 +127,41 @@ class ExportController extends Controller
 
         return $query;
     }
+
     protected function getIdeasQuery($request)
     {
-        $query = Idea::latest();
-        // Add filters as needed
+        $query = Idea::with(['entrepreneur', 'announcement'])->latest();
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('entrepreneur', function ($q) use ($search) {
+                      $q->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Status filter
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Approval status filter
+        if ($request->filled('approval_status')) {
+            $query->where('approval_status', $request->approval_status);
+        }
+
+        // Date range filter
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
         return $query;
     }
 }
