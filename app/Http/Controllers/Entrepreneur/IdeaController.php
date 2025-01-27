@@ -11,8 +11,31 @@ class IdeaController extends Controller
 {
     public function index()
     {
-        $ideas = Idea::where('entrepreneur_id', auth()->id())->latest()->paginate(10);
-        return view('entrepreneur.ideas.index', compact('ideas'));
+        $entrepreneur = auth()->user();
+
+        // Paginate ideas with 6 records per page
+        $ideas = Idea::with([
+            'categories',
+            'announcement',
+            'stages' => function ($query) {
+                $query->orderBy('changed_at', 'desc');
+            }
+        ])
+            ->where('entrepreneur_id', $entrepreneur->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate(6);
+
+        // Calculate statistics
+        $statistics = [
+            'total' => $ideas->total(), // Total number of ideas (including paginated ones)
+            'pending' => $ideas->where('approval_status', 'pending')->count(),
+            'approved' => $ideas->where('approval_status', 'approved')->count(),
+            'rejected' => $ideas->where('approval_status', 'rejected')->count(),
+            'in_progress' => $ideas->where('status', 'in-progress')->count(),
+            'expired' => $ideas->where('status', 'expired')->count(),
+        ];
+
+        return view('entrepreneur.ideas.index', compact('ideas', 'statistics'));
     }
 
     public function create(Request $request)
