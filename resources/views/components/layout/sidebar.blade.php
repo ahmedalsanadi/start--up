@@ -6,12 +6,21 @@
     <div class="h-full px-3 pb-4 overflow-y-auto">
         <ul class="space-y-1 text-md font-medium">
             @foreach ($routes as $route)
-                <x-layout.sidebar-link :route="$route['route']" :icon="$route['icon']" :label="$route['label']" :count="$route['count'] ?? null" />
+                <x-layout.sidebar-link :route="$route['route']" :icon="$route['icon']" :label="$route['label']"
+                    :count="$route['count'] ?? null" />
             @endforeach
         </ul>
         <ul class="pt-4 mt-4 space-y-2 font-medium border-t border-gray-200 dark:border-gray-700">
             <!-- Profile -->
-            <x-layout.sidebar-link route="user.profile" icon="user" label="الملف الشخصي" />
+            <li>
+                <a href="{{ route('profile.show', ['profile' => $user->id]) }}"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <i data-lucide="user"
+                        class="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"></i>
+                    <span class="flex-1 ms-3 whitespace-nowrap">الملف الشخصي</span>
+                </a>
+            </li>
+
             <!-- Logout -->
             <li>
                 <form method="POST" action="{{ route('logout') }}">
