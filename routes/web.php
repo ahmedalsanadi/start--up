@@ -23,7 +23,8 @@ use App\Http\Controllers\Investor\{
 use App\Http\Controllers\Entrepreneur\{
 
     IdeaController as EntrepreneurIdeaController,
-    EntrepreneurHomeController
+    EntrepreneurHomeController,
+    AnnouncementController as EntrepreneurAnnouncementController
 };
 
 use App\Http\Controllers\RegisteredUserController;
@@ -216,11 +217,8 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
 
     Route::get('/', [EntrepreneurHomeController::class, 'index'])->name('entrepreneur.home');
 
-
-
-    Route::resource('announcement', EntrepreneurIdeaController::class)->names([
-        'show' => 'entrepreneur.announcement.show',
-
+    Route::resource('announcement', EntrepreneurAnnouncementController::class)->names([
+        'show' => 'entrepreneur.announcements.show',
     ]);
 
     Route::resource('ideas', EntrepreneurIdeaController::class)->names([

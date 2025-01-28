@@ -41,6 +41,40 @@ class IdeaController extends Controller
         return view('entrepreneur.ideas.index', compact('ideas', 'statistics'));
     }
 
+    public function show(Idea $idea)
+    {
+        if ($idea->idea === 'creative') {
+            //ensure the idea owned by this entrepreneur
+            if ($idea->entrepreneur_id !== auth()->id()) {
+                abort(403);
+            }
+
+
+            $stagesCount = 5; // Total number of stages
+            $completedStages = $idea->stages->where('stage_status', true)->count();
+            $progressPercentage = ($completedStages / $stagesCount) * 100;
+
+            // Load the idea with its relationships
+            $idea->load([
+                'categories',
+                'entrepreneur',
+                'announcement',
+                'stages',
+            ]);
+
+            return view('entrepreneur.ideas.show', compact('idea', 'progressPercentage'));
+
+        } else {
+            $idea->load([
+                'categories',
+                'entrepreneur',
+            ]);
+            return view('entrepreneur.ideas.show', compact('idea'));
+
+        }
+
+    }
+
     public function create(Request $request)
     {
         $categories = Category::whereNotNull('parent_id')
@@ -177,9 +211,9 @@ class IdeaController extends Controller
             'initiator_id' => $idea->entrepreneur_id,
             'initiator_type' => 'entrepreneur',
             'additional_data' => [
-                'idea_title' => $idea->name,
-                'entrepreneur_name' => $idea->entrepreneur->name,
-            ],
+                    'idea_title' => $idea->name,
+                    'entrepreneur_name' => $idea->entrepreneur->name,
+                ],
         ];
 
         // Send notification to all admins
