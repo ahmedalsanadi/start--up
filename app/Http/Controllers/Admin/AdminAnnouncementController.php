@@ -11,7 +11,10 @@ class AdminAnnouncementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Announcement::with('investor')->latest();
+        $query = Announcement::withTrashed()->with('investor')
+        ->orderBy('created_at', 'desc')
+        ->orderBy('updated_at', 'desc');
+
 
         // Search
         if ($request->filled('search')) {

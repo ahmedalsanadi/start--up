@@ -5,6 +5,7 @@ use App\Models\Announcement;
 use App\Models\Category;
 use App\Models\Idea;
 use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -49,7 +50,7 @@ class AnnouncementController extends Controller
     public function create()
     {
         // $categories = Category::all();
-        $categories = Category::whereNull('parent_id')
+        $categories = Category::whereNotNull('parent_id')
             ->with('children')
             ->get();
 
@@ -76,30 +77,44 @@ class AnnouncementController extends Controller
             'end_date' => $request->end_date,
             'budget' => $request->budget,
             'investor_id' => auth()->id(),
-            'approval_status' => 'pending', //admin approve
+            'approval_status' => 'pending', // admin approval
             'is_closed' => false,
             'status' => 'in-progress'
         ]);
 
         $announcement->categories()->attach($request->categories);
 
-        //TODO: notify the admin that there is a new announcement wants to be approved
+        // Notify the admin about the new announcement
+        $notificationService = app(NotificationService::class);
 
-
+        $admins = User::where('user_type', '1')->get();
+        foreach ($admins as $admin) {
+            $notificationService->notify($admin, [
+                'type' => 'new_announcement',
+                'title' => 'إعلان جديد في انتظار الموافقة',
+                'message' => 'هناك إعلان جديد يحتاج إلى الموافقة.',
+                'action_type' => 'view_announcement',
+                'action_id' => $announcement->id,
+                'action_url' => route('admin.announcements.show', $announcement->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'investor',
+            ]);
+        }
 
         return redirect()->route('investor.announcements.index')
             ->with('success', 'تم إنشاء الإعلان بنجاح وسيتم مراجعته من قبل الإدارة');
     }
 
 
+
     public function show(Announcement $announcement)
     {
-        // Ensure the authenticated investor owns this announcement
+        // ensure the authenticated investor owns this announcement
         if ($announcement->investor_id !== auth()->id()) {
             abort(403);
         }
 
-        // Load the announcement with its relationships
+        // load the announcement with its relationships
         $announcement->load([
             'categories',
             'ideas' => function ($query) {
@@ -135,27 +150,25 @@ class AnnouncementController extends Controller
         }
 
         // Get parent categories and their children
-        $categories = Category::whereNull('parent_id')
+        $categories = Category::whereNotNull('parent_id')
             ->with('children')
             ->get();
 
-        // Load the announcement with its relationships
+        // load the announcement with its relationships
         $announcement->load('categories');
 
         return view('investor.announcements.edit', compact('announcement', 'categories'));
     }
 
-    // Show the form to edit an existing announcement
-
 
     public function update(Request $request, Announcement $announcement)
     {
-        // Ensure the authenticated investor owns this announcement
+        // ensure the authenticated investor owns this announcement
         if ($announcement->investor_id !== auth()->id()) {
             abort(403);
         }
 
-        // Prevent updating if the announcement is closed
+        // prevent updating if the announcement is closed
         if ($announcement->is_closed == "true") {
             abort(403, 'This announcement is closed and cannot be updated.');
         }
@@ -170,7 +183,7 @@ class AnnouncementController extends Controller
             'categories.*' => 'exists:categories,id',
         ]);
 
-        // Update the announcement
+
         $announcement->update([
             'description' => $request->description,
             'location' => $request->location,
@@ -180,8 +193,22 @@ class AnnouncementController extends Controller
             'approval_status' => 'pending',
         ]);
 
-        //TODO: notify the admin that there is a new announcement wants to be approved
+        // Notify the admin that there is a new announcement needing approval
+        $notificationService = app(NotificationService::class);
 
+        $admins = User::where('user_type', '1')->get();
+        foreach ($admins as $admin) {
+            $notificationService->notify($admin, [
+                'type' => 'updated_announcement',
+                'title' => 'إعلان محدث في انتظار الموافقة',
+                'message' => 'تم تحديث الإعلان وهو في انتظار الموافقة من قبل الإدارة.',
+                'action_type' => 'view_announcement',
+                'action_id' => $announcement->id,
+                'action_url' => route('admin.announcements.show', $announcement->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'investor',
+            ]);
+        }
 
         // Sync the categories
         $announcement->categories()->sync($request->categories);
@@ -191,17 +218,47 @@ class AnnouncementController extends Controller
     }
 
 
-
-
-
     public function destroy(Announcement $announcement)
     {
-        // Ensure the authenticated investor owns this announcement
+        // ensure the authenticated investor owns this announcement
         if ($announcement->investor_id !== auth()->id()) {
             abort(403);
         }
 
+        // prevent deleting if the announcement is closed
+        if ($announcement->is_closed == "true") {
+            abort(403, 'This announcement is closed and cannot be deleted.');
+        }
+
+
+        $announcement->update([
+            'status' => 'deleted_by_investor',
+        ]);
+
         $announcement->delete(); // Soft delete
+
+        //select all the ideas that are related to this announcement and update there status to rejected and notify all the entrepreneurs that their idea was deleted
+        $ideas = Idea::where('announcement_id', $announcement->id)->where('status', 'in-progress')->where('approval_status', 'approved')->get();
+
+        foreach ($ideas as $idea) {
+            $idea->update([
+                'status' => 'rejected',
+                'is-reusable' => true,
+            ]);
+
+            $notificationService = app(NotificationService::class);
+
+            $notificationService->notify($idea->entrepreneur, [
+                'type' => 'announcement_deleted',
+                'title' => 'تم حذف الإعلان من قبل المستثمر',
+                'message' => 'تم حذف الإعلان المرتبط بهذه الفكرة من قبل المستثمر لذلك يمكنك استخدامها مره اخرى   .و ارسال هذه الفكرة للاعلانات الأخرى',
+                'action_type' => 'view_idea',
+                'action_id' => $idea->id,
+                'action_url' => route('entrepreneur.ideas.show', $idea->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
+        }
 
         return redirect()->route('investor.announcements.index')
             ->with('success', 'تم حذف الإعلان بنجاح');

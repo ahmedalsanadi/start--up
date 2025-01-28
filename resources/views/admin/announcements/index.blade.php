@@ -146,6 +146,9 @@
                         </option>
                         <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>مقبول</option>
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوض</option>
+
+                          <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
+
                     </select>
                 </div>
 

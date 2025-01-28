@@ -167,9 +167,9 @@
             });
 
             // Prevent drawer from closing when clicking inside it
-            drawer.addEventListener('click', function (e) {
-                e.stopPropagation();
-            });
+            // drawer.addEventListener('click', function (e) {
+            //     e.stopPropagation();
+            // });
         });
 
     </script>
