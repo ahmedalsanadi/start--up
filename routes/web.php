@@ -230,8 +230,6 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
         'edit' => 'entrepreneur.ideas.edit',
         'update' => 'entrepreneur.ideas.update',
         'destroy' => 'entrepreneur.ideas.destroy',
-
-
     ]);
 
 });

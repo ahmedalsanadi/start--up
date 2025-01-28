@@ -8,7 +8,25 @@
                     تم النشر في {{ $idea->created_at->format('Y/m/d') }}
                 </p>
             </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-4 p-4">
+                <!-- Edit Button -->
+
+                <!-- Pencil Icon: Edit -->
+                <a href="{{ route('entrepreneur.ideas.edit', $idea) }}"
+                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                    <i data-lucide="pencil" class="w-6 h-6"></i>
+                </a>
+
+                <button type="submit" data-delete-url="{{ route('entrepreneur.ideas.destroy', $idea->id) }}"
+                    data-delete-message=" هل أنت متأكد من حذف هذه الفكرة؟"
+                    class=" delete-btn text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                    <i data-lucide="trash-2" class="w-6 h-6"></i>
+                </button>
+            </div>
         </div>
+
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Right Side: Idea Stages Timeline -->
@@ -50,8 +68,8 @@
                                 @if($idea->status == 'in-progress')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                                                 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
-                                                                                                                 border border-amber-200 dark:border-amber-800">
+                                                                                                                                         bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
+                                                                                                                                         border border-amber-200 dark:border-amber-800">
                                         جاري
                                     </span>
                                 @endif
@@ -59,8 +77,8 @@
                                 @if($idea->status == 'approved')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                                                 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
-                                                                                                                 border border-green-200 dark:border-green-800">
+                                                                                                                                         bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
+                                                                                                                                         border border-green-200 dark:border-green-800">
                                         تمت الموافقة
                                     </span>
                                 @endif
@@ -176,8 +194,8 @@
                                                                     <!-- Stage Indicator -->
                                                                     <div
                                                                         class="absolute right-0 flex items-center justify-center h-8 w-8 rounded-full border-2
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
                                                                         @if($isCompleted)
                                                                             <i data-lucide="check" class="w-4 h-4 text-white"></i>
                                                                         @elseif($isCurrent)
@@ -191,7 +209,7 @@
                                                                     <div class="mr-12 flex-1">
                                                                         <div
                                                                             class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
 
                                                                             <div class="flex items-center justify-between mb-2">
                                                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">

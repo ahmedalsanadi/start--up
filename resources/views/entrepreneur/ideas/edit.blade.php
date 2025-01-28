@@ -1,8 +1,8 @@
-<x-layout title="إنشاء فكرة جديدة">
+<x-layout title="تعديل الفكرة">
     @php
-        $ideaType = isset($announcement_id) ? 'creative' : 'traditional';
-        $formTitle = isset($announcement_id) ? 'فكرة مبتكرة' : 'فكرة تقليدية';
-        $announcementDescription = isset($announcement_id) ? $announcement->description : null;
+        $ideaType = $idea->idea_type;
+        $formTitle = $ideaType === 'creative' ? 'فكرة مبتكرة' : 'فكرة تقليدية';
+        $announcementDescription = $idea->announcement ? $idea->announcement->description : null;
     @endphp
 
     <div class="flex items-center justify-center pt-4 pb-1">
@@ -11,10 +11,10 @@
             <!-- Form Header -->
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white">
-                    انشاء {{ $formTitle }}
+                    تعديل {{ $formTitle }}
                 </h2>
                 <p class="mt-2 text-lg text-gray-600 dark:text-gray-400">
-                    قم بملء البيانات التالية لإنشاء ({{ $formTitle }}) جديدة
+                    قم بملء البيانات التالية لتعديل ({{ $formTitle }})
                 </p>
 
                 <!-- Notice for Creative Ideas -->
@@ -39,13 +39,14 @@
             </div>
 
             <!-- Form -->
-            <form id="addIdeaForm" method="POST" action="{{ route('entrepreneur.ideas.store') }}" class="mt-8 space-y-6"
-                enctype="multipart/form-data">
+            <form id="editIdeaForm" method="POST" action="{{ route('entrepreneur.ideas.update', $idea->id) }}"
+                class="mt-8 space-y-6" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
 
                 <!-- Hidden Announcement ID (if provided) -->
-                @if (isset($announcement_id))
-                    <input type="hidden" name="announcement_id" value="{{ $announcement_id }}">
+                @if ($idea->announcement_id)
+                    <input type="hidden" name="announcement_id" value="{{ $idea->announcement_id }}">
                 @endif
 
                 <!-- Hidden Idea Type -->
@@ -60,7 +61,8 @@
                     <label for="name" class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
                         اسم الفكرة
                     </label>
-                    <input type="text" id="name" name="name" class="form-input" placeholder="أدخل اسم الفكرة" required>
+                    <input type="text" id="name" name="name" class="form-input" placeholder="أدخل اسم الفكرة"
+                        value="{{ $idea->name }}" required>
                     @error('name')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
@@ -73,7 +75,7 @@
                         وصف مختصر
                     </label>
                     <textarea id="brief_description" name="brief_description" rows="3" class="form-input"
-                        placeholder="اكتب وصفاً مختصراً عن الفكرة..." required></textarea>
+                        placeholder="اكتب وصفاً مختصراً عن الفكرة..." required>{{ $idea->brief_description }}</textarea>
                     @error('brief_description')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
@@ -86,57 +88,55 @@
                         وصف تفصيلي
                     </label>
                     <textarea id="detailed_description" name="detailed_description" rows="6" class="form-input"
-                        placeholder="اكتب وصفاً تفصيلياً عن الفكرة..." required></textarea>
+                        placeholder="اكتب وصفاً تفصيلياً عن الفكرة..."
+                        required>{{ $idea->detailed_description }}</textarea>
                     @error('detailed_description')
                         <p class="form-error">{{ $message }}</p>
                     @enderror
                 </div>
 
-
-                                <!-- Categories Section -->
-                                <div class="mt-6">
+                <!-- Categories Section -->
+                <div class="mt-6">
                     <label for="categories" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         التصنيفات
                     </label>
 
                     <div x-data="{
-        search: '',
-        selectedCategories: [],
-        showDropdown: false,
-        categories: {{ $categories->toJson() }},
+                        search: '',
+                        selectedCategories: {{ json_encode($idea->categories->pluck('id')->toArray()) }},
+                        showDropdown: false,
+                        categories: {{ $categories->toJson() }},
 
-        get filteredCategories() {
-            if (this.selectedCategories.length >= 5) {
-                return []; // Hide all categories when the limit is reached
-            }
+                        get filteredCategories() {
+                            if (this.selectedCategories.length >= 5) {
+                                return [];
+                            }
 
-            if (this.search === '') {
-                // Show categories not selected, limit to 5
-                return this.categories
-                    .filter(cat => !this.selectedCategories.find(sc => sc.id === cat.id))
-                    .slice(0, 5);
-            } else {
-                // Filter categories based on search input
-                const filtered = this.categories.filter(cat =>
-                    cat.name.toLowerCase().includes(this.search.toLowerCase()) &&
-                    !this.selectedCategories.find(sc => sc.id === cat.id)
-                );
-                return filtered.length > 0 ? filtered : null; // Return null if no matches
-            }
-        },
+                            if (this.search === '') {
+                                return this.categories
+                                    .filter(cat => !this.selectedCategories.includes(cat.id))
+                                    .slice(0, 5);
+                            } else {
+                                const filtered = this.categories.filter(cat =>
+                                    cat.name.toLowerCase().includes(this.search.toLowerCase()) &&
+                                    !this.selectedCategories.includes(cat.id)
+                                );
+                                return filtered.length > 0 ? filtered : null;
+                            }
+                        },
 
-        addCategory(category) {
-            if (this.selectedCategories.length < 5) {
-                this.selectedCategories.push(category);
-                this.showDropdown = false;
-                this.search = '';
-            }
-        },
+                        addCategory(category) {
+                            if (this.selectedCategories.length < 5) {
+                                this.selectedCategories.push(category.id);
+                                this.showDropdown = false;
+                                this.search = '';
+                            }
+                        },
 
-        removeCategory(category) {
-            this.selectedCategories = this.selectedCategories.filter(c => c.id !== category.id);
-        }
-    }">
+                        removeCategory(categoryId) {
+                            this.selectedCategories = this.selectedCategories.filter(id => id !== categoryId);
+                        }
+                    }">
                         <!-- Search Input -->
                         <div class="relative mb-4">
                             <input type="text" x-model="search" @focus="showDropdown = true"
@@ -146,7 +146,6 @@
                             <!-- Dropdown -->
                             <div x-show="showDropdown" x-cloak
                                 class="absolute z-50 mt-1 w-full bg-gray-100 dark:bg-gray-800 rounded-md shadow-lg max-h-60 overflow-y-auto">
-
                                 <!-- Message when 5 categories are selected -->
                                 <template x-if="selectedCategories.length >= 5">
                                     <div class="px-4 py-2 text-gray-800 dark:text-gray-200">
@@ -190,18 +189,18 @@
 
                         <!-- Selected Categories -->
                         <div class="flex flex-wrap gap-2">
-                            <template x-for="category in selectedCategories" :key="category . id">
+                            <template x-for="categoryId in selectedCategories" :key="categoryId">
                                 <div
                                     class="inline-flex items-center bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full px-3 py-1">
-                                    <span x-text="category.name"></span>
-                                    <button type="button" @click="removeCategory(category)"
+                                    <span x-text="categories.find(c => c.id === categoryId).name"></span>
+                                    <button type="button" @click="removeCategory(categoryId)"
                                         class="mr-2 text-purple-600 dark:text-purple-400 hover:text-purple-800 dark:hover:text-purple-200">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M6 18L18 6M6 6l12 12"></path>
                                         </svg>
                                     </button>
-                                    <input type="hidden" name="categories[]" :value="category . id">
+                                    <input type="hidden" name="categories[]" :value="categoryId">
                                 </div>
                             </template>
                         </div>
@@ -211,7 +210,6 @@
                     </div>
                 </div>
 
-
                 <!-- Grid Container -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Location  -->
@@ -219,7 +217,7 @@
                         <label for="location" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             الموقع
                         </label>
-                        <input type="text" id="location" name="location" value="{{ old('location') }}"
+                        <input type="text" id="location" name="location" value="{{ $idea->location }}"
                             class="form-input" placeholder="المدينة، الدولة">
                         @error('location')
                             <p class="form-error">{{ $message }}</p>
@@ -231,7 +229,7 @@
                         <label for="budget" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             الميزانية (بالريال)
                         </label>
-                        <input type="number" id="budget" name="budget" value="{{ old('budget') }}" class="form-input"
+                        <input type="number" id="budget" name="budget" value="{{ $idea->budget }}" class="form-input"
                             placeholder="أدخل الميزانية المتاحة">
                         @error('budget')
                             <p class="form-error">{{ $message }}</p>
@@ -244,7 +242,7 @@
                             class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
                             دراسة الجدوى (PDF)
                         </label>
-                        <input type="file" id="feasibility_study" name="feasibility_study" class="form-input-file "
+                        <input type="file" id="feasibility_study" name="feasibility_study" class="form-input-file"
                             accept="application/pdf">
                         @error('feasibility_study')
                             <p class="form-error">{{ $message }}</p>
@@ -266,7 +264,7 @@
                 <!-- Submit Button -->
                 <div class="mt-8">
                     <button type="submit" class="btn-primary w-full">
-                        إنشاء الفكرة
+                        تحديث الفكرة
                     </button>
                 </div>
             </form>
