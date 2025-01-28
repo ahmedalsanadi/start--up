@@ -14,6 +14,12 @@ class AnnouncementSeeder extends Seeder
     {
 
 
+        Announcement::factory(count: 1)->create([
+            'approval_status' => 'approved',
+            'status' => 'in-progress',
+            'investor_id' =>2,
+
+        ]);
         Announcement::factory(count: 3)->create([
             'approval_status' => 'approved',
 
