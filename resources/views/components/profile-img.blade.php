@@ -8,6 +8,7 @@
 @php
     // Define sizes and their corresponding dimensions
     $sizes = [
+        'xs'=> 'w-4 h-4',
         'sm' => 'w-8 h-8', // Small
         'md' => 'w-12 h-12', // Medium (default)
         'lg' => 'w-16 h-16', // Large

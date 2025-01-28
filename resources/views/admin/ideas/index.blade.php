@@ -580,6 +580,24 @@
             }
         </script>
         <script>
+            function handleDateInputs() {
+                const dateInputs = document.querySelectorAll('input[type="date"]');
+                dateInputs.forEach(input => {
+                    if (!input.value) {
+                        input.type = 'text';
+                    }
+
+                    input.addEventListener('focus', function () {
+                        this.type = 'date';
+                    });
+
+                    input.addEventListener('blur', function () {
+                        if (!this.value) {
+                            this.type = 'text';
+                        }
+                    });
+                });
+            }
 
             function handleExport() {
                 const exportBtn = document.getElementById('exportBtn');
@@ -605,6 +623,7 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
+                handleDateInputs();
                 handleExport();
             });
 

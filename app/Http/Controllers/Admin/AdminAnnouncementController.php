@@ -27,9 +27,13 @@ class AdminAnnouncementController extends Controller
             });
         }
 
+        // Approval Status Filter
+        if ($request->filled('approval_status')) {
+            $query->where('approval_status', $request->status);
+        }
         // Status Filter
         if ($request->filled('status')) {
-            $query->where('approval_status', $request->status);
+            $query->where('status', $request->status);
         }
 
         // Date Range Filter
@@ -42,7 +46,7 @@ class AdminAnnouncementController extends Controller
 
         $announcements = $query->paginate(6)->withQueryString();
 
-        $total_announcements = Announcement::count();
+        $total_announcements = Announcement::withTrashed()->count();
         $total_pending_announcements = Announcement::where('approval_status', 'pending')->count();
         $total_active_announcements = Announcement::where('approval_status', 'approved')->count();
         $total_rejected_announcements = Announcement::where('approval_status', 'rejected')->count();
