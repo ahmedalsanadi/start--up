@@ -61,6 +61,13 @@
             } elseif ($user->isEntrepreneur()) {
                 return [
                     ['route' => 'entrepreneur.home', 'icon' => 'layout-dashboard', 'label' => 'الصفحة الرئيسية'],
+                    [
+                        'route' => 'entrepreneur.ideas.index',
+                        'icon' => 'lightbulb',
+                        'label' => '
+                             الأفكار'
+                    ],
+                    ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
                 ];
             }
 
@@ -93,6 +100,8 @@
     @endif
 
 
+    <!-- Delete Modal -->
+    <x-delete-modal />
 
     @stack('scripts')
 
@@ -158,9 +167,9 @@
             });
 
             // Prevent drawer from closing when clicking inside it
-            drawer.addEventListener('click', function (e) {
-                e.stopPropagation();
-            });
+            // drawer.addEventListener('click', function (e) {
+            //     e.stopPropagation();
+            // });
         });
 
     </script>

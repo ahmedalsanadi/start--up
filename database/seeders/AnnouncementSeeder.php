@@ -12,8 +12,29 @@ class AnnouncementSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 10 announcements
-        $announcements = Announcement::factory(30)->create();
+
+
+        Announcement::factory(count: 1)->create([
+            'approval_status' => 'approved',
+            'status' => 'in-progress',
+            'investor_id' =>2,
+
+        ]);
+        Announcement::factory(count: 3)->create([
+            'approval_status' => 'approved',
+
+        ]);
+        Announcement::factory(3)->create([
+            'approval_status' => 'pending',
+
+        ]);
+        Announcement::factory(3)->create([
+            'approval_status' => 'rejected',
+
+        ]);
+
+
+        $announcements = Announcement::all();
 
         // Link each announcement to 1-3 random categories
         $categories = Category::all();

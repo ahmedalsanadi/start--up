@@ -25,11 +25,15 @@ class Announcement extends Model
         'approval_status',
         'rejection_reason',
         'is_closed',
+        'closed_at',
+        'status', // $table->enum('status', ['in-progress', 'compeleted','deleted_by_investor'])
     ];
 
     protected $casts = [
         'start_date' => 'datetime', // Cast start_date to a Carbon instance
         'end_date' => 'datetime',   // Cast end_date to a Carbon instance (if needed)
+        'is_closed' => 'boolean',
+        'closed_at' => 'datetime',
     ];
 
     // Relationship with Investor (User)

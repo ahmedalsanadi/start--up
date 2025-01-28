@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\Investor\InvestorHomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationController;
 
 // use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Admin\{
@@ -10,14 +11,20 @@ use App\Http\Controllers\Admin\{
     CategoriesController,
     AdminAnnouncementController,
     ExportController,
-// IdeaController
+    IdeaController as AdminIdeaController
 };
 
 use App\Http\Controllers\Investor\{
     CommercialRegistrationController,
-    AnnouncementController as InvestorAnnouncementController
+    AnnouncementController as InvestorAnnouncementController,
+    IdeaController as InvestorIdeaController,
 };
 
+use App\Http\Controllers\Entrepreneur\{
+
+    IdeaController as EntrepreneurIdeaController,
+    EntrepreneurHomeController
+};
 
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
@@ -37,7 +44,29 @@ use App\Http\Controllers\SessionController;
 // Acessable Route
 // Route::get('/', [JobController::class, 'index'])->name('jobs.index');
 Route::get('/', function () {
-    return redirect()->route('login'); // Assuming 'login' is the name of your login route
+    if (Auth::check()) {
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.home');
+        } elseif ($user->isInvestor()) {
+            $commercialRegistration = $user->commercialRegistration;
+
+            if (!$commercialRegistration) {
+                return redirect()->route('commercial-registration.create');
+            } elseif ($commercialRegistration->status == 'pending') {
+                return redirect()->route('pending-commercial-registration');
+            } elseif ($commercialRegistration->status == 'approved') {
+                return redirect()->route('investor.home');
+            } else {
+                return redirect()->route('commercial-registration.create');
+            }
+        } elseif ($user->isEntrepreneur()) {
+            return redirect()->route('entrepreneur.home');
+        }
+    }
+
+    return redirect()->route('login');
 });
 
 
@@ -68,8 +97,9 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
     Route::patch('/commercial-registrations/{registration}', [AdminCommericalRegistrationController::class, 'updateRegistrationStatus'])->name('admin.commercial-registrations.updateStatus');
 
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::patch('/users/{user}/toggle-active', [UserController::class, 'toggleActive'])->name('admin.users.toggle-active');
 
-    Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('admin.users.toggle-status');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('admin.users.show');
 
     // Resource route for categories with name prefix
     Route::resource('categories', CategoriesController::class)->names([
@@ -90,11 +120,18 @@ Route::prefix('admin')->middleware(['auth', 'user_type:admin'])->group(function 
         ->name('admin.announcements.show'); // Show a single announcement
 
     Route::patch('/announcements/{announcement}', [AdminAnnouncementController::class, 'updateStatus'])
-        ->name('admin.announcements.update-status'); // Update announcement status
+        ->name('admin.announcements.update-status'); // Update announcement approval status
 
-    Route::get('/ideas', function () {
-        return "Manage Ideas";
-    })->name('admin.ideas.index');
+    Route::get('/ideas', [AdminIdeaController::class, 'index'])->name('admin.ideas.index');
+
+    Route::get('/ideas/{idea}', [AdminIdeaController::class, 'show'])->name('admin.ideas.show');
+
+    Route::patch('/ideas/{idea}', [AdminIdeaController::class, 'updateStatus'])
+        ->name('admin.ideas.update-status'); // Update idea approval status
+
+
+
+
 
 
     //excel export route
@@ -135,7 +172,7 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
     Route::prefix('/investor')->group(function () {
 
-     // Investor Home (Display ideas with search/filter capabilities)
+        // Investor Home (Display ideas with search/filter capabilities)
 
         Route::get('/', [InvestorHomeController::class, 'index'])->name('investor.home');
 
@@ -150,11 +187,21 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
             'destroy' => 'investor.announcements.destroy',
         ]);
 
+
+        Route::patch('/announcement/{announcement}/toggle-closed', [InvestorAnnouncementController::class, 'toggleClosed'])
+            ->name('investor.announcements.toggle-closed');
+
         Route::patch('/idea/{idea}', [InvestorAnnouncementController::class, 'updateStatus'])->name('investor.ideas.update-stage');
 
-        Route::get('/ideas/{idea}', function () {
-            return "Manage Ideas";
-        })->name('investor.ideas.show');
+        // New route for showing idea details
+        Route::get('/ideas/{idea}', [InvestorIdeaController::class, 'show'])
+            ->name('investor.ideas.show');
+
+        // New route for rejecting an idea
+        Route::patch('/ideas/{idea}/reject', [InvestorIdeaController::class, 'rejectIdea'])
+            ->name('investor.ideas.reject-idea');
+        Route::patch('/ideas/{idea}/approve', [InvestorIdeaController::class, 'approveIdea'])
+            ->name('investor.ideas.approve-idea');
 
     });
 
@@ -166,9 +213,29 @@ Route::middleware(['auth', 'user_type:investor', 'commercial.registration'])->gr
 
 // Entrepreneur Routes
 Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->group(function () {
-    Route::get('/', function () {
-        return view('entrepreneur.index');
-    })->name('entrepreneur.home');
+
+    Route::get('/', [EntrepreneurHomeController::class, 'index'])->name('entrepreneur.home');
+
+
+
+    Route::resource('announcement', EntrepreneurIdeaController::class)->names([
+        'show' => 'entrepreneur.announcement.show',
+
+    ]);
+
+    Route::resource('ideas', EntrepreneurIdeaController::class)->names([
+
+        'index' => 'entrepreneur.ideas.index',
+        'create' => 'entrepreneur.ideas.create',
+        'store' => 'entrepreneur.ideas.store',
+        'show' => 'entrepreneur.ideas.show',
+        'edit' => 'entrepreneur.ideas.edit',
+        'update' => 'entrepreneur.ideas.update',
+        'destroy' => 'entrepreneur.ideas.destroy',
+
+
+    ]);
+
 });
 
 
@@ -183,7 +250,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/notifications', function () {
         return view('notifications.index');
     })->name('notifications.index');
+
 });
 
 
 // Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])->middleware('auth')->name('notifications.markAsRead');
+
+//routes/web.php
+Route::get('/notifications', [NotificationController::class, 'index'])
+    ->name('notifications.index')
+    ->middleware('auth');
+
+// Mark all notifications as read
+Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAllAsRead'])
+    ->name('notifications.mark-as-read');
+
+// Mark a single notification as read
+Route::post('/notifications/{notification}/mark-as-read', [NotificationController::class, 'markAsRead'])
+    ->name('notifications.mark-as-read-single');
+
+// Fetch unread notifications count
+Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
+    ->name('notifications.unread-count')
+    ->middleware('auth');
+
+
+
+

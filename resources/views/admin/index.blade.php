@@ -21,8 +21,6 @@
 
         </div>
 
-
-
         <!-- Pending Registrations List -->
         <x-list title="المستثمرون المسجلون مؤخرا">
             @forelse($pendingRegistrations as $registration)
@@ -45,4 +43,6 @@
             </a>
         </div>
     </div>
+
+    <x-commericial-review-modal />
 </x-layout>

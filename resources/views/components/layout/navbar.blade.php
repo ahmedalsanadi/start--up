@@ -4,7 +4,7 @@
     $unreadCount = auth()->user()->unreadNotifications()->count();
 @endphp
 
-<nav class="fixed top-0 z-50 w-full border-b bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+<nav class="fixed top-0 z-50 w-full border-b bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300 ease-in-out"
     dir="rtl">
     <div class="px-3 py-2 lg:px-5 lg:pr-3">
         <div class="flex items-center justify-between">
@@ -65,6 +65,7 @@
                 </button>
 
                 @auth
+                 
                     <!-- Notifications Dropdown (Always Visible) -->
                     <div class="relative">
                         <button id="notification-bell" type="button"
@@ -73,41 +74,59 @@
                             <!-- Lucide Icon: Bell -->
                             <i data-lucide="bell" class="w-6 h-6"></i>
                             <span
-                                class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full">{{ $unreadCount }}</span>
+                                class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-600 rounded-full {{ $unreadCount === 0 ? 'hidden' : '' }}">
+                                {{ $unreadCount }}
+                            </span>
                         </button>
                         <!-- Notification Dropdown Content -->
                         <div class="hidden absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl dark:bg-gray-700"
                             id="dropdown-notifications">
                             <div class="p-4 max-h-80 overflow-y-auto">
                                 @forelse($notifications as $notification)
-                                    <div class="py-2 {{ $notification->read_at ? 'opacity-75' : '' }}">
-                                        <div class="flex items-center">
+                                    <div class="py-3 notification-item {{ $notification->read_at ? 'opacity-75' : '' }}">
+                                        <div class="flex items-start gap-3">
+                                            <!-- Notification Icon -->
+                                            <div class="flex-shrink-0">
+                                                <div
+                                                    class="w-8 h-8 rounded-full bg-blue-50 dark:bg-blue-900/50 flex items-center justify-center">
+                                                    <i data-lucide="bell" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
+                                                </div>
+                                            </div>
+                                            <!-- Notification Content -->
                                             <div class="flex-1">
                                                 <p class="text-sm font-medium text-gray-900 dark:text-white">
-                                                    {{ $notification->data['title'] }}</p>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">
-                                                    {{ $notification->data['message'] }}</p>
+                                                    {{ $notification->data['title'] }}
+                                                </p>
+                                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                    {{ $notification->data['message'] }}
+                                                </p>
                                                 @if(isset($notification->data['action_url']))
                                                     <a href="{{ $notification->data['action_url'] }}"
-                                                        class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">View
-                                                        Details</a>
+                                                        class="mt-2 inline-block text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 notification-link"
+                                                        data-notification-id="{{ $notification->id }}">
+                                                        عرض التفاصيل
+                                                    </a>
                                                 @endif
-                                                <p class="text-xs text-gray-400 mt-1">
-                                                    {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</p>
+                                                <p class="text-xs text-gray-400 mt-2">
+                                                    {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
+                                                </p>
                                             </div>
+                                            <!-- Unread Indicator -->
                                             @unless($notification->read_at)
-                                                <div class="w-2 h-2 bg-blue-600 rounded-full"></div>
+                                                <div class="w-2 h-2 bg-blue-600 rounded-full notification-unread-indicator"></div>
                                             @endunless
                                         </div>
                                     </div>
                                 @empty
-                                    <p class="text-gray-500 dark:text-gray-400 text-center">No notifications</p>
+                                    <p class="text-gray-500 dark:text-gray-400 text-center">لا توجد إشعارات</p>
                                 @endforelse
                             </div>
+                            <!-- View All Notifications Link -->
                             <div class="border-t border-gray-200 dark:border-gray-600">
-                                <a href="#"
-                                    class="block py-2 text-sm font-medium text-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">View
-                                    all notifications</a>
+                                <a href="{{ route('notifications.index') }}"
+                                    class="block py-2 text-sm font-medium text-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                                    عرض جميع الإشعارات
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -116,43 +135,43 @@
                 @php
                     $user = Auth::user();
                 @endphp
-                    <!-- Profile Dropdown (Hidden on Small Screens) -->
-                    <div class="hidden sm:flex items-center mx-2">
-                        <button type="button"
-                            class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                            aria-expanded="false" data-dropdown-toggle="dropdown-user">
-                            <span class="sr-only">Open user menu</span>
-                            <img class="w-8 h-8 rounded-full"
-                                src="{{ Str::startsWith($user->profile_image, ['http://', 'https://']) ? $user->profile_image : asset('storage/' . $user->profile_image ?? '/images/default-avatar.jpg') }}"
-                                alt="User Avatar">
-                        </button>
-                        <!-- Profile Dropdown Content -->
-                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                            id="dropdown-user">
-                            <div class="px-4 py-3" role="none">
-                                <p class="text-sm text-gray-900 dark:text-white">{{ $user->name }}</p>
-                                <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300">{{ $user->email }}
-                                </p>
-                            </div>
-                            <ul class="py-1" role="none">
-                                <li>
-                                    <a href="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Home</a>
-                                </li>
-                                <li>
-                                    <a href="/manage-account"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Settings</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Sign out</a>
-                                </li>
-                            </ul>
+                <!-- Profile Dropdown (Hidden on Small Screens) -->
+                <div class="hidden sm:flex items-center mx-2">
+                    <button type="button"
+                        class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                        aria-expanded="false" data-dropdown-toggle="dropdown-user">
+                        <span class="sr-only">Open user menu</span>
+                        <img class="w-8 h-8 rounded-full"
+                            src="{{ Str::startsWith($user->profile_image, ['http://', 'https://']) ? $user->profile_image : asset('storage/' . $user->profile_image ?? '/images/default-avatar.jpg') }}"
+                            alt="User Avatar">
+                    </button>
+                    <!-- Profile Dropdown Content -->
+                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
+                        id="dropdown-user">
+                        <div class="px-4 py-3" role="none">
+                            <p class="text-sm text-gray-900 dark:text-white">{{ $user->name }}</p>
+                            <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300">{{ $user->email }}
+                            </p>
                         </div>
+                        <ul class="py-1" role="none">
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    role="menuitem">Home</a>
+                            </li>
+                            <li>
+                                <a href="/manage-account"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    role="menuitem">Settings</a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    role="menuitem">Sign out</a>
+                            </li>
+                        </ul>
                     </div>
+                </div>
             </div>
         </div>
     </div>

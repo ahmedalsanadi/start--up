@@ -65,7 +65,7 @@ class User extends Authenticatable
     public function isEntrepreneur()
     {
         return $this->user_type == 3;
-    
+
     }
     public function getUserTypeLabel()
     {
@@ -87,6 +87,17 @@ class User extends Authenticatable
     public function hasApprovedRegistration()
     {
         return $this->commercialRegistration && $this->commercialRegistration->status === 'approved';
+    }
+
+    public function announcements()
+    {
+        return $this->hasMany(Announcement::class, 'investor_id'); // Adjust the foreign key if needed
+    }
+
+    // Relationship for ideas (entrepreneurs)
+    public function ideas()
+    {
+        return $this->hasMany(Idea::class, 'entrepreneur_id'); // Adjust the foreign key if needed
     }
 
 }

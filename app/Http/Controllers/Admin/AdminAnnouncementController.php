@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Announcement;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -10,7 +11,10 @@ class AdminAnnouncementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Announcement::with('investor')->latest();
+        $query = Announcement::withTrashed()->with('investor')
+        ->orderBy('created_at', 'desc')
+        ->orderBy('updated_at', 'desc');
+
 
         // Search
         if ($request->filled('search')) {
@@ -23,9 +27,13 @@ class AdminAnnouncementController extends Controller
             });
         }
 
+        // Approval Status Filter
+        if ($request->filled('approval_status')) {
+            $query->where('approval_status', $request->status);
+        }
         // Status Filter
         if ($request->filled('status')) {
-            $query->where('approval_status', $request->status);
+            $query->where('status', $request->status);
         }
 
         // Date Range Filter
@@ -38,7 +46,7 @@ class AdminAnnouncementController extends Controller
 
         $announcements = $query->paginate(6)->withQueryString();
 
-        $total_announcements = Announcement::count();
+        $total_announcements = Announcement::withTrashed()->count();
         $total_pending_announcements = Announcement::where('approval_status', 'pending')->count();
         $total_active_announcements = Announcement::where('approval_status', 'approved')->count();
         $total_rejected_announcements = Announcement::where('approval_status', 'rejected')->count();
@@ -54,11 +62,19 @@ class AdminAnnouncementController extends Controller
 
     public function show(Announcement $announcement)
     {
-        // The $announcement instance is already resolved by Laravel's route model binding
-        $announcement->load(['investor', 'categories']); // Eager load related data
 
-        // Pass the announcement to the view
+        // Fetch the announcement, including soft-deleted ones
+        $announcement = Announcement::withTrashed()
+            ->with([
+                'investor',
+                'categories',
+                'ideas' => function ($query) {
+                    $query->withTrashed(); // Include soft-deleted ideas
+                }
+            ])->findOrFail($announcement->id);
+
         return view('admin.announcements.show', compact('announcement'));
+
     }
 
 
@@ -69,12 +85,40 @@ class AdminAnnouncementController extends Controller
             'rejection_reason' => 'nullable|string',
         ]);
 
+        // Update the announcement status
         $announcement->update([
             'approval_status' => $request->approval_status,
             'rejection_reason' => $request->rejection_reason,
         ]);
 
-        //redirect back with success message
+        // Notify the investor about the status change
+        if ($request->approval_status === 'approved') {
+            // Notify the investor that their announcement has been approved
+            app(NotificationService::class)->notify($announcement->investor, [
+                'type' => 'announcement_approved',
+                'title' => 'تمت الموافقة على الإعلان',
+                'message' => 'تمت الموافقة على إعلانك: ' . $announcement->description,
+                'action_type' => 'announcement_approved',
+                'action_id' => $announcement->id,
+                'action_url' => route('investor.announcements.show', $announcement->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
+        } elseif ($request->approval_status === 'rejected') {
+            // Notify the investor that their announcement has been rejected
+            app(NotificationService::class)->notify($announcement->investor, [
+                'type' => 'announcement_rejected',
+                'title' => 'تم رفض الإعلان',
+                'message' => 'تم رفض إعلانك: ' . $announcement->description . ($request->rejection_reason ? ' بسبب: ' . $request->rejection_reason : ''),
+                'action_type' => 'announcement_rejected',
+                'action_id' => $announcement->id,
+                'action_url' => route('investor.announcements.show', $announcement->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
+        }
+
+        // Redirect back with success message
         return back()->with('success', 'تم تحديث حالة الإعلان بنجاح.');
     }
 

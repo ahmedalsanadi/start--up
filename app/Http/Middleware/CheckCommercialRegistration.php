@@ -17,7 +17,17 @@ class CheckCommercialRegistration
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
-        if ($user->isInvestor()) {
+
+        // List of routes that should be excluded from the check
+        $excludedRoutes = [
+            'commercial-registration.create',
+            'commercial-registration.store',
+            'pending-commercial-registration',
+            'check.registration.status',
+            'logout'
+        ];
+
+        if ($user->isInvestor() && !in_array($request->route()->getName(), $excludedRoutes)) {
             $registration = $user->commercialRegistration;
 
             if (!$registration) {

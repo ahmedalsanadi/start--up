@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class IdeaStage extends Model
 {
     protected $fillable = ['idea_id', 'stage', 'changed_at', 'stage_status'];
+    protected $casts = [
+        'stage_status' => 'boolean',
+        'changed_at' => 'datetime',
+    ];
 
     // Relationship with Idea
     public function idea(): BelongsTo
