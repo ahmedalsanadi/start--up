@@ -49,8 +49,12 @@ class ExportController extends Controller
             $query->where('description', 'like', "%{$request->search}%");
         }
 
-        if ($request->filled('status')) {
+        if ($request->filled('approval_status')) {
             $query->where('approval_status', $request->status);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
         if ($request->filled('date_from')) {

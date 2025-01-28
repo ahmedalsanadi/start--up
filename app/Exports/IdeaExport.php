@@ -33,96 +33,65 @@ class IdeaExport extends BaseExport
 
     public function __construct(Collection $data)
     {
-        // Pass the data and default columns to the BaseExport constructor
         parent::__construct($data, self::getDefaultColumns());
     }
 
-    // Override the formatValue method to handle custom formatting
     protected function formatValue($row, $column)
     {
-        $value = parent::formatValue($row, $column);
+        $value = data_get($row, $column);
 
-        // Handle approval_status column
-        if ($column === 'approval_status') {
-            return $this->translateApprovalStatus($value);
+        // Handle dates
+        if (str_contains($column, 'date') || $column === 'created_at' || $column === 'updated_at') {
+            return $value ? \Carbon\Carbon::parse($value)->format('Y-m-d H:i') : '';
         }
 
-        // Handle status column
+        // Handle status translations
         if ($column === 'status') {
-            return $this->translateStatus($value);
+            return match ($value) {
+                'pending' => 'معلق',
+                'approved' => 'مقبول',
+                'rejected' => 'مرفوض',
+                'in-progress' => 'جاري',
+                'completed' => 'مكتمل',
+                'deleted_by_entrepreneur' => 'محذوف',
+                'deleted_by_investor' => 'محذوف',
+                'expired' => 'منتهي',
+                default => $value,
+            };
         }
 
-        // Handle idea_type column
+        // Handle approval status translations
+        if ($column === 'approval_status') {
+            return match ($value) {
+                'pending' => 'معلق',
+                'approved' => 'مقبول',
+                'rejected' => 'مرفوض',
+                default => $value,
+            };
+        }
+
+        // Handle idea type
         if ($column === 'idea_type') {
-            return $this->translateIdeaType($value);
+            return $value === 'creative' ? 'إبداعية' : 'تقليدية';
         }
 
-        // Handle stage column
+        // Handle stage
         if ($column === 'stage') {
-            return $this->translateStage($value);
+            return match ($value) {
+                'new' => 'جديدة',
+                'initial_acceptance' => 'قبول أولي',
+                'under_review' => 'قيد المراجعة',
+                'expert_consultation' => 'استشارة الخبراء',
+                'final_decision' => 'قرار نهائي',
+                default => $value,
+            };
         }
 
-        // Handle is_reusable column
+        // Handle is_reusable
         if ($column === 'is_reusable') {
             return $value ? 'نعم' : 'لا';
         }
 
         return $value;
-    }
-
-    // Helper methods to translate values into Arabic
-    protected function translateIdeaType($type)
-    {
-        return $type === 'creative' ? 'إبداعية' : 'تقليدية';
-    }
-
-    protected function translateApprovalStatus($status)
-    {
-        switch ($status) {
-            case 'pending':
-                return 'قيد المراجعة';
-            case 'approved':
-                return 'مقبولة';
-            case 'rejected':
-                return 'مرفوضة';
-            default:
-                return $status;
-        }
-    }
-
-    protected function translateStatus($status)
-    {
-        switch ($status) {
-            case 'in-progress':
-                return 'قيد التنفيذ';
-            case 'approved':
-                return 'مقبولة';
-            case 'rejected':
-                return 'مرفوضة';
-            case 'deleted_by_entrepreneur':
-                return 'محذوفة من قبل رائد الأعمال';
-            case 'expired':
-                return 'منتهية الصلاحية';
-            default:
-                return $status;
-        }
-    }
-
-    protected function translateStage($stage)
-    {
-        switch ($stage) {
-            case 'new':
-                return 'جديدة';
-            case 'initial_acceptance':
-                return 'قبول أولي';
-            case 'under_review':
-                return 'قيد المراجعة';
-            case 'expert_consultation':
-                return 'استشارة الخبراء';
-            case 'final_decision':
-                return 'قرار نهائي';
-            default:
-                return $stage;
-        }
     }
 }
