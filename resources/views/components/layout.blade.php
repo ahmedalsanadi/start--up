@@ -53,7 +53,7 @@
                         'route' => 'investor.announcements.index',
                         'icon' => 'megaphone',
                         'label' => '
-                             الإعلانات'
+                                             الإعلانات'
                     ],
                     ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
 
@@ -61,11 +61,17 @@
             } elseif ($user->isEntrepreneur()) {
                 return [
                     ['route' => 'entrepreneur.home', 'icon' => 'layout-dashboard', 'label' => 'الصفحة الرئيسية'],
+
                     [
                         'route' => 'entrepreneur.ideas.index',
                         'icon' => 'lightbulb',
                         'label' => '
-                             الأفكار'
+                                             افكاري'
+                    ],
+                    [
+                        'route' => 'entrepreneur.home',
+                        'icon' => 'megaphone',
+                        'label' => ' الاعلانات'
                     ],
                     ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
                 ];

@@ -169,7 +169,7 @@
 
                         <!-- Buttons -->
                         <div class="flex items-center justify-between">
-                            <a href="{{ route('entrepreneur.announcement.show', $announcement) }}"
+                            <a href="{{ route('entrepreneur.announcements.show', $announcement) }}"
                                 class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 flex items-center">
                                 عرض التفاصيل
                                 <i data-lucide="arrow-left" class="w-4 h-4 inline-block mr-2"></i>

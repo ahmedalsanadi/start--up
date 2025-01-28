@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Investor\InvestorHomeController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
 
@@ -23,23 +24,12 @@ use App\Http\Controllers\Investor\{
 use App\Http\Controllers\Entrepreneur\{
 
     IdeaController as EntrepreneurIdeaController,
-    EntrepreneurHomeController
+    EntrepreneurHomeController,
+    AnnouncementController as EntrepreneurAnnouncementController
 };
 
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
-
-
-
-
-// Route::get('/jobs/create', [JobController::class, 'create'])->middleware('auth');
-// Route::post('/jobs', [JobController::class, 'store'])->middleware('auth');
-// Route::get('/jobs/{job}', [JobController::class, 'show'])->middleware('auth');
-// Route::get('/jobs/{job}/edit', [JobController::class, 'edit'])->middleware(['auth', 'can:update,job']);
-// Route::put('/jobs/{job}', [JobController::class, 'update'])->middleware(['auth', 'can:update,job']);
-// Route::put('/jobs/{job}', [JobController::class, 'delete'])->middleware(['auth', 'can:delete,job']);
-
-
 
 // Acessable Route
 // Route::get('/', [JobController::class, 'index'])->name('jobs.index');
@@ -70,14 +60,14 @@ Route::get('/', function () {
 });
 
 
-
-
-
-
 // Auth Routes ---------------------------------
 Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
+
+    Route::get('/welcome', function () {
+        return view('welcome');
+    })->name('welcome');
 
     Route::get('/login', [SessionController::class, 'create'])->name('login');
     Route::post('/login', [SessionController::class, 'store']);
@@ -216,11 +206,8 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
 
     Route::get('/', [EntrepreneurHomeController::class, 'index'])->name('entrepreneur.home');
 
-
-
-    Route::resource('announcement', EntrepreneurIdeaController::class)->names([
-        'show' => 'entrepreneur.announcement.show',
-
+    Route::resource('announcement', EntrepreneurAnnouncementController::class)->names([
+        'show' => 'entrepreneur.announcements.show',
     ]);
 
     Route::resource('ideas', EntrepreneurIdeaController::class)->names([
@@ -232,18 +219,16 @@ Route::prefix('entrepreneur')->middleware(['auth', 'user_type:entrepreneur'])->g
         'edit' => 'entrepreneur.ideas.edit',
         'update' => 'entrepreneur.ideas.update',
         'destroy' => 'entrepreneur.ideas.destroy',
-
-
     ]);
 
 });
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', function () {
-        return "user profile";
 
-    })->name('user.profile');
+
+    Route::resource('profile', ProfileController::class)->only(['show', 'edit', 'update']);
+
 
     Route::post('/logout', [SessionController::class, 'destroy'])->name('logout');
     //notifications
@@ -273,7 +258,4 @@ Route::post('/notifications/{notification}/mark-as-read', [NotificationControlle
 Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])
     ->name('notifications.unread-count')
     ->middleware('auth');
-
-
-
 

@@ -41,6 +41,40 @@ class IdeaController extends Controller
         return view('entrepreneur.ideas.index', compact('ideas', 'statistics'));
     }
 
+    public function show(Idea $idea)
+    {
+        if ($idea->idea === 'creative') {
+            //ensure the idea owned by this entrepreneur
+            if ($idea->entrepreneur_id !== auth()->id()) {
+                abort(403);
+            }
+
+
+            $stagesCount = 5; // Total number of stages
+            $completedStages = $idea->stages->where('stage_status', true)->count();
+            $progressPercentage = ($completedStages / $stagesCount) * 100;
+
+            // Load the idea with its relationships
+            $idea->load([
+                'categories',
+                'entrepreneur',
+                'announcement',
+                'stages',
+            ]);
+
+            return view('entrepreneur.ideas.show', compact('idea', 'progressPercentage'));
+
+        } else {
+            $idea->load([
+                'categories',
+                'entrepreneur',
+            ]);
+            return view('entrepreneur.ideas.show', compact('idea'));
+
+        }
+
+    }
+
     public function create(Request $request)
     {
         $categories = Category::whereNotNull('parent_id')
@@ -157,6 +191,178 @@ class IdeaController extends Controller
         return redirect()->route('entrepreneur.ideas.index')
             ->with('success', 'تم إنشاء الفكرة بنجاح.');
     }
+
+
+
+    public function edit(Idea $idea)
+    {
+        // ensure the authenticated user owns the idea
+        if ($idea->entrepreneur_id !== auth()->id()) {
+            return redirect()->back()
+                ->with('error', 'You are not authorized to edit this idea.');
+        }
+
+        // common checks for all ideas
+        if ($idea->expiry_date < now()) {
+            return redirect()->back()
+                ->with('error', 'لا يمكن تعديل هذه الفكرة لان الفكرة منتهية الصلاحية.');
+        }
+
+        // additional checks for creative ideas
+        if ($idea->idea_type === 'creative') {
+            $announcement = $idea->announcement;
+
+            if ($announcement->status === 'closed') {
+                return redirect()->back()
+                    ->with('error', 'لا يمكن تعديل هذه الفكرة لان الاعلان مغلق.');
+            }
+
+            if ($idea->status === 'rejected') {
+                return redirect()->back()
+                    ->with('error', 'لا يمكن تعديل هذه الفكرة لان الفكرة مرفوض.');
+            }
+
+            // fetch categories and pass them with the announcement
+            $categories = Category::whereNotNull('parent_id')->get();
+            return view('entrepreneur.ideas.edit', compact('idea', 'categories', 'announcement'));
+        }
+
+        // for non-creative ideas, fetch categories and pass to the view
+        $categories = Category::whereNotNull('parent_id')->get();
+        return view('entrepreneur.ideas.edit', compact('idea', 'categories'));
+    }
+
+
+    public function update(Request $request, $id)
+    {
+
+        $idea = Idea::findOrFail($id);
+
+        // ensure the authenticated user owns the idea
+        if ($idea->entrepreneur_id !== auth()->id()) {
+            return redirect()->route('entrepreneur.ideas.index')
+                ->with('error', 'You are not authorized to update this idea.');
+        }
+
+        // common checks for all ideas
+        if ($idea->expiry_date < now()) {
+            return redirect()->back()
+                ->with('error', 'لا يمكن تحديث هذه الفكرة لان الفكرة منتهية الصلاحية.');
+        }
+
+        // additional checks for creative ideas
+        if ($idea->idea_type === 'creative') {
+            $announcement = $idea->announcement;
+
+            if ($announcement->status === 'closed') {
+                return redirect()->back()
+                    ->with('error', 'لا يمكن تحديث هذه الفكرة لان الاعلان مغلق.');
+            }
+
+            if ($idea->status === 'rejected') {
+                return redirect()->back()
+                    ->with('error', 'لا يمكن تحديث هذه الفكرة لان الفكرة مرفوض.');
+            }
+        }
+
+        // common validation rules for both creative and traditional ideas
+        $commonValidationRules = [
+            'name' => 'required|string',
+            'brief_description' => 'required|string|max:255',
+            'detailed_description' => 'required|string',
+            'budget' => 'required|numeric',
+            'location' => 'required|string',
+            'idea_type' => 'required|in:creative,traditional',
+            'categories' => 'required|array',
+            'feasibility_study' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ];
+
+        // additional validation rules for creative ideas
+        if ($request->has('announcement_id') && $request->input('idea_type') === 'creative') {
+            $commonValidationRules['announcement_id'] = 'required|exists:announcements,id';
+        }
+
+        // validate the request data
+        $validatedIdeaData = $request->validate($commonValidationRules);
+
+        // check for duplicate ideas (only for creative ideas)
+        if ($validatedIdeaData['idea_type'] === 'creative') {
+            $duplicateIdea = Idea::where('id', '!=', $idea->id) // Exclude the current idea
+                ->where('is_reusable', false)
+                ->where(function ($query) use ($validatedIdeaData) {
+                    $query->where('name', $validatedIdeaData['name'])
+                        ->where('brief_description', $validatedIdeaData['brief_description'])
+                        ->where('detailed_description', $validatedIdeaData['detailed_description']);
+                })
+                ->first();
+
+            if ($duplicateIdea) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors([
+                        'name' => 'هذه الفكرة موجودة بالفعل ولا يمكن إعادة استخدامها.',
+                        'brief_description' => 'هذه الفكرة موجودة بالفعل ولا يمكن إعادة استخدامها.',
+                        'detailed_description' => 'هذه الفكرة موجودة بالفعل ولا يمكن إعادة استخدامها.',
+                    ]);
+            }
+        }
+
+        // handle file uploads if provided
+        if ($request->hasFile('feasibility_study')) {
+            $feasibilityStudyPath = $request->file('feasibility_study')->store('feasibility_studies', 'public');
+            $validatedIdeaData['feasibility_study'] = $feasibilityStudyPath;
+        }
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('idea_images', 'public');
+            $validatedIdeaData['image'] = $imagePath;
+        }
+
+        // set the approval status to "pending"
+        $validatedIdeaData['approval_status'] = 'pending';
+
+        // update the idea
+        $idea->update($validatedIdeaData);
+
+        // sync categories
+        $idea->categories()->sync($validatedIdeaData['categories']);
+
+        // notify the admin that there is a new announcement needing approval
+        $notificationService = app(NotificationService::class);
+        $admins = User::where('user_type', '1')->get();
+        foreach ($admins as $admin) {
+            $notificationService->notify($admin, [
+                'type' => 'updated_idea',
+                'title' => 'فكرة محدث في انتظار الموافقة',
+                'message' => 'تم تحديث فكرة ' . $idea->name . ' وهو في انتظار الموافقة من قبل الإدارة.',
+                'action_type' => 'view_idea',
+                'action_id' => $idea->id,
+                'action_url' => route('admin.ideas.show', $idea->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'entrepreneur',
+            ]);
+        }
+
+        return redirect()->route('entrepreneur.ideas.index')
+            ->with('success', 'تم تحديث الفكرة بنجاح.');
+    }
+
+    public function destroy(Idea $idea)
+    {
+        //ensure that the entrepreneur owns this idea
+        if ($idea->entrepreneur_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $idea->update([
+            'is-reusable' => true,
+        ]);
+        $idea->delete();
+        return redirect()->route('entrepreneur.ideas.index')
+            ->with('success', 'تم حذف الفكرة بنجاح.');
+    }
+
 
     /**
      * Notify the admin that a new idea has been created.
