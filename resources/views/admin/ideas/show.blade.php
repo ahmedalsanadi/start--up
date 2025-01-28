@@ -116,7 +116,7 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">إجراءات الإدارة</h3>
                         @if($idea->approval_status === 'pending')
                             <div class="space-y-4">
-                                <form action="{{ route('admin.idea.update-status', $idea) }}" method="POST">
+                                <form action="{{ route('admin.ideas.update-status', $idea) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="approval_status" value="approved">

@@ -3,10 +3,12 @@ namespace App\Http\Controllers\Entrepreneur;
 
 use App\Models\Idea;
 use App\Models\IdeaStage;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Announcement;
+use App\Models\User;
 
 class IdeaController extends Controller
 {
@@ -65,7 +67,7 @@ class IdeaController extends Controller
 
     public function store(Request $request)
     {
-        // common validation rules for both creative and traditional ideas
+        // Common validation rules for both creative and traditional ideas
         $commonValidationRules = [
             'name' => 'required|string',
             'brief_description' => 'required|string|max:255',
@@ -78,15 +80,15 @@ class IdeaController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
 
-        // additional validation rules for creative ideas
+        // Additional validation rules for creative ideas
         if ($request->has('announcement_id') && $request->input('idea_type') === 'creative') {
             $commonValidationRules['announcement_id'] = 'required|exists:announcements,id';
         }
 
-        // validate the request data
+        // Validate the request data
         $validatedIdeaData = $request->validate($commonValidationRules);
 
-        // check for duplicate ideas (only for creative ideas)
+        // Check for duplicate ideas (only for creative ideas)
         if ($request->input('idea_type') === 'creative') {
             $existingIdea = Idea::where('name', $validatedIdeaData['name'])
                 ->orWhere('brief_description', $validatedIdeaData['brief_description'])
@@ -105,11 +107,11 @@ class IdeaController extends Controller
             }
         }
 
-        // handle file uploads
+        // Handle file uploads
         $feasibilityStudyPath = $request->file('feasibility_study')->store('feasibility_studies', 'public');
         $imagePath = $request->file('image')->store('idea_images', 'public');
 
-        // create the idea
+        // Create the idea
         $ideaData = [
             'name' => $validatedIdeaData['name'],
             'brief_description' => $validatedIdeaData['brief_description'],
@@ -119,13 +121,13 @@ class IdeaController extends Controller
             'entrepreneur_id' => auth()->id(),
             'feasibility_study' => $feasibilityStudyPath,
             'image' => $imagePath,
-            'approval_status' => 'approved', //TODO: Set approval_status to 'pending'
+            'approval_status' => 'pending',
             'status' => 'in-progress',
             'idea_type' => $validatedIdeaData['idea_type'],
             'is_reusable' => $validatedIdeaData['idea_type'] === 'creative' ? false : true,
         ];
 
-        // additional fields for creative ideas
+        // Additional fields for creative ideas
         if ($validatedIdeaData['idea_type'] === 'creative') {
             $ideaData['announcement_id'] = $validatedIdeaData['announcement_id'];
             $ideaData['stage'] = 'new';
@@ -134,10 +136,10 @@ class IdeaController extends Controller
             $ideaData['expiry_date'] = now()->addMonths(2); // 2 months expiry for traditional ideas
         }
 
-        // create the idea
+        // Create the idea
         $idea = Idea::create($ideaData);
 
-        // attach categories
+        // Attach categories
         $idea->categories()->attach($validatedIdeaData['categories']);
 
         // Create initial idea stage (only for creative ideas)
@@ -146,16 +148,42 @@ class IdeaController extends Controller
                 'idea_id' => $idea->id,
                 'stage' => 'new',
                 'stage_status' => true,
-
             ]);
         }
 
-        // TODO: Notify the admin that a new idea has been created
-
-
+        // Notify the admin that a new idea has been created
+        $this->notifyAdminAboutNewIdea($idea);
 
         return redirect()->route('entrepreneur.ideas.index')
             ->with('success', 'تم إنشاء الفكرة بنجاح.');
+    }
+
+    /**
+     * Notify the admin that a new idea has been created.
+     */
+    protected function notifyAdminAboutNewIdea(Idea $idea)
+    {
+        // Fetch all admin users
+        $admins = User::where('user_type', 1)->get();
+
+        // Prepare notification data
+        $data = [
+            'type' => 'new_idea_created',
+            'title' => 'فكرة جديدة تحتاج إلى الموافقة',
+            'message' => 'تم إنشاء فكرة جديدة: ' . $idea->name,
+            'action_type' => 'new_idea_created',
+            'action_id' => $idea->id,
+            'action_url' => route('admin.ideas.show', $idea->id),
+            'initiator_id' => $idea->entrepreneur_id,
+            'initiator_type' => 'entrepreneur',
+            'additional_data' => [
+                'idea_title' => $idea->name,
+                'entrepreneur_name' => $idea->entrepreneur->name,
+            ],
+        ];
+
+        // Send notification to all admins
+        app(NotificationService::class)->notifyAdmins($data);
     }
 }
 

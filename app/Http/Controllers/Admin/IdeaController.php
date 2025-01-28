@@ -111,63 +111,55 @@ class IdeaController extends Controller
             'rejection_reason' => $request->rejection_reason,
         ]);
 
-        // Check if the idea was approved
+        $notificationService = app(NotificationService::class);
+
         if ($idea->approval_status === 'approved') {
             // 1- Notify the entrepreneur that their idea has been approved
-            $this->notifyEntrepreneur($idea);
+            $notificationService->notify($idea->entrepreneur, [
+                'type' => 'idea_approved',
+                'title' => 'فكرة معتمدة',
+                'message' => 'تمت الموافقة على فكرتك بنجاح.',
+                'action_type' => 'view_idea',
+                'action_id' => $idea->id,
+                'action_url' => route('entrepreneur.ideas.show', $idea->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
 
-            // 2- Notify the investor that there is a new idea in their announcement
-            $this->notifyInvestor($idea);
+            if ($idea->announcement_id != null) {
+                $announcementOwner = $idea->announcement->investor; // Get the investor
+                if ($announcementOwner) {
+                    $notificationService->notify($announcementOwner, [
+                        'type' => 'new_idea_announcement',
+                        'title' => 'فكرة جديدة',
+                        'message' => 'تمت إضافة فكرة جديدة إلى إعلانك.',
+                        'action_type' => 'view_announcement',
+                        'action_id' => $idea->announcement_id,
+                        'action_url' => route('investor.announcements.show', $idea->announcement_id),
+                        'initiator_id' => $idea->user_id,
+                        'initiator_type' => 'entrepreneur',
+                    ]);
+                } else {
+                    \Log::error('Investor not found for Announcement ID: ' . $idea->announcement_id);
+                }
+            }
+
+        } elseif ($idea->approval_status === 'rejected') {
+            // 3- Notify the entrepreneur that their idea has been rejected
+            $notificationService->notify($idea->entrepreneur, [
+                'type' => 'idea_rejected',
+                'title' => 'فكرة مرفوضة',
+                'message' => 'تم رفض فكرتك. السبب: ' . $idea->rejection_reason,
+                'action_type' => 'view_idea',
+                'action_id' => $idea->id,
+                'action_url' => route('entrepreneur.ideas.show', $idea->id),
+                'initiator_id' => auth()->id(),
+                'initiator_type' => 'admin',
+            ]);
         }
 
-        // Redirect back with success message
         return back()->with('success', 'تم تحديث حالة الفكرة بنجاح.');
     }
 
-    /**
-     * Notify the entrepreneur that their idea has been approved.
-     */
-    protected function notifyEntrepreneur(Idea $idea)
-    {
-        $entrepreneur = $idea->user; // Assuming the entrepreneur is the owner of the idea
-        $data = [
-            'type' => 'idea_approved',
-            'title' => 'تمت الموافقة على فكرتك',
-            'message' => 'تمت الموافقة على فكرتك: ' . $idea->title,
-            'action_type' => 'idea_approved',
-            'action_id' => $idea->id,
-            'action_url' => route('entrepreneur.ideas.show', $idea->id), // Link to the idea details
-            'initiator_id' => $idea->user_id,
-            'initiator_type' => 'entrepreneur',
-            'additional_data' => [
-                'idea_title' => $idea->title,
-            ],
-        ];
 
-        app(NotificationService::class)->notify($entrepreneur, $data);
-    }
-
-    /**
-     * Notify the investor that there is a new idea in their announcement.
-     */
-    protected function notifyInvestor(Idea $idea)
-    {
-        $investor = $idea->announcement->user; 
-        $data = [
-            'type' => 'new_idea_in_announcement',
-            'title' => 'فكرة جديدة في إعلانك',
-            'message' => 'تمت إضافة فكرة جديدة إلى إعلانك: ' . $idea->title,
-            'action_type' => 'new_idea_in_announcement',
-            'action_id' => $idea->id,
-            'action_url' => route('investor.ideas.show', $idea->id),
-            'initiator_id' => $idea->user_id,
-            'initiator_type' => 'entrepreneur',
-            'additional_data' => [
-                'idea_title' => $idea->title,
-                'announcement_title' => $idea->announcement->title,
-            ],
-        ];
-
-        app(NotificationService::class)->notify($investor, $data);
-    }
 }
