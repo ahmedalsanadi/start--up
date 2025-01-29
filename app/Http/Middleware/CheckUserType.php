@@ -8,43 +8,27 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckUserType
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string  $type
-     * @return mixed
-     */
     public function handle(Request $request, Closure $next, $type)
     {
-        $user = Auth::user();
-
-        if (!$user) {
-            return redirect()->route('login'); // Redirect to login if no user is authenticated
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Please login to access this page.');
         }
 
-        switch ($type) {
-            case 'admin':
-                if (!$user->isAdmin()) {
-                    abort(403, 'You are not authorized to visit this page.'); // Return 403 Forbidden
-                }
-                break;
+        $user = Auth::user();
 
-            case 'investor':
-                if (!$user->isInvestor()) {
-                    abort(403, 'You are not authorized to visit this page.'); // Return 403 Forbidden
-                }
-                break;
+        $typeMap = [
+            'admin' => 'isAdmin',
+            'investor' => 'isInvestor',
+            'entrepreneur' => 'isEntrepreneur'
+        ];
 
-            case 'entrepreneur':
-                if (!$user->isEntrepreneur()) {
-                    abort(403, 'You are not authorized to visit this page.'); // Return 403 Forbidden
-                }
-                break;
+        if (!isset($typeMap[$type]) || !$user->{$typeMap[$type]}()) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthorized'], 403);
+            }
 
-            default:
-                abort(403, 'You are not authorized to visit this page.'); // Default fallback
+            return redirect()->route('dashboard')
+                ->with('error', 'You are not authorized to access this page.');
         }
 
         return $next($request);

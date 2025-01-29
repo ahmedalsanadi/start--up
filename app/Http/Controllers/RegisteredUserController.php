@@ -29,42 +29,22 @@ class RegisteredUserController extends Controller
             'profile_image' => 'nullable|image|mimes:png,jpg,jpeg,webp,svg|max:2048',
         ]);
 
-
-        // Handle the image upload if provided
         if ($request->hasFile('profile_image')) {
             $imagePath = $request->file('profile_image')->store('profiles', 'public');
             $userAttributes['profile_image'] = $imagePath;
         }
 
-
         $user = User::create(array_merge($userAttributes, [
             'is_active' => true
         ]));
 
-        // dd($user->user_type);
         if ($user) {
             Auth::login($user);
             Session::flash('success', 'Registered Successfully');
-
-            // Redirect based on user type
-            if ($user->isAdmin()) {
-                return redirect()->route('admin.home');
-
-            } elseif ($user->isInvestor()) {
-                // Redirect investor to commercial registration page
-                return redirect()->route('commercial-registration.create');
-
-            } elseif ($user->isEntrepreneur()) {
-                return redirect()->route('entrepreneur.home');
-
-            } else {
-                $route = "login";
-            }
-
-
-        } else {
-            Session::flash('error', 'Oops! Registration Failed');
-            return back()->withInput();
+            return redirect()->route('dashboard');
         }
+
+        Session::flash('error', 'Oops! Registration Failed');
+        return back()->withInput();
     }
 }
