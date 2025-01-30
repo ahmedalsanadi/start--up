@@ -1,6 +1,7 @@
 <x-layout title="Edit Category">
     <div class="flex items-center justify-center pt-4 pb-1">
-        <div class="max-w-4xl w-full space-y-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 md:p-8">
+        <div
+            class="max-w-4xl w-full space-y-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl p-4 md:p-8">
             <!-- Form Header -->
             <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-indigo-950 dark:text-white">
@@ -11,7 +12,8 @@
                 </p>
             </div>
 
-            <x-forms.form method="POST" action="{{ route('admin.categories.update', $category->id) }}" class="mt-8 space-y-6">
+            <x-forms.form method="POST" action="{{ route('admin.categories.update', $category->id) }}"
+                class="mt-8 space-y-6">
                 @method('PUT')
                 <!-- Category Name Field -->
                 <div>
@@ -41,15 +43,29 @@
                             </select>
                         @else
                             <!-- If the category is not a parent, show the dropdown -->
-                            <select name="parent_id" id="parent_id" class="form-input">
-                                <option value="">-- اختر القسم الرئيسي --</option>
-                                <option value="" {{ (old('parent_id', $category->parent_id) === null) ? 'selected' : '' }}>لا يوجد</option>
-                                @foreach ($parentCategories as $parent)
-                                    <option value="{{ $parent->id }}" {{ (old('parent_id', $category->parent_id) == $parent->id) ? 'selected' : '' }}>
-                                        {{ $parent->name }}
-                                    </option>
-                                @endforeach
-                            </select>
+
+                            <div class="relative overflow-visible ">
+
+
+                                <select name="parent_id" id="parent_id"
+                                    class="form-input-select absolute top-full left-0 w-full mt-1 z-50">
+                                    <option value="">-- اختر القسم الرئيسي --</option>
+                                    <option value="" {{ (old('parent_id', $category->parent_id) === null) ? 'selected' : '' }}>لا يوجد</option>
+                                    @foreach ($parentCategories as $parent)
+                                        <option value="{{ $parent->id }}" {{ (old('parent_id', $category->parent_id) == $parent->id) ? 'selected' : '' }}>
+                                            {{ $parent->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <!-- Custom arrow (optional) -->
+                                <div
+                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
                         @endif
                     </div>
                     @error('parent_id')

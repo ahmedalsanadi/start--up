@@ -44,5 +44,5 @@
         </div>
     </div>
 
-    <x-commericial-review-modal />
+
 </x-layout>

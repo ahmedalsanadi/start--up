@@ -65,7 +65,7 @@
                 </button>
 
                 @auth
-                 
+
                     <!-- Notifications Dropdown (Always Visible) -->
                     <div class="relative">
                         <button id="notification-bell" type="button"
@@ -121,13 +121,22 @@
                                     <p class="text-gray-500 dark:text-gray-400 text-center">لا توجد إشعارات</p>
                                 @endforelse
                             </div>
+
+
+
                             <!-- View All Notifications Link -->
-                            <div class="border-t border-gray-200 dark:border-gray-600">
-                                <a href="{{ route('notifications.index') }}"
-                                    class="block py-2 text-sm font-medium text-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
-                                    عرض جميع الإشعارات
-                                </a>
-                            </div>
+                            @if ($user->isInvestor() && !$user->hasApprovedRegistration())
+
+                            @else
+
+                                <div class="border-t border-gray-200 dark:border-gray-600">
+                                    <a href="{{ route('notifications.index') }}"
+                                        class="block py-2 text-sm font-medium text-center text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                                        عرض جميع الإشعارات
+                                    </a>
+                                </div>
+
+                            @endif
                         </div>
                     </div>
                 @endauth

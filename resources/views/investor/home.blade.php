@@ -1,7 +1,6 @@
 <x-layout title="Home">
     <div class="space-y-8">
         <!-- Hero Section -->
-        <!-- Hero Section -->
         <div
             class="relative bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-700 dark:to-indigo-800 rounded-2xl p-8 mb-8 overflow-hidden">
             <!-- Decorative Background Elements -->
@@ -44,8 +43,6 @@
                 class="absolute -top-10 -right-10 w-24 h-24 bg-indigo-400/20 rounded-full blur-2xl animate-float delay-1000">
             </div>
         </div>
-        <!-- Filters Section -->
-        <!-- Filters Section -->
         <!-- Filters Section -->
         <div class="bg-gray-100 dark:bg-gray-800 rounded-xl shadow-lg p-6">
             <div class="flex items-center justify-between mb-6">
