@@ -9,22 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckCommercialRegistration
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
 
-        // List of routes that should be excluded from the check
         $excludedRoutes = [
             'commercial-registration.create',
             'commercial-registration.store',
             'pending-commercial-registration',
             'check.registration.status',
-            'logout'
+            'logout',
+            'dashboard'
         ];
 
         if ($user->isInvestor() && !in_array($request->route()->getName(), $excludedRoutes)) {

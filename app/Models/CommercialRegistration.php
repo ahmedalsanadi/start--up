@@ -14,13 +14,13 @@ class CommercialRegistration extends Model
         'reviewed_at' => 'datetime',
     ];
 
-    // Relationship with the user who submitted the registration
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relationship with the admin who reviewed the registration
+
     public function reviewedBy()
     {
         return $this->belongsTo(User::class, 'reviewed_by');

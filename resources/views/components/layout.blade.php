@@ -12,6 +12,14 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Global Routes for JavaScript -->
+    <script>
+        window.routes = {
+            unreadCount: "{{ route('notifications.unread-count') }}",
+            markAllAsRead: "{{ route('notifications.mark-as-read') }}",
+        };
+    </script>
+
     <!-- Inline script to set dark mode before rendering -->
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
@@ -41,8 +49,6 @@
                     ['route' => 'admin.users.index', 'icon' => 'users', 'label' => 'إدارة المستخدمين'],
                     ['route' => 'admin.commerical-registrations.index', 'icon' => 'file-text', 'label' => 'إدارة السجلات التجارية'],
                     ['route' => 'admin.announcements.index', 'icon' => 'megaphone', 'label' => 'إدارة الإعلانات'],
-                    ['route' => 'admin.reports.index', 'icon' => 'activity', 'label' => 'إدارة التقارير'],
-                    ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
 
 
                 ];
@@ -52,10 +58,14 @@
                     [
                         'route' => 'investor.announcements.index',
                         'icon' => 'megaphone',
-                        'label' => '
-                                             الإعلانات'
+                        'label' => ' إعلاناتي'
                     ],
-                    ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
+                    [
+                        'route' => 'investor.home',
+                        'icon' => 'lightbulb',
+                        'label' => 'الأفكار'
+                    ],
+
 
                 ];
             } elseif ($user->isEntrepreneur()) {
@@ -66,14 +76,14 @@
                         'route' => 'entrepreneur.ideas.index',
                         'icon' => 'lightbulb',
                         'label' => '
-                                             افكاري'
+                                                                                                     افكاري'
                     ],
                     [
                         'route' => 'entrepreneur.home',
                         'icon' => 'megaphone',
                         'label' => ' الاعلانات'
                     ],
-                    ['route' => 'notifications.index', 'icon' => 'bell', 'label' => 'الإشعارات', 'count' => auth()->user()->unreadNotifications()->count()],
+
                 ];
             }
 
@@ -177,6 +187,8 @@
             //     e.stopPropagation();
             // });
         });
+
+
 
     </script>
 </body>

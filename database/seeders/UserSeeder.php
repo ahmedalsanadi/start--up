@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'profile_image' => 'https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80',
             ],
             [
-                'name' => 'entrepreneur',
+                'name' => 'اميمة مقراض',
                 'email' => 'entrepreneur@example.com',
                 'user_type' => 3,
                 'password' => Hash::make('123456'),
@@ -51,14 +51,14 @@ class UserSeeder extends Seeder
             $createdUser = User::factory()->create($user);
 
           //  If the user is an investor, create a commercial registration record
-            if ($createdUser->user_type == 2) {
-                CommercialRegistration::factory()->create([
-                    'user_id' => $createdUser->id,
-                    'registration_number' => 'CR123456', // Example registration number
-                    'status' => 'approved',
-                    'reviewed_at' => now(),
-                ]);
-            }
+            // if ($createdUser->user_type == 2) {
+            //     CommercialRegistration::factory()->create([
+            //         'user_id' => $createdUser->id,
+            //         'registration_number' => 'CR123456', // Example registration number
+            //         'status' => 'approved',
+            //         'reviewed_at' => now(),
+            //     ]);
+            // }
         }
 
         $investors = User::factory(30)->create([
