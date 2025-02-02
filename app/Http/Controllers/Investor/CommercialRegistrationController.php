@@ -45,6 +45,12 @@ class CommercialRegistrationController extends Controller
         $validated = $request->validate([
             'registration_number' => 'required|string|min:5',
             'registration_number_confirmation' => 'required|same:registration_number',
+        ], [
+            'registration_number.required' => 'حقل رقم السجل التجاري مطلوب.',
+            'registration_number.string' => 'يجب أن يكون رقم السجل التجاري نصًا.',
+            'registration_number.min' => 'يجب أن يكون رقم السجل التجاري على الأقل 5 أحرف.',
+            'registration_number_confirmation.required' => 'يرجى تأكيد رقم السجل التجاري.',
+            'registration_number_confirmation.same' => 'رقم السجل التجاري غير متطابق.',
         ]);
 
         $registration = Auth::user()->commercialRegistration;
@@ -63,21 +69,23 @@ class CommercialRegistrationController extends Controller
             ]);
         }
 
-              // Notify admins about the new registration
-              $this->notificationService->notifyAdmins([
-                'type' => 'commercial_registration',
-                'title' => 'سجل تجاري جديد',
-                'message' => "تم انشاء سجل تجاري جديد من قبل " . auth()->user()->name,
-                'action_type' => 'commercial_registration',
-                'action_id' => $registration->id,
-                'initiator_id' => auth()->id(),
-                'initiator_type' => 'investor',
-                'additional_data' => [
-                    'registration_number' => $registration->registration_number
-                ],
-            ]);
+        // Notify admins about the new registration
+        $this->notificationService->notifyAdmins([
+            'type' => 'commercial_registration',
+            'title' => 'سجل تجاري جديد',
+            'message' => "تم إنشاء سجل تجاري جديد من قبل " . auth()->user()->name,
+            'action_type' => 'commercial_registration',
+            'action_id' => $registration->id,
+            'initiator_id' => auth()->id(),
+            'initiator_type' => 'investor',
+            'additional_data' => [
+                'registration_number' => $registration->registration_number
+            ],
+        ]);
+
         return redirect()->route('pending-commercial-registration');
     }
+
 
     public function displayPendingPage()
     {

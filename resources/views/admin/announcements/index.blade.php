@@ -223,13 +223,12 @@
 
                                 محذوفة
                             </option>
-                            <option value="deleted_by_entrepreneur" {{ request('status') == 'deleted_by_entrepreneur' ? 'selected' : '' }}>محذوفة</option>
+
 
                         </select>
                         <label
                             class="absolute -top-3 right-2 text-xs text-gray-600 bg-white dark:text-gray-400 dark:bg-gray-800 px-2 py-0.5 rounded-full">
-                            حالة الفكرة
-
+                            حالة الإعلان
                         </label>
                     </div>
 
@@ -568,28 +567,16 @@
                 });
             }
 
-            // function handleRealTimeSearch()
-            //  {
-            //     let searchTimeout;
-            //     const searchInput = document.querySelector('input[name="search"]');
-            //     if (searchInput) {
-            //         searchInput.addEventListener('input', function () {
-            //             clearTimeout(searchTimeout);
-            //             searchTimeout = setTimeout(() => {
-            //                 document.getElementById('filterForm').submit();
-            //             }, 500);
-            //         });
-            //     }
-            // }
-
+        
             function handleExport() {
                 const exportBtn = document.getElementById('exportBtn');
                 if (exportBtn) {
                     exportBtn.addEventListener('click', function () {
+
                         const filterForm = document.getElementById('filterForm');
                         const search = filterForm.querySelector('input[name="search"]').value;
-                        const approvalStatus = filterForm.querySelector('select[name="approval_status"]').value;
                         const status = filterForm.querySelector('select[name="status"]').value;
+                        const approvalStatus = filterForm.querySelector('select[name="approval_status"]').value;
                         const dateFrom = filterForm.querySelector('input[name="date_from"]').value;
                         const dateTo = filterForm.querySelector('input[name="date_to"]').value;
 

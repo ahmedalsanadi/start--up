@@ -29,6 +29,49 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+
+<style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .geometric-bg {
+            background-image: radial-gradient(circle at 1px 1px, #3b82f6 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+
+        .wave-shape {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .wave-shape svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+        }
+    </style>
 </head>
 
 <body class="bg-white dark:bg-gray-900">
@@ -93,7 +136,7 @@
     @endphp
 
     <!-- Content Area -->
-    @if (!in_array($title, ['Login', 'Register', 'Commercial Registration', 'Registration Pending', 'Registration Rejected']))
+    @if (!in_array($title, ['Login', 'Register', 'Commercial Registration', 'Registration Pending', 'Registration Rejected','Privacy Policy','About','Welcome']))
 
         <x-layout.sidebar :user="auth()->user()" :routes="getSidebarRoutes(auth()->user())" />
 

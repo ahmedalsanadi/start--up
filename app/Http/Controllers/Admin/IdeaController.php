@@ -51,22 +51,18 @@ class IdeaController extends Controller
 
         // Counts for stats cards
         $total_ideas = Idea::withTrashed()->count(); // Include trashed records in total count
-        $total_pending = Idea::where('status', 'pending')->withTrashed()->count();
-        $total_in_progress = Idea::where('status', 'in-progress')->withTrashed()->count();
-        $total_approved = Idea::where('status', 'approved')->withTrashed()->count();
-        $total_rejected = Idea::where('status', 'rejected')->withTrashed()->count();
-        $total_deleted = Idea::where('status', 'deleted_by_entrepreneur')->withTrashed()->count();
-        $total_expired = Idea::where('status', 'expired')->withTrashed()->count();
+        $total_pending = Idea::where('approval_status', 'pending')->count();
+        $total_approved = Idea::where('approval_status', 'approved')->count();
+        $total_rejected = Idea::where('approval_status', 'rejected')->withTrashed()->count();
+
+
 
         return view('admin.ideas.index', compact(
             'ideas',
             'total_ideas',
             'total_pending',
-            'total_in_progress',
             'total_approved',
             'total_rejected',
-            'total_deleted',
-            'total_expired'
         ));
     }
 

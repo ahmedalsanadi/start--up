@@ -65,7 +65,7 @@
                             <i data-lucide="filter" class="w-4 h-4"></i>
                             <span>تطبيق الفلتر</span>
                         </button>
-                        <a href="{{ route('admin.announcements.index') }}"
+                        <a href="{{ route('admin.commerical-registrations.index') }}"
                             class="w-full sm:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition duration-200 flex items-center justify-center gap-2">
                             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                             <span>إعادة تعيين</span>

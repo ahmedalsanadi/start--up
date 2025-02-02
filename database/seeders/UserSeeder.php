@@ -22,6 +22,7 @@ class UserSeeder extends Seeder
                 'city' => 'Sanaa',
                 'address' => 'Hadaa',
                 'profile_image' => 'https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80',
+                'privacy_policy' => true,
             ],
             [
                 'name' => 'عبدالسلام طنين',
@@ -33,6 +34,7 @@ class UserSeeder extends Seeder
                 'city' => 'Sanaa',
                 'address' => 'Al-Zubiri',
                 'profile_image' => 'https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80',
+                'privacy_policy' => true,
             ],
             [
                 'name' => 'اميمة مقراض',
@@ -44,6 +46,7 @@ class UserSeeder extends Seeder
                 'city' => 'Sanaa',
                 'address' => 'AL-Dairi',
                 'profile_image' => 'https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80',
+                'privacy_policy' => true,
             ],
         ];
 
@@ -64,6 +67,7 @@ class UserSeeder extends Seeder
         $investors = User::factory(30)->create([
             'user_type' => 2,
             'profile_image' => 'https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=76&q=80',
+            'privacy_policy' => true,
         ]);
 
     }

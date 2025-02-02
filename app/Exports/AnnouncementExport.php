@@ -29,7 +29,6 @@ class AnnouncementExport extends BaseExport
                 'in-progress' => 'جاري',
                 'completed' => 'مكتملة',
                 'deleted_by_investor' => 'محذوفة من قبل المستثمر',
-                'deleted_by_entrepreneur' => 'محذوفة من قبل رائد الأعمال',
                 default => $value,
             };
         }

@@ -27,13 +27,14 @@ class AdminAnnouncementController extends Controller
             });
         }
 
-        // Approval Status Filter
-        if ($request->filled('approval_status')) {
-            $query->where('approval_status', $request->status);
-        }
         // Status Filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
+        }
+
+        // Approval Status Filter
+        if ($request->filled('approval_status')) {
+            $query->where('approval_status', $request->approval_status);
         }
 
         // Date Range Filter
