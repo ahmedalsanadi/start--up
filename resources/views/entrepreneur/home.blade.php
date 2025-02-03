@@ -75,7 +75,7 @@
                         <div class="category-group relative">
                             <button type="button"
                                 class="category-parent px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200
-                                                                   bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
+                                                                       bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
                                 {{ $parentCategory->name }}
                                 <i data-lucide="chevron-down" class="w-4 h-4 inline-block mr-1"></i>
                             </button>
@@ -107,8 +107,9 @@
                     <!-- Card Header -->
                     <div class="p-6 border-b border-gray-300 dark:border-gray-700">
                         <div class="flex items-center space-x-4 space-x-reverse">
-                            <x-profile-img :src="$announcement->investor->profile_image"
-                                :alt="$announcement->investor->name" size="md" />
+
+
+                            <x-profile-img src="{{ $announcement->investor->profile_image }}" alt="User Avatar" size="md" />
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                     {{ $announcement->investor->name }}
@@ -236,11 +237,11 @@
                             const pill = document.createElement('div');
                             pill.className = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-3 py-1 text-sm flex items-center gap-2';
                             pill.innerHTML = `
-                                        ${name}
-                                        <button type="button" data-category-id="${id}" class="remove-category">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    `;
+                                            ${name}
+                                            <button type="button" data-category-id="${id}" class="remove-category">
+                                                <i data-lucide="x" class="w-4 h-4"></i>
+                                            </button>
+                                        `;
                             selectedCategoriesPills.appendChild(pill);
                         }
                     });

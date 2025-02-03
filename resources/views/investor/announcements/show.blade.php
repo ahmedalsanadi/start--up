@@ -63,14 +63,8 @@
                     <!-- Investor Profile and Name -->
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-4">
-                            <div
-                                class="w-12 h-12 rounded-full overflow-hidden ring-2 ring-blue-500 dark:ring-blue-400 ring-offset-2 ring-offset-white dark:ring-offset-gray-800">
-                                <img src="{{
-    filter_var($announcement->investor->profile_image, FILTER_VALIDATE_URL)
-    ? $announcement->investor->profile_image
-    : asset('storage/' . $announcement->investor->profile_image)
-                        }}" alt="صورة المستثمر" class="w-full h-full object-cover" />
-                            </div>
+
+                            <x-profile-img src="{{ $announcement->investor->profile_image }}" alt="User Avatar" size="lg" />
                             <div>
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                     {{ $announcement->investor->name }}
@@ -411,7 +405,7 @@
                                                     <i data-lucide="eye"
                                                         class="w-5 h-5 text-blue-600 dark:text-blue-400"></i>
                                                 </a>
-                     
+
                                             </div>
                                         </td>
                                     </tr>

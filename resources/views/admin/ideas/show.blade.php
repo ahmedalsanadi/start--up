@@ -50,8 +50,8 @@
                                 @if($idea->status == 'in-progress')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                             bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
-                                                                                             border border-amber-200 dark:border-amber-800">
+                                                                                                 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
+                                                                                                 border border-amber-200 dark:border-amber-800">
                                         جاري
                                     </span>
                                 @endif
@@ -59,8 +59,8 @@
                                 @if($idea->status == 'approved')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                             bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
-                                                                                             border border-green-200 dark:border-green-800">
+                                                                                                 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
+                                                                                                 border border-green-200 dark:border-green-800">
                                         تمت الموافقة
                                     </span>
                                 @endif
@@ -125,7 +125,7 @@
                                         الموافقة على الفكرة
                                     </button>
                                 </form>
-                                <button onclick="openRejectModal()"
+                                <button onclick="openRejectModal('{{ $idea->id }}')"
                                     class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
                                     رفض الإعلان
                                 </button>
@@ -181,8 +181,9 @@
                                 class="group block p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300">
                                 <div class="flex items-center gap-4">
                                     <!-- Profile Image -->
-                                    <x-profile-img :src="$idea->announcement->investor->profile_image" alt="Investor Image"
-                                        size="md" />
+
+                                    <x-profile-img src="{{ $idea->announcement->investor->profile_image }}"
+                                        alt="User Avatar" size="md" />
 
                                     <!-- Details -->
                                     <div class="flex flex-col gap-1">
@@ -233,8 +234,8 @@
                                                                     <!-- Stage Indicator -->
                                                                     <div
                                                                         class="absolute right-0 flex items-center justify-center h-8 w-8 rounded-full border-2
-                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
                                                                         @if($isCompleted)
                                                                             <i data-lucide="check" class="w-4 h-4 text-white"></i>
                                                                         @elseif($isCurrent)
@@ -248,7 +249,7 @@
                                                                     <div class="mr-12 flex-1">
                                                                         <div
                                                                             class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4
-                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
 
                                                                             <div class="flex items-center justify-between mb-2">
                                                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -279,4 +280,70 @@
 
         </div>
     </div>
+
+        <!-- Reject Modal -->
+        <div id="rejectModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">سبب الرفض</h3>
+                        <button onclick="closeRejectModal()"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <form id="rejectForm" action="" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="approval_status" value="rejected">
+
+                        <!-- Rejection Reason Textarea -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">أدخل سبب
+                                الرفض</label>
+                            <textarea name="rejection_reason"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200"
+                                rows="4" placeholder="أدخل سبب الرفض..." required></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                    <button type="button" onclick="closeRejectModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-200">
+                        إلغاء
+                    </button>
+                    <button type="submit" form="rejectForm"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-200">
+                        تأكيد الرفض
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @push('scripts')
+        <script>
+            function openRejectModal(ideaId) {
+                const modal = document.getElementById('rejectModal');
+                const form = document.getElementById('rejectForm');
+                form.action = `/admin/ideas/${ideaId}`;
+                modal.classList.remove('hidden');
+            }
+
+            function closeRejectModal() {
+                const modal = document.getElementById('rejectModal');
+                modal.classList.add('hidden');
+            }
+        </script>
+    @endpush
 </x-layout>

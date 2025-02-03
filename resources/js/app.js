@@ -156,8 +156,8 @@ const NotificationModule = (() => {
             );
         }
 
-        // Periodically update the unread notifications count (e.g., every 30 seconds)
-        setInterval(updateUnreadCount, 10000); // 30 seconds
+        // Periodically update the unread notifications count (e.g., every 10 seconds)
+        setInterval(updateUnreadCount, 10000);
     };
 
     return {
@@ -165,7 +165,3 @@ const NotificationModule = (() => {
     };
 })();
 
-// Initialize Notification Module
-// document.addEventListener("DOMContentLoaded", () => {
-
-// });

@@ -50,7 +50,7 @@ class ExportController extends Controller
         }
 
         if ($request->filled('approval_status')) {
-            $query->where('approval_status', $request->status);
+            $query->where('approval_status', $request->approval_status);
         }
 
         if ($request->filled('status')) {

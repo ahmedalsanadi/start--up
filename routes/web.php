@@ -30,12 +30,13 @@ use App\Http\Controllers\SessionController;
 
 // Public Routes
 Route::get('/', function () {
-    return "Welcome";
+    return view('welcome');
 })->name('welcome');
 
 Route::get('/about', function () {
-    return "About";
+    return view('about');
 })->name('about');
+
 
 // Auth Routes
 Route::middleware('guest')->group(function () {

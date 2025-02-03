@@ -12,9 +12,11 @@
         </div>
 
         <!-- Filters Section -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mt-6">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mt-6">
 
-            <form id="filterForm" action="{{ route('admin.commerical-registrations.index') }}" method="GET" class="space-y-4">
+            <form id="filterForm" action="{{ route('admin.commerical-registrations.index') }}" method="GET"
+                class="space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <!-- Search Input -->
                     <div class="relative">
@@ -50,7 +52,7 @@
                         class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
                         <option value="">جميع الحالات</option>
                         <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
-                        معلق (قيد المراجعة)
+                            معلق (قيد المراجعة)
                         </option>
                         <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>مقبول</option>
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>مرفوض</option>
@@ -65,7 +67,7 @@
                             <i data-lucide="filter" class="w-4 h-4"></i>
                             <span>تطبيق الفلتر</span>
                         </button>
-                        <a href="{{ route('admin.announcements.index') }}"
+                        <a href="{{ route('admin.commerical-registrations.index') }}"
                             class="w-full sm:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition duration-200 flex items-center justify-center gap-2">
                             <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                             <span>إعادة تعيين</span>
@@ -95,7 +97,8 @@
         </div>
 
         <!-- Registrations Table -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div
+            class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
             <!-- Table Header -->
             <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800/50">
                 <div class="flex justify-between items-center">
@@ -111,11 +114,21 @@
                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead class="bg-gray-50 dark:bg-gray-800/50">
                         <tr>
-                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">المستثمر</th>
-                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">رقم التسجيل</th>
-                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">الحالة</th>
-                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">تاريخ التسجيل</th>
-                            <th class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">الإجراءات</th>
+                            <th
+                                class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                المستثمر</th>
+                            <th
+                                class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                رقم التسجيل</th>
+                            <th
+                                class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                الحالة</th>
+                            <th
+                                class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                تاريخ التسجيل</th>
+                            <th
+                                class="px-6 py-3 text-right text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -124,11 +137,10 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <!-- Investor Profile Image -->
-                                        <x-profile-img
-                                            :src="$registration->user->profile_image ?? 'images/default-profile.png'"
-                                            :alt="$registration->user->name"
-                                            size="sm"
-                                        />
+
+                                        <x-profile-img src="{{ $registration->user->profile_image }}" alt="User Avatar"
+                                            size="sm" />
+
                                         <!-- Investor Name and Email -->
                                         <div>
                                             <div class="text-sm font-medium text-gray-900 dark:text-white">
@@ -147,9 +159,9 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                                        {{ $registration->status === 'approved' ? 'bg-green-100 text-green-800' : '' }}
-                                        {{ $registration->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                        {{ $registration->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
+                                            {{ $registration->status === 'approved' ? 'bg-green-100 text-green-800' : '' }}
+                                            {{ $registration->status === 'pending' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                            {{ $registration->status === 'rejected' ? 'bg-red-100 text-red-800' : '' }}">
                                         {{ ucfirst($registration->status) }}
                                     </span>
                                 </td>
@@ -160,12 +172,13 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     @if ($registration->status == 'approved')
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                             مقبول
                                         </span>
                                     @else
                                         <button onclick="openModal('{{ $registration->id }}')"
-                                                class="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400">
+                                            class="text-blue-600 hover:text-blue-900 dark:hover:text-blue-400">
                                             مراجعة
                                         </button>
                                     @endif
@@ -183,11 +196,11 @@
         </div>
     </div>
 
-<x-commericial-review-modal />
+    <x-commericial-review-modal />
     @push('scripts')
 
 
-<script>
+        <script>
             function handleDateInputs() {
                 const dateInputs = document.querySelectorAll('input[type="date"]');
                 dateInputs.forEach(input => {

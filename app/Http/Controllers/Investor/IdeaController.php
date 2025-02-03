@@ -33,9 +33,7 @@ class IdeaController extends Controller
 
             return view('investor.ideas.show', compact('idea', 'progressPercentage'));
 
-        }
-        else
-        {
+        } else {
             $idea->load([
                 'categories',
                 'entrepreneur',
@@ -93,13 +91,13 @@ class IdeaController extends Controller
             Idea::where('announcement_id', $idea->announcement_id)
                 ->where('id', '!=', $idea->id)
                 ->update([
-                        'status' => 'rejected',
-                        'is_reusable' => true,
-                    ]);
+                    'status' => 'rejected',
+                    'is_reusable' => true,
+                ]);
 
             // Notify the entrepreneur that their idea has been rejected
             foreach ($idea->announcement->ideas as $otherIdea) {
-                if ($otherIdea->id !== $idea->id) {
+                if ($otherIdea->id !== $idea->id && $otherIdea->status === 'in-progress' && $otherIdea->approval_status != 'rejected') {
                     app(NotificationService::class)->notify($otherIdea->entrepreneur, [
                         'type' => 'idea_rejected',
                         'title' => 'تم رفض الفكرة',

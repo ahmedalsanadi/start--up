@@ -1,6 +1,5 @@
-<x-layout title="Login">
+<x-guest-layout title="Login">
     <!-- resources/views/auth/login.blade.php -->
-
     <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
         <form method="POST" action="{{ route('login') }}"
             class="w-full max-w-md p-6 bg-white rounded-lg shadow-md border border-gray-300 dark:bg-gray-800 dark:border-gray-700">
@@ -9,7 +8,8 @@
 
             <!-- Display general errors (e.g., inactive account) -->
             @if ($errors->any())
-                <div class="mb-5 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg dark:bg-red-800/20 dark:border-red-800 dark:text-red-500">
+                <div
+                    class="mb-5 p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg dark:bg-red-800/20 dark:border-red-800 dark:text-red-500">
                     <ul class="list-disc list-inside">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -20,7 +20,8 @@
 
             <!-- Email Input Field -->
             <div class="mb-5">
-                <label for="email-address-icon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">البريد الإلكتروني</label>
+                <label for="email-address-icon"
+                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">البريد الإلكتروني</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -45,7 +46,8 @@
 
             <!-- Password Input Field -->
             <div class="mb-5">
-                <label for="password-icon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">كلمة المرور</label>
+                <label for="password-icon" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">كلمة
+                    المرور</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -68,7 +70,8 @@
 
             <!-- Submit Button -->
             <button type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">تسجيل الدخول</button>
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">تسجيل
+                الدخول</button>
 
             <!-- Additional Links -->
             <div class="mt-4 text-center">
@@ -78,4 +81,4 @@
             </div>
         </form>
     </div>
-</x-layout>
+</x-guest-layout>

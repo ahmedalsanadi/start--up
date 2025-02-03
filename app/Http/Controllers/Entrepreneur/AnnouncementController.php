@@ -12,10 +12,7 @@ class AnnouncementController extends Controller
     public function show(Announcement $announcement)
     {
 
-
-
-
-        if ($announcement->approval_status == 'approved') {
+        if($announcement->approval_status == 'approved') {
             // Load the announcement with its relationships
             $announcement->load([
                 'categories',

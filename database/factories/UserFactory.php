@@ -35,6 +35,7 @@ class UserFactory extends Factory
             'city' => fake()->city(),
             'address' => fake()->address(),
             'profile_image' => fake()->imageUrl(),
+            'privacy_policy' => true,
         ];
     }
     /**
