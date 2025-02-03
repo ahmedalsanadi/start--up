@@ -74,7 +74,7 @@
                         <div class="category-group relative">
                             <button type="button"
                                 class="category-parent px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200
-                                                           bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
+                                                                       bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
                                 {{ $parentCategory->name }}
                                 <i data-lucide="chevron-down" class="w-4 h-4 inline-block mr-1"></i>
                             </button>
@@ -150,9 +150,18 @@
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                                 {{ $idea->entrepreneur->name }}
                                             </h3>
-                                            <div class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                <i data-lucide="calendar" class="w-4 h-4 ml-1"></i>
-                                                {{ $idea->created_at->format('Y/m/d') }}
+                                            <div class="flex items-center gap-4">
+                                                <div
+                                                    class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                    <i data-lucide="calendar" class="w-4 h-4 ml-1 text-gray-600"></i>
+                                                    {{ $idea->created_at->format('Y/m/d') }}
+                                                </div>
+                                                <!--phone number --->
+                                                <div
+                                                    class="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                    <i data-lucide="phone" class="w-4 h-4 ml-1"></i>
+                                                    {{ $idea->entrepreneur->phone_number }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -272,11 +281,11 @@
                             const pill = document.createElement('div');
                             pill.className = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-3 py-1 text-sm flex items-center gap-2';
                             pill.innerHTML = `
-                                        ${name}
-                                        <button type="button" data-category-id="${id}" class="remove-category">
-                                            <i data-lucide="x" class="w-4 h-4"></i>
-                                        </button>
-                                    `;
+                                                    ${name}
+                                                    <button type="button" data-category-id="${id}" class="remove-category">
+                                                        <i data-lucide="x" class="w-4 h-4"></i>
+                                                    </button>
+                                                `;
                             selectedCategoriesPills.appendChild(pill);
                         }
                     });
