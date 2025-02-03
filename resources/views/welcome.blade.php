@@ -9,7 +9,7 @@
             </div>
 
             <!-- Main Content -->
-            <div class="container mx-auto px-4 pt-32 pb-20">
+            <div class="container mx-auto px-4 pt-10 pb-20">
                 <div class="max-w-7xl mx-auto">
                     <!-- Hero Content -->
                     <div class="grid lg:grid-cols-2 gap-12 items-center">
@@ -26,7 +26,7 @@
                                 <div class="flex gap-4 justify-end">
                                     <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transform hover:scale-105 transition-all duration-300">
                                         ابدأ رحلتك
-                                        <svg class="w-5 h-5 ml-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="w-5 h-5 mr-2 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                                         </svg>
                                     </a>

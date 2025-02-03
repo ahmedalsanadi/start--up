@@ -6,8 +6,8 @@
 
 <nav class="fixed top-0 z-50 w-full border-b bg-gray-100 border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-colors duration-300 ease-in-out"
     dir="rtl">
-    <div class="px-3 py-2 lg:px-5 lg:pr-3">
-        <div class="flex items-center justify-between">
+    <div class="px-3 py-1 lg:px-5 lg:pr-3">
+        <div class="flex items-center justify-between h-14">
             <!-- Mobile Sidebar Button -->
             <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar"
                 type="button"
@@ -18,52 +18,15 @@
             </button>
 
             <!-- Logo Section -->
-            <div class="flex items-center justify-start rtl:justify-end">
-                <a href="#" class="flex items-center gap-2">
-                    <!-- Animated Logo Container -->
-                    <div class="relative group">
-                        <div class="w-12 h-12 relative">
-                            <!-- Gradient Background -->
-                            <div
-                                class="absolute inset-1 rounded-xl bg-gradient-to-br from-violet-600 via-indigo-500 to-cyan-400 animate-pulse">
-                                <div
-                                    class="absolute inset-0 rounded-xl bg-gradient-to-tr from-pink-500 via-purple-500 to-indigo-500 mix-blend-overlay">
-                                </div>
-                            </div>
-                            <!-- Star Icon -->
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-6 h-6 text-white transform rotate-12">
-                                    <!-- Lucide Icon: Star -->
-                                    <i data-lucide="star" class="w-full h-full"></i>
-                                </div>
-                            </div>
-                            <!-- Glowing Effect -->
-                            <div
-                                class="absolute -inset-1 rounded-xl bg-gradient-to-br from-violet-600/30 via-indigo-500/30 to-cyan-400/30 blur-lg group-hover:opacity-75 transition duration-300">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Text Logo (Hidden on Small Screens) -->
-                    <span class="hidden md:block text-2xl font-extrabold">
-                        <span
-                            class="bg-clip-text text-transparent bg-gradient-to-r from-violet-600 via-indigo-500 to-cyan-400">Start</span>
-                        <span
-                            class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">-up</span>
-                    </span>
+            <div class="flex-shrink-0">
+                <a href="{{ route('welcome') }}" class="flex items-center">
+                    <img src="/logo.png" alt="StartBox" class="h-32 w-auto object-contain"> <!-- Adjusted height -->
                 </a>
             </div>
 
             <!-- Right-Aligned Menu (Theme, Notifications, Profile) -->
             <div class="flex items-center gap-4">
-                <!-- Theme Toggle (Hidden on Small Screens) -->
-                <button id="theme-toggle" type="button"
-                    class="hidden sm:flex text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
-                    <!-- Lucide Icon: Moon (Dark Mode) -->
-                    <i id="theme-toggle-dark-icon" data-lucide="moon" class="hidden w-5 h-5"></i>
-                    <!-- Lucide Icon: Sun (Light Mode) -->
-                    <i id="theme-toggle-light-icon" data-lucide="sun" class="hidden w-5 h-5"></i>
-                </button>
-
+                <x-theme-toggle />
                 @auth
 
                     <!-- Notifications Dropdown (Always Visible) -->
@@ -154,32 +117,6 @@
                             src="{{ Str::startsWith($user->profile_image, ['http://', 'https://']) ? $user->profile_image : asset('storage/' . $user->profile_image ?? '/images/default-avatar.jpg') }}"
                             alt="User Avatar">
                     </button>
-                    <!-- Profile Dropdown Content -->
-                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                        id="dropdown-user">
-                        <div class="px-4 py-3" role="none">
-                            <p class="text-sm text-gray-900 dark:text-white">{{ $user->name }}</p>
-                            <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300">{{ $user->email }}
-                            </p>
-                        </div>
-                        <ul class="py-1" role="none">
-                            <li>
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    role="menuitem">Home</a>
-                            </li>
-                            <li>
-                                <a href="/manage-account"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    role="menuitem">Settings</a>
-                            </li>
-                            <li>
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    role="menuitem">Sign out</a>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>

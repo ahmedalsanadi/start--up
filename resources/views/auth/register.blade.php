@@ -1,5 +1,5 @@
 <x-layout title="Register">
-    <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
+    <div class="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 mt-20">
         <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
             class="form-container grid grid-cols-1 md:grid-cols-2 gap-2">
             @csrf

@@ -8,8 +8,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $title ?? 'Home' }}</title>
-    <!-- Vite for CSS & JavaScript -->
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- Global Routes for JavaScript -->
@@ -80,6 +78,10 @@
     @auth
         <x-layout.navbar />
     @endauth
+
+    @guest
+    <x-layout.guest-navbar />
+    @endguest
 
     @php
         function getSidebarRoutes($user)
