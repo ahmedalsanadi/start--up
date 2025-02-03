@@ -107,15 +107,12 @@
                 @php
                     $user = Auth::user();
                 @endphp
-                <!-- Profile Dropdown (Hidden on Small Screens) -->
                 <div class="hidden sm:flex items-center mx-2">
                     <button type="button"
                         class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
                         aria-expanded="false" data-dropdown-toggle="dropdown-user">
                         <span class="sr-only">Open user menu</span>
-                        <img class="w-8 h-8 rounded-full"
-                            src="{{ Str::startsWith($user->profile_image, ['http://', 'https://']) ? $user->profile_image : asset('storage/' . $user->profile_image ?? '/images/default-avatar.jpg') }}"
-                            alt="User Avatar">
+                        <x-profile-img src="{{ $user->profile_image }}" alt="User Avatar" size="sm" />
                     </button>
                 </div>
             </div>

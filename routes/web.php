@@ -1,6 +1,5 @@
 <?php
 use App\Http\Controllers\Investor\InvestorHomeController;
-use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotificationController;
@@ -38,7 +37,6 @@ Route::get('/about', function () {
     return view('about');
 })->name('about');
 
-Route::get('/privacy-policy', [PrivacyPolicyController::class, 'show'])->name('privacy.policy');
 
 // Auth Routes
 Route::middleware('guest')->group(function () {

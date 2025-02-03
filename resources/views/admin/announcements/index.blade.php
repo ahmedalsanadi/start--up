@@ -344,7 +344,7 @@
                                                 <tr>
                                                     <td class="px-4 py-3 whitespace-nowrap">
                                                         <div class="flex items-center gap-3">
-                                                            <x-profile-img :src="$announcement->investor->profile_image ?? 'images/default-profile.png'" :alt="$announcement->investor->name" size="sm" />
+                                                            <x-profile-img :src="$announcement->investor->profile_image ?? '/default-profile.png'" :alt="$announcement->investor->name" size="sm" />
                                                             <span class="text-xs font-medium text-gray-900 dark:text-white">
                                                                 {{ $announcement->investor->name }} </span>
                                                         </div>
@@ -567,7 +567,7 @@
                 });
             }
 
-        
+
             function handleExport() {
                 const exportBtn = document.getElementById('exportBtn');
                 if (exportBtn) {

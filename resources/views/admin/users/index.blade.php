@@ -26,7 +26,8 @@
                         <div class="flex items-center justify-between px-4">
                             <div>
                                 <h3 class="text-3xl font-bold text-gray-950 dark:text-green-200">
-                                    {{ $statistics['totalActiveUsers'] }}</h3>
+                                    {{ $statistics['totalActiveUsers'] }}
+                                </h3>
                             </div>
                             <div class="relative">
                                 <div
@@ -58,7 +59,8 @@
                         <div class="flex items-center justify-between px-4">
                             <div>
                                 <h3 class="text-3xl font-bold text-gray-950 dark:text-red-200">
-                                    {{ $statistics['totalInactiveUsers'] }}</h3>
+                                    {{ $statistics['totalInactiveUsers'] }}
+                                </h3>
                             </div>
                             <div class="relative">
                                 <div
@@ -89,7 +91,8 @@
                         <div class="flex items-center justify-between px-4">
                             <div>
                                 <h3 class="text-3xl font-bold text-gray-950 dark:text-blue-200">
-                                    {{ $statistics['totalInvestors'] }}</h3>
+                                    {{ $statistics['totalInvestors'] }}
+                                </h3>
                             </div>
                             <div class="relative">
                                 <div
@@ -121,7 +124,8 @@
                         <div class="flex items-center justify-between px-4">
                             <div>
                                 <h3 class="text-3xl font-bold text-gray-950 dark:text-yellow-200">
-                                    {{ $statistics['totalEntrepreneurs'] }}</h3>
+                                    {{ $statistics['totalEntrepreneurs'] }}
+                                </h3>
                             </div>
                             <div class="relative">
                                 <div
@@ -253,9 +257,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <a href="{{ route('admin.users.show', $user) }}" class="flex items-center gap-2">
-
-                                        <x-profile-img :src="$user->profile_image ?? 'images/default-profile.png'"
-                                            :alt="$user->name" size="sm" />
+                                        <x-profile-img src="{{ $user->profile_image }}" alt="User Avatar" size="sm" />
 
                                         <div class=" text-sm text-gray-900 dark:text-white ">
 

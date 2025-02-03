@@ -1,13 +1,31 @@
 <x-layout title="تفاصيل المستخدم">
+@php
+    // Determine the image source
+    if (empty($user->profile_image)) {
+        // If no image is provided, use the default avatar
+        $imageSrc = '/default-avatar.jpg';
+    } else
+    {
+        // Check if the image is a URL
+        if (filter_var($src, FILTER_VALIDATE_URL)) {
+            // If it's a URL, use it directly
+            $imageSrc = $ $user->profile_image;
+        } else {
+            // If it's not a URL, assume it's stored locally and prepend the storage path
+            $imageSrc = asset('storage/' . $user->profile_image);
+        }
+    }
+@endphp
+
     <div class="space-y-8">
         <!-- Profile Header -->
         <div class="relative">
             <div class="h-32 bg-gradient-to-r from-blue-600 to-blue-800 rounded-t-2xl"></div>
             <div class="absolute bottom-0 left-8 transform translate-y-1/2">
                 <div class="relative">
-                    <img src="{{filter_var($user->profile_image , FILTER_VALIDATE_URL) ? $user->profile_image : asset('storage/' . $user->profile_image)   }}"
-                        alt="{{ $user->name }}"
-                        class="w-32 h-32 rounded-full border-4 border-white shadow-lg">
+                <img src="{{ $imageSrc }}"
+                 alt="{{ $user->name }}"
+                 class="w-32 h-32 rounded-full border-4 border-white shadow-lg">
                     <div class="absolute bottom-0 right-0 transform translate-x-1/4">
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
                             @if($user->is_active) bg-green-100 text-green-800 dark:bg-purple-800 dark:text-green-100 @else bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100 @endif">
