@@ -4,9 +4,9 @@
     <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center justify-between">
             <div class="flex items-center">
-                <img class="h-12 w-12 rounded-full"
-                    src="{{ filter_var($user->profile_image, FILTER_VALIDATE_URL) ? $user->profile_image : asset('storage/' . $user->profile_image ?? '/default-avatar.jpg') }}"
-                    alt="">
+
+
+                <x-profile-img src="{{ $user->profile_image }}" alt="User Avatar" size="sm" />
                 <div class="mr-4">
                     <div class="text-sm font-medium text-gray-950 dark:text-white">
                         {{ $user->name }}

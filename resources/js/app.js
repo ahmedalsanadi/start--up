@@ -1,4 +1,3 @@
-// resources/js/app.js
 // Import required libraries and modules
 import "./bootstrap";
 import "flowbite"; // Keep Flowbite

@@ -125,7 +125,7 @@
                                         الموافقة على الفكرة
                                     </button>
                                 </form>
-                                <button onclick="openRejectModal()"
+                                <button onclick="openRejectModal('{{ $idea->id }}')"
                                     class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
                                     رفض الإعلان
                                 </button>
@@ -280,4 +280,70 @@
 
         </div>
     </div>
+
+        <!-- Reject Modal -->
+        <div id="rejectModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">سبب الرفض</h3>
+                        <button onclick="closeRejectModal()"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <form id="rejectForm" action="" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="approval_status" value="rejected">
+
+                        <!-- Rejection Reason Textarea -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">أدخل سبب
+                                الرفض</label>
+                            <textarea name="rejection_reason"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200"
+                                rows="4" placeholder="أدخل سبب الرفض..." required></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                    <button type="button" onclick="closeRejectModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-200">
+                        إلغاء
+                    </button>
+                    <button type="submit" form="rejectForm"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-200">
+                        تأكيد الرفض
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @push('scripts')
+        <script>
+            function openRejectModal(ideaId) {
+                const modal = document.getElementById('rejectModal');
+                const form = document.getElementById('rejectForm');
+                form.action = `/admin/ideas/${ideaId}`;
+                modal.classList.remove('hidden');
+            }
+
+            function closeRejectModal() {
+                const modal = document.getElementById('rejectModal');
+                modal.classList.add('hidden');
+            }
+        </script>
+    @endpush
 </x-layout>

@@ -121,7 +121,8 @@
                             <div class="flex-shrink-0">
                                 <!-- Investor Profile Image -->
 
-                                <x-profile-img src="{{$announcement->investor->profile_image}}" alt="User Avatar" size="md" />
+                                <x-profile-img src="{{$announcement->investor->profile_image}}" alt="User Avatar"
+                                    size="md" />
                             </div>
                             <div>
                                 <h4 class="text-gray-900 dark:text-white font-medium">
@@ -282,7 +283,8 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center gap-3">
                                                 <div class="flex-shrink-0">
-                                                        <x-profile-img src="{{$idea->entrepreneur->profile_image}}" alt="User Avatar" size="sm" />
+                                                    <x-profile-img src="{{$idea->entrepreneur->profile_image}}"
+                                                        alt="User Avatar" size="sm" />
                                                 </div>
                                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                                                     {{ $idea->entrepreneur->name }}
@@ -427,38 +429,53 @@
         </div>
     </div>
 
+
     <!-- Reject Modal -->
-    <div id="rejectModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 overflow-y-auto">
+    <div id="rejectModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto">
         <div class="flex items-center justify-center min-h-screen p-4">
             <div
-                class="bg-white dark:bg-gray-800 rounded-lg px-4 pt-5 pb-4 overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
-                <div class="sm:flex sm:items-start">
-                    <div class="mt-3 text-center sm:mt-0 sm:text-right sm:w-full">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+                <!-- Modal Header -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                             سبب الرفض
                         </h3>
-                        <div class="mt-2">
-                            <form id="rejectForm"
-                                action="{{ route('admin.announcements.update-status', $announcement->id) }}"
-                                method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="approval_status" value="rejected">
-                                <textarea name="rejection_reason"
-                                    class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                    rows="4" required></textarea>
-                            </form>
-                        </div>
+                        <button onclick="closeRejectModal()"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                    <button type="submit" form="rejectForm"
-                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                        تأكيد الرفض
-                    </button>
+
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <form id="rejectForm" action="" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <input type="hidden" name="approval_status" value="rejected">
+
+                        <!-- Rejection Reason Textarea -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                أدخل سبب الرفض
+                            </label>
+                            <textarea name="rejection_reason"
+                                class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-200"
+                                rows="4" placeholder="أدخل سبب الرفض..." required></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
                     <button type="button" onclick="closeRejectModal()"
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition duration-200">
                         إلغاء
+                    </button>
+                    <button type="submit" form="rejectForm"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-200">
+                        تأكيد الرفض
                     </button>
                 </div>
             </div>
