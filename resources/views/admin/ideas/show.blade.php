@@ -50,8 +50,8 @@
                                 @if($idea->status == 'in-progress')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                             bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
-                                                                                             border border-amber-200 dark:border-amber-800">
+                                                                                                 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
+                                                                                                 border border-amber-200 dark:border-amber-800">
                                         جاري
                                     </span>
                                 @endif
@@ -59,8 +59,8 @@
                                 @if($idea->status == 'approved')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                             bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
-                                                                                             border border-green-200 dark:border-green-800">
+                                                                                                 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
+                                                                                                 border border-green-200 dark:border-green-800">
                                         تمت الموافقة
                                     </span>
                                 @endif
@@ -181,8 +181,9 @@
                                 class="group block p-4 rounded-lg bg-white/50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300">
                                 <div class="flex items-center gap-4">
                                     <!-- Profile Image -->
-                                    <x-profile-img :src="$idea->announcement->investor->profile_image" alt="Investor Image"
-                                        size="md" />
+
+                                    <x-profile-img src="{{ $idea->announcement->investor->profile_image }}"
+                                        alt="User Avatar" size="md" />
 
                                     <!-- Details -->
                                     <div class="flex flex-col gap-1">
@@ -233,8 +234,8 @@
                                                                     <!-- Stage Indicator -->
                                                                     <div
                                                                         class="absolute right-0 flex items-center justify-center h-8 w-8 rounded-full border-2
-                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
                                                                         @if($isCompleted)
                                                                             <i data-lucide="check" class="w-4 h-4 text-white"></i>
                                                                         @elseif($isCurrent)
@@ -248,7 +249,7 @@
                                                                     <div class="mr-12 flex-1">
                                                                         <div
                                                                             class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4
-                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
 
                                                                             <div class="flex items-center justify-between mb-2">
                                                                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">

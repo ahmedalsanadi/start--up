@@ -374,7 +374,10 @@
                                                 <tr>
                                                     <td class="px-4 py-3 whitespace-nowrap">
                                                         <div class="flex items-center gap-3">
-                                                            <x-profile-img :src="$idea->entrepreneur->profile_image ?? 'images/default-profile.png'" :alt="$idea->entrepreneur->name" size="sm" />
+
+
+                                                            <x-profile-img src="{{ $idea->entrepreneur->profile_imag}}" alt="User Avatar"
+                                                                size="sm" />
                                                             <span class="text-xs font-medium text-gray-900 dark:text-white">
                                                                 {{ $idea->entrepreneur->name }}
                                                             </span>

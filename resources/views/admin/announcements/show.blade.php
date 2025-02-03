@@ -120,7 +120,8 @@
                         <div class="flex items-center space-x-4 rtl:space-x-reverse">
                             <div class="flex-shrink-0">
                                 <!-- Investor Profile Image -->
-                                <x-profile-img :src="$announcement->investor->profile_image ?? 'images/default-profile.png'" :alt="$announcement->investor->name" size="md" />
+
+                                <x-profile-img src="{{$announcement->investor->profile_image}}" alt="User Avatar" size="md" />
                             </div>
                             <div>
                                 <h4 class="text-gray-900 dark:text-white font-medium">
@@ -281,8 +282,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center gap-3">
                                                 <div class="flex-shrink-0">
-                                                    <x-profile-img :src="$idea->entrepreneur->profile_image ?? 'images/default-profile.png'" :alt="$idea->entrepreneur->name"
-                                                        size="sm" />
+                                                        <x-profile-img src="{{$idea->entrepreneur->profile_image}}" alt="User Avatar" size="sm" />
                                                 </div>
                                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
                                                     {{ $idea->entrepreneur->name }}

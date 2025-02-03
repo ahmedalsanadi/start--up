@@ -74,7 +74,7 @@
                         <div class="category-group relative">
                             <button type="button"
                                 class="category-parent px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200
-                                       bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
+                                                           bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600">
                                 {{ $parentCategory->name }}
                                 <i data-lucide="chevron-down" class="w-4 h-4 inline-block mr-1"></i>
                             </button>
@@ -143,8 +143,9 @@
                             <div class="md:w-2/3 p-6 md:p-8">
                                 <div class="flex items-center justify-between mb-6">
                                     <div class="flex items-center space-x-4 space-x-reverse">
-                                        <x-profile-img :src="$idea->entrepreneur->profile_image"
-                                            :alt="$idea->entrepreneur->name" size="md" />
+
+                                        <x-profile-img src="{{ $idea->entrepreneur->profile_image }}" alt="User Avatar"
+                                            size="md" />
                                         <div>
                                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                                                 {{ $idea->entrepreneur->name }}
@@ -242,125 +243,125 @@
     @push('scripts')
         <script>
 
-document.addEventListener('DOMContentLoaded', function () {
-    const filterForm = document.getElementById('filterForm');
-    const selectedCategoriesInput = document.getElementById('selectedCategories');
-    const clearFiltersBtn = document.getElementById('clearFilters');
-    const categoryGroups = document.querySelectorAll('.category-group');
-    const selectedCategoriesPills = document.getElementById('selectedCategoriesPills');
+            document.addEventListener('DOMContentLoaded', function () {
+                const filterForm = document.getElementById('filterForm');
+                const selectedCategoriesInput = document.getElementById('selectedCategories');
+                const clearFiltersBtn = document.getElementById('clearFilters');
+                const categoryGroups = document.querySelectorAll('.category-group');
+                const selectedCategoriesPills = document.getElementById('selectedCategoriesPills');
 
-    // Initialize selectedCategories Map
-    let selectedCategories = new Map();
+                // Initialize selectedCategories Map
+                let selectedCategories = new Map();
 
-    // Initialize the map with existing selections
-    if (selectedCategoriesInput.value) {
-        const categoryIds = selectedCategoriesInput.value.split(',');
-        categoryIds.forEach(id => {
-            const checkbox = document.querySelector(`input[value="${id}"]`);
-            if (checkbox) {
-                selectedCategories.set(id, checkbox.dataset.categoryName);
-                checkbox.checked = true;
-            }
-        });
-    }
-
-    function updateSelectedCategoriesPills() {
-        selectedCategoriesPills.innerHTML = '';
-        selectedCategories.forEach((name, id) => {
-            if (name) { // Only create pill if name exists
-                const pill = document.createElement('div');
-                pill.className = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-3 py-1 text-sm flex items-center gap-2';
-                pill.innerHTML = `
-                    ${name}
-                    <button type="button" data-category-id="${id}" class="remove-category">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                `;
-                selectedCategoriesPills.appendChild(pill);
-            }
-        });
-
-        // Re-initialize Lucide icons
-        if (window.lucide) {
-            window.lucide.createIcons();
-        }
-    }
-
-    function updateForm() {
-        selectedCategoriesInput.value = Array.from(selectedCategories.keys()).join(',');
-        clearFiltersBtn.classList.toggle('hidden', selectedCategories.size === 0);
-        updateSelectedCategoriesPills();
-    }
-
-    // Initial state
-    updateForm();
-
-    // Handle category parent button clicks
-    categoryGroups.forEach(group => {
-        const parentBtn = group.querySelector('.category-parent');
-        const childrenDiv = group.querySelector('.category-children');
-
-        parentBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            categoryGroups.forEach(otherGroup => {
-                if (otherGroup !== group) {
-                    otherGroup.querySelector('.category-children').classList.add('hidden');
+                // Initialize the map with existing selections
+                if (selectedCategoriesInput.value) {
+                    const categoryIds = selectedCategoriesInput.value.split(',');
+                    categoryIds.forEach(id => {
+                        const checkbox = document.querySelector(`input[value="${id}"]`);
+                        if (checkbox) {
+                            selectedCategories.set(id, checkbox.dataset.categoryName);
+                            checkbox.checked = true;
+                        }
+                    });
                 }
-            });
-            childrenDiv.classList.toggle('hidden');
-        });
 
-        // Handle checkbox changes
-        const checkboxes = group.querySelectorAll('.category-checkbox');
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    selectedCategories.set(checkbox.value, checkbox.dataset.categoryName);
-                } else {
-                    selectedCategories.delete(checkbox.value);
+                function updateSelectedCategoriesPills() {
+                    selectedCategoriesPills.innerHTML = '';
+                    selectedCategories.forEach((name, id) => {
+                        if (name) { // Only create pill if name exists
+                            const pill = document.createElement('div');
+                            pill.className = 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full px-3 py-1 text-sm flex items-center gap-2';
+                            pill.innerHTML = `
+                                        ${name}
+                                        <button type="button" data-category-id="${id}" class="remove-category">
+                                            <i data-lucide="x" class="w-4 h-4"></i>
+                                        </button>
+                                    `;
+                            selectedCategoriesPills.appendChild(pill);
+                        }
+                    });
+
+                    // Re-initialize Lucide icons
+                    if (window.lucide) {
+                        window.lucide.createIcons();
+                    }
                 }
+
+                function updateForm() {
+                    selectedCategoriesInput.value = Array.from(selectedCategories.keys()).join(',');
+                    clearFiltersBtn.classList.toggle('hidden', selectedCategories.size === 0);
+                    updateSelectedCategoriesPills();
+                }
+
+                // Initial state
                 updateForm();
-                filterForm.submit();
+
+                // Handle category parent button clicks
+                categoryGroups.forEach(group => {
+                    const parentBtn = group.querySelector('.category-parent');
+                    const childrenDiv = group.querySelector('.category-children');
+
+                    parentBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        categoryGroups.forEach(otherGroup => {
+                            if (otherGroup !== group) {
+                                otherGroup.querySelector('.category-children').classList.add('hidden');
+                            }
+                        });
+                        childrenDiv.classList.toggle('hidden');
+                    });
+
+                    // Handle checkbox changes
+                    const checkboxes = group.querySelectorAll('.category-checkbox');
+                    checkboxes.forEach(checkbox => {
+                        checkbox.addEventListener('change', () => {
+                            if (checkbox.checked) {
+                                selectedCategories.set(checkbox.value, checkbox.dataset.categoryName);
+                            } else {
+                                selectedCategories.delete(checkbox.value);
+                            }
+                            updateForm();
+                            filterForm.submit();
+                        });
+                    });
+                });
+
+                // Close dropdowns when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.category-group')) {
+                        categoryGroups.forEach(group => {
+                            group.querySelector('.category-children').classList.add('hidden');
+                        });
+                    }
+                });
+
+                // Handle removing categories via pills
+                selectedCategoriesPills.addEventListener('click', (e) => {
+                    const removeBtn = e.target.closest('.remove-category');
+                    if (removeBtn) {
+                        const categoryId = removeBtn.dataset.categoryId;
+                        selectedCategories.delete(categoryId);
+                        const checkbox = document.querySelector(`input[value="${categoryId}"]`);
+                        if (checkbox) {
+                            checkbox.checked = false;
+                        }
+                        updateForm();
+                        filterForm.submit();
+                    }
+                });
+
+                // Clear filters
+                clearFiltersBtn.addEventListener('click', () => {
+                    selectedCategories.clear();
+                    document.querySelectorAll('.category-checkbox').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+                    updateForm();
+                    filterForm.submit();
+                });
             });
-        });
-    });
-
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.category-group')) {
-            categoryGroups.forEach(group => {
-                group.querySelector('.category-children').classList.add('hidden');
-            });
-        }
-    });
-
-    // Handle removing categories via pills
-    selectedCategoriesPills.addEventListener('click', (e) => {
-        const removeBtn = e.target.closest('.remove-category');
-        if (removeBtn) {
-            const categoryId = removeBtn.dataset.categoryId;
-            selectedCategories.delete(categoryId);
-            const checkbox = document.querySelector(`input[value="${categoryId}"]`);
-            if (checkbox) {
-                checkbox.checked = false;
-            }
-            updateForm();
-            filterForm.submit();
-        }
-    });
-
-    // Clear filters
-    clearFiltersBtn.addEventListener('click', () => {
-        selectedCategories.clear();
-        document.querySelectorAll('.category-checkbox').forEach(checkbox => {
-            checkbox.checked = false;
-        });
-        updateForm();
-        filterForm.submit();
-    });
-});
 
 
-         </script>
+        </script>
     @endpush
 </x-layout>
