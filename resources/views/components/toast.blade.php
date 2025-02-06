@@ -1,5 +1,5 @@
 <!-- Add this where you want the toasts to appear -->
-<div id="toastContainer" class="toast-container" dir="ltr"></div>
+<div id="toastContainer" class="toast-container" dir="rtl"></div>
 @if(Session::has('success'))
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -77,8 +77,7 @@ class IdeaController extends Controller
 
     public function create(Request $request)
     {
-        $categories = Category::whereNotNull('parent_id')
-            ->get();
+        $categories = Category::whereNotNull('parent_id')->get();
 
         // Fetch the announcement_id from the request
         $announcement_id = $request->query('announcement_id');
@@ -94,10 +93,20 @@ class IdeaController extends Controller
             }
         }
 
-        // Pass the categories and announcement to the view
-        return view('entrepreneur.ideas.create', compact('categories', 'announcement_id', 'announcement'));
-    }
+        // Get old category IDs from the session
+        $oldCategoryIds = old('categories', []);
 
+        // Map old category IDs to their corresponding category objects
+        $oldCategories = $categories->whereIn('id', $oldCategoryIds)->values();
+
+        // Pass the categories, announcement, and old input data to the view
+        return view('entrepreneur.ideas.create', [
+            'categories' => $categories,
+            'announcement_id' => $announcement_id,
+            'announcement' => $announcement,
+            'oldCategories' => $oldCategories, // Pass old category objects
+        ]);
+    }
 
     public function store(Request $request)
     {
@@ -106,11 +115,11 @@ class IdeaController extends Controller
             'name' => 'required|string',
             'brief_description' => 'required|string|max:255',
             'detailed_description' => 'required|string',
-            'budget' => 'required|numeric',
+            'budget' => 'required|numeric|min:0',
             'location' => 'required|string',
             'idea_type' => 'required|in:creative,traditional',
             'categories' => 'required|array',
-            'feasibility_study' => 'required|file|mimes:pdf,doc,docx|max:2048', // Fixed validation rule
+            'feasibility_study' => 'required|file|mimes:pdf,doc,docx|max:4048', // Fixed validation rule
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
 
