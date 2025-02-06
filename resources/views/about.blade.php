@@ -1,4 +1,4 @@
-<x-layout title="About">
+<x-guest-layout  title="About">
 
 <div class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
     <!-- Hero Section -->

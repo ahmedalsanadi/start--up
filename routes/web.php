@@ -28,14 +28,7 @@ use App\Http\Controllers\Entrepreneur\{
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 
-// Public Routes
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
 
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
 
 
 // Auth Routes
@@ -44,6 +37,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
     Route::get('/login', [SessionController::class, 'create'])->name('login');
     Route::post('/login', [SessionController::class, 'store']);
+    
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('welcome');
+
+    Route::get('/about', function () {
+        return view('about');
+    })->name('about');
 });
 
 // Dashboard redirect after login
@@ -183,4 +184,6 @@ Route::middleware('guest')->group(function () {
     Route::get('/notifications/{any}', function () {
         return redirect()->route('login');
     })->where('any', '.*');
+
+
 });
