@@ -2,8 +2,6 @@
 <nav
     class="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
 
-
-
     <!-- Animated Border -->
     <div
         class="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-40">
@@ -30,7 +28,7 @@
                 </div>
 
                 <div class="relative group">
-                    <a href="{{ route('about') }}" class="text-gray-700 dark:text-gray-200 font-medium py-2">
+                    <a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-200 font-medium py-2">
                         الأفكار
                     </a>
                     <div
@@ -48,7 +46,7 @@
                 </div>
 
                 <div class="relative group">
-                    <a href="{{ route('login') }}" class="text-gray-700 dark:text-gray-200 font-medium py-2">
+                    <a href="{{ route('about') }}" class="text-gray-700 dark:text-gray-200 font-medium py-2">
                         من نحن
                     </a>
                     <div

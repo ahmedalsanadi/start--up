@@ -10,8 +10,6 @@
     <title>{{ $title ?? 'Home' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-
-
     <!-- Inline script to set dark mode before rendering -->
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
