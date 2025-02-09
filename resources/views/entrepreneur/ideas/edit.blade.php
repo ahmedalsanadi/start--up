@@ -230,20 +230,18 @@
                             الميزانية (بالريال)
                         </label>
                         <input type="number" id="budget" name="budget" value="{{ $idea->budget }}" class="form-input"
-                            placeholder="أدخل الميزانية المتاحة">
+                            placeholder="أدخل الميزانية المتاحة" min="0">
                         @error('budget')
                             <p class="form-error">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <!-- Feasibility Study (PDF) -->
+                    <!-- Feasibility Study (PDF, doc ,docx) -->
                     <div>
                         <label for="feasibility_study"
                             class="block text-md font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            دراسة الجدوى (PDF)
-                        </label>
-                        <input type="file" id="feasibility_study" name="feasibility_study" class="form-input-file"
-                            accept="application/pdf">
+                            دراسة الجدوى (أي ملف)                        </label>
+                        <input type="file" id="feasibility_study" name="feasibility_study" class="form-input-file"/>
                         @error('feasibility_study')
                             <p class="form-error">{{ $message }}</p>
                         @enderror

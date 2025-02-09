@@ -115,11 +115,11 @@ class IdeaController extends Controller
             'name' => 'required|string',
             'brief_description' => 'required|string|max:255',
             'detailed_description' => 'required|string',
-            'budget' => 'required|numeric|min:0',
+            'budget' => 'required|numeric|min:0|max:100000000000',
             'location' => 'required|string',
             'idea_type' => 'required|in:creative,traditional',
             'categories' => 'required|array',
-            'feasibility_study' => 'required|file|mimes:pdf,doc,docx|max:4048', // Fixed validation rule
+            'feasibility_study' => 'required|file|mimes:pdf,doc,docx|max:4048',
             'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
 
@@ -279,11 +279,11 @@ class IdeaController extends Controller
             'name' => 'required|string',
             'brief_description' => 'required|string|max:255',
             'detailed_description' => 'required|string',
-            'budget' => 'required|numeric',
+            'budget' => 'required|numeric|min:0|max:100000000000',
             'location' => 'required|string',
             'idea_type' => 'required|in:creative,traditional',
             'categories' => 'required|array',
-            'feasibility_study' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'feasibility_study' => 'required|file|mimes:pdf,doc,docx|max:4048',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
 
