@@ -43,7 +43,7 @@ class ExportController extends Controller
 
     protected function getAnnouncementsQuery($request)
     {
-        $query = Announcement::with('investor')->latest();
+        $query = Announcement::withTrashed()->with('investor')->latest();
 
         if ($request->filled('search')) {
             $query->where('description', 'like', "%{$request->search}%");
@@ -134,7 +134,7 @@ class ExportController extends Controller
 
     protected function getIdeasQuery($request)
     {
-        $query = Idea::with(['entrepreneur', 'announcement'])->latest();
+        $query = Idea::withTrashed()->with(['entrepreneur', 'announcement'])->latest();
 
         // Search filter
         if ($request->filled('search')) {
