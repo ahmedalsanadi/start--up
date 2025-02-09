@@ -1,13 +1,13 @@
-<x-layout title="إدارة التسجيلات التجارية">
+<x-layout title="إدارة السجلات التجارية">
     <div class="flex flex-col gap-4 px-2">
 
         <!-- Page Header with Breadcrumb -->
         <div class="flex justify-between items-center mb-6">
-            <x-page-header>إدارة التسجيلات التجارية</x-page-header>
+            <x-page-header>إدارة السجلات التجارية</x-page-header>
             <nav class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                 <span>لوحة التحكم</span>
                 <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                <span class="text-blue-600 dark:text-blue-400">إدارة التسجيلات التجارية</span>
+                <span class="text-blue-600 dark:text-blue-400">إدارة السجلات التجارية</span>
             </nav>
         </div>
 
@@ -102,7 +102,7 @@
             <!-- Table Header -->
             <div class="border-b border-gray-200 dark:border-gray-700 px-6 py-4 bg-gray-50 dark:bg-gray-800/50">
                 <div class="flex justify-between items-center">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">قائمة التسجيلات التجارية</h3>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">قائمة السجلات التجارية</h3>
                     <span class="text-sm text-gray-500 dark:text-gray-400">
                         عدد النتائج: {{ $registrations->total() }}
                     </span>
