@@ -66,10 +66,10 @@ class IdeaController extends Controller
         ));
     }
 
-    public function show(Idea $idea)
+    public function show($id)
     {
         // Ensure the idea is retrieved even if it's soft-deleted
-        $idea = Idea::withTrashed()->findOrFail($idea->id);
+        $idea = Idea::withTrashed()->findOrFail($id);
 
         if ($idea->idea_type == 'creative' && $idea->announcement_id != null) {
             // Eager load relationships for creative ideas with announcements
@@ -81,8 +81,6 @@ class IdeaController extends Controller
                     $query->withTrashed(); // Include soft-deleted announcements
                 },
             ]);
-
-            return view('admin.ideas.show', compact('idea'));
         } else {
             // Eager load relationships for traditional ideas or creative ideas without announcements
             $idea->load([
@@ -90,10 +88,11 @@ class IdeaController extends Controller
                 'stages',
                 'categories',
             ]);
-
-            return view('admin.ideas.show', compact('idea'));
         }
+
+        return view('admin.ideas.show', compact('idea'));
     }
+
 
     public function updateStatus(Request $request, Idea $idea)
     {
