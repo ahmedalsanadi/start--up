@@ -1,20 +1,21 @@
 <x-layout title="تفاصيل المستخدم">
 @php
-    // Determine the image source
-    if (empty($user->profile_image)) {
-        // If no image is provided, use the default avatar
-        $imageSrc = '/default-avatar.jpg';
-    } else
-    {
-        // Check if the image is a URL
-        if (filter_var($src, FILTER_VALIDATE_URL)) {
-            // If it's a URL, use it directly
-            $imageSrc = $ $user->profile_image;
-        } else {
-            // If it's not a URL, assume it's stored locally and prepend the storage path
-            $imageSrc = asset('storage/' . $user->profile_image);
-        }
+
+// Determine the image source
+if (empty($user->profile_image)) {
+    // If no image is provided, use the default avatar
+    $imageSrc = '/default-avatar.jpg';
+} else {
+    // Check if the image is a URL
+    if (filter_var($user->profile_image, FILTER_VALIDATE_URL)) {
+        // If it's a URL, use it directly
+        $imageSrc = $user->profile_image;
+    } else {
+        // If it's not a URL, assume it's stored locally and prepend the storage path
+        $imageSrc = asset('storage/' . $user->profile_image);
     }
+}
+
 @endphp
 
     <div class="space-y-8">
