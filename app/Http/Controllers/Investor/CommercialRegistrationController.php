@@ -42,16 +42,19 @@ class CommercialRegistrationController extends Controller
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
-            'registration_number' => 'required|string|min:5',
+            'registration_number' => 'required|numeric|min:5|unique:commercial_registrations,registration_number',
             'registration_number_confirmation' => 'required|same:registration_number',
         ], [
             'registration_number.required' => 'حقل رقم السجل التجاري مطلوب.',
-            'registration_number.string' => 'يجب أن يكون رقم السجل التجاري نصًا.',
-            'registration_number.min' => 'يجب أن يكون رقم السجل التجاري على الأقل 5 أحرف.',
+            'registration_number.numeric' => 'يجب أن يكون رقم السجل التجاري رقما.',
+            'registration_number.min' => 'يجب أن يكون رقم السجل التجاري على الأقل 5 ارقام.',
+            'registration_number.unique' => 'رقم السجل التجاري موجود بالفعل.',
             'registration_number_confirmation.required' => 'يرجى تأكيد رقم السجل التجاري.',
             'registration_number_confirmation.same' => 'رقم السجل التجاري غير متطابق.',
         ]);
+
 
         $registration = Auth::user()->commercialRegistration;
 
