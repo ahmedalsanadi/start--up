@@ -29,13 +29,13 @@ class IdeaSeeder extends Seeder
             ]);
         });
 
-        // Create 6 traditional ideas
-        Idea::factory(20)->create([
+        // Create 15 traditional ideas
+        Idea::factory(15)->create([
             'approval_status' => 'approved',
             'status' => 'in-progress',
             'is_reusable' => true,
             'idea_type' => 'traditional',
-            'expiry_date' => Carbon::now()->addMonth(),
+            'expiry_date' => Carbon::now()->addMonths(2),
         ]);
 
         // Create 10 traditional ideas
@@ -44,7 +44,7 @@ class IdeaSeeder extends Seeder
             'status' => 'in-progress',
             'is_reusable' => true,
             'idea_type' => 'traditional',
-            'expiry_date' => Carbon::now()->addMonth(),
+            'expiry_date' => Carbon::now()->addMonths(2),
         ]);
     }
 }
