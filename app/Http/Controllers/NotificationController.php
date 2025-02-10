@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class NotificationController extends Controller
 {
 
-        /**
+    /**
      * Display a listing of all notifications for the authenticated user.
      */
     public function index(Request $request)
@@ -48,8 +48,14 @@ class NotificationController extends Controller
     }
 
     public function unreadCount(Request $request)
-{
-    $unreadCount = $request->user()->unreadNotifications->count();
-    return response()->json(['unreadCount' => $unreadCount]);
-}
+    {
+        // Ensure the user is authenticated
+        if (!$request->user()) {
+            return response()->json(['success' => false], 401);
+        }
+
+        // Fetch the unread notification count
+        $unreadCount = $request->user()->unreadNotifications->count();
+        return response()->json(['unreadCount' => $unreadCount]);
+    }
 }

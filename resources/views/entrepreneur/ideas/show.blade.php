@@ -68,8 +68,8 @@
                                 @if($idea->status == 'in-progress')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                                                                         bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
-                                                                                                                                         border border-amber-200 dark:border-amber-800">
+                                                                                                                                             bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400
+                                                                                                                                             border border-amber-200 dark:border-amber-800">
                                         جاري
                                     </span>
                                 @endif
@@ -77,8 +77,8 @@
                                 @if($idea->status == 'approved')
                                     <span
                                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium
-                                                                                                                                         bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
-                                                                                                                                         border border-green-200 dark:border-green-800">
+                                                                                                                                             bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400
+                                                                                                                                             border border-green-200 dark:border-green-800">
                                         تمت الموافقة
                                     </span>
                                 @endif
@@ -172,67 +172,75 @@
                         <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-right">مراحل تقييم الفكرة
                         </h2>
 
-                        <div class="relative">
-                            <!-- Vertical Line -->
-                            <div class="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 right-4"></div>
+                        @if ($idea->idea_type == "creative")
 
-                            <div class="space-y-12">
-                                @php
-                                    $allStages = ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'];
-                                    $currentStageIndex = array_search($idea->stage, $allStages);
-                                @endphp
+                                                <div class="relative">
+                                                    <!-- Vertical Line -->
+                                                    <div class="absolute h-full w-0.5 bg-gray-200 dark:bg-gray-700 right-4"></div>
 
-                                @foreach($allStages as $index => $stageName)
-                                                                @php
-                                                                    $stage = $idea->stages->where('stage', $stageName)->first();
-                                                                    $isCompleted = $stage && $stage->stage_status;
-                                                                    $isCurrent = $idea->stage === $stageName;
-                                                                    $isPending = $index > $currentStageIndex;
-                                                                @endphp
+                                                    <div class="space-y-12">
+                                                        @php
+                                                            $allStages = ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'];
+                                                            $currentStageIndex = array_search($idea->stage, $allStages);
+                                                        @endphp
 
-                                                                <div class="relative flex items-start group">
-                                                                    <!-- Stage Indicator -->
-                                                                    <div
-                                                                        class="absolute right-0 flex items-center justify-center h-8 w-8 rounded-full border-2
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    dark:border-opacity-50 z-10">
-                                                                        @if($isCompleted)
-                                                                            <i data-lucide="check" class="w-4 h-4 text-white"></i>
-                                                                        @elseif($isCurrent)
-                                                                            <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>
-                                                                        @else
-                                                                            <i data-lucide="circle" class="w-4 h-4 text-gray-400"></i>
-                                                                        @endif
-                                                                    </div>
+                                                        @foreach($allStages as $index => $stageName)
+                                                                                    @php
+                                                                                        $stage = $idea->stages->where('stage', $stageName)->first();
+                                                                                        $isCompleted = $stage && $stage->stage_status;
+                                                                                        $isCurrent = $idea->stage === $stageName;
+                                                                                        $isPending = $index > $currentStageIndex;
+                                                                                    @endphp
 
-                                                                    <!-- Stage Content -->
-                                                                    <div class="mr-12 flex-1">
-                                                                        <div
-                                                                            class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
+                                                                                    <div class="relative flex items-start group">
+                                                                                        <!-- Stage Indicator -->
+                                                                                        <div
+                                                                                            class="absolute right-0 flex items-center justify-center h-8 w-8 rounded-full border-2
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        {{ $isCompleted ? 'bg-lime-500 border-lime-500' : ($isCurrent ? 'bg-blue-500 border-blue-500' : 'bg-gray-100 border-gray-300') }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        dark:border-opacity-50 z-10">
+                                                                                            @if($isCompleted)
+                                                                                                <i data-lucide="check" class="w-4 h-4 text-white"></i>
+                                                                                            @elseif($isCurrent)
+                                                                                                <i data-lucide="loader" class="w-4 h-4 text-white animate-spin"></i>
+                                                                                            @else
+                                                                                                <i data-lucide="circle" class="w-4 h-4 text-gray-400"></i>
+                                                                                            @endif
+                                                                                        </div>
 
-                                                                            <div class="flex items-center justify-between mb-2">
-                                                                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                                                                    {{ __("ideas.stages.$stageName") }}
-                                                                                </h3>
-                                                                            </div>
+                                                                                        <!-- Stage Content -->
+                                                                                        <div class="mr-12 flex-1">
+                                                                                            <div
+                                                                                                class="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {{ $isCompleted ? 'border-l-4 border-green-500' : ($isCurrent ? 'border-l-4 border-blue-500' : '') }}">
 
-                                                                            <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                                                                                @if($stage)
-                                                                                    <div class="flex items-center gap-2">
-                                                                                        <i data-lucide="calendar" class="w-4 h-4"></i>
-                                                                                        <span>{{ $stage->changed_at ? $stage->changed_at->format('Y/m/d H:i') : 'لم يتم التحديث بعد' }}</span>
+                                                                                                <div class="flex items-center justify-between mb-2">
+                                                                                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                                                                                        {{ __("ideas.stages.$stageName") }}
+                                                                                                    </h3>
+                                                                                                </div>
+
+                                                                                                <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                                                                                    @if($stage)
+                                                                                                        <div class="flex items-center gap-2">
+                                                                                                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                                                                                                            <span>{{ $stage->changed_at ? $stage->changed_at->format('Y/m/d H:i') : 'لم يتم التحديث بعد' }}</span>
+                                                                                                        </div>
+                                                                                                    @else
+                                                                                                        <span class="text-gray-400">في انتظار الوصول لهذه المرحلة</span>
+                                                                                                    @endif
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
                                                                                     </div>
-                                                                                @else
-                                                                                    <span class="text-gray-400">في انتظار الوصول لهذه المرحلة</span>
-                                                                                @endif
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                @endforeach
+                                                        @endforeach
+                                                    </div>
+                                                </div>
+                        @else
+
+                            <div class="text-center py-8">
+                                <p class="text-gray-600 dark:text-gray-300">لا توجد مراحل لهذا النوع من الأفكار.</p>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </x-card-gradient-bg>
 

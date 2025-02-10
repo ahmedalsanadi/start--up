@@ -42,17 +42,32 @@ class CommercialRegistrationController extends Controller
 
     public function store(Request $request)
     {
+        $existingRegistration = CommercialRegistration::where('registration_number', $request->registration_number)->first();
+
+        if ($existingRegistration) {
+            if (in_array($existingRegistration->status, ['pending', 'approved'])) {
+                return back()->withErrors([
+                    'registration_number' => 'رقم السجل التجاري مسجل مسبقًا ولا يمكن إضافته مرة أخرى.'
+                ])->withInput();
+            } elseif ($existingRegistration->status === 'rejected') {
+                return back()->withErrors([
+                    'registration_number' => 'تمت مراجعة رقم السجل التجاري من قبل الإدارة وتم رفضه. يمكنك إدخاله مرة أخرى بعد التعديل إذا لزم الأمر.'
+                ])->withInput();
+            }
+        }
+
         $validated = $request->validate([
-            'registration_number' => 'required|string|min:5',
+            'registration_number' => 'required|numeric|min:5|unique:commercial_registrations,registration_number',
             'registration_number_confirmation' => 'required|same:registration_number',
         ], [
             'registration_number.required' => 'حقل رقم السجل التجاري مطلوب.',
-            'registration_number.string' => 'يجب أن يكون رقم السجل التجاري نصًا.',
-            'registration_number.min' => 'يجب أن يكون رقم السجل التجاري على الأقل 5 أحرف.',
+            'registration_number.numeric' => 'يجب أن يكون رقم السجل التجاري رقماً.',
+            'registration_number.min' => 'يجب أن يكون رقم السجل التجاري على الأقل 5 أرقام.',
             'registration_number_confirmation.required' => 'يرجى تأكيد رقم السجل التجاري.',
             'registration_number_confirmation.same' => 'رقم السجل التجاري غير متطابق.',
         ]);
 
+        // If user has a rejected registration, allow resubmission
         $registration = Auth::user()->commercialRegistration;
 
         if ($registration && $registration->status === 'rejected') {
@@ -85,6 +100,7 @@ class CommercialRegistrationController extends Controller
 
         return redirect()->route('pending-commercial-registration');
     }
+
 
 
     public function displayPendingPage()

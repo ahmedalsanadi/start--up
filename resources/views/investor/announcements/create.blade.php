@@ -167,7 +167,7 @@
                             الميزانية (بالريال)
                         </label>
                         <input type="number" id="budget" name="budget" value="{{ old('budget') }}" class="form-input"
-                            placeholder="أدخل الميزانية المتاحة">
+                            placeholder="أدخل الميزانية المتاحة" min="0">
                         @error('budget')
                             <p class="form-error">{{ $message }}</p>
                         @enderror

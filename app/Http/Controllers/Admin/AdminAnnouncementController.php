@@ -61,10 +61,9 @@ class AdminAnnouncementController extends Controller
         ));
     }
 
-    public function show(Announcement $announcement)
+    public function show($id)
     {
-
-        // Fetch the announcement, including soft-deleted ones
+        // Fetch the announcement including soft-deleted ones
         $announcement = Announcement::withTrashed()
             ->with([
                 'investor',
@@ -72,10 +71,10 @@ class AdminAnnouncementController extends Controller
                 'ideas' => function ($query) {
                     $query->withTrashed(); // Include soft-deleted ideas
                 }
-            ])->findOrFail($announcement->id);
+            ])
+            ->findOrFail($id); // Use findOrFail to ensure proper fetching
 
         return view('admin.announcements.show', compact('announcement'));
-
     }
 
 

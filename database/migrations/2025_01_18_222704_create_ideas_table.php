@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('name'); // Name of the idea
             $table->text('brief_description'); // Brief description of the idea
             $table->text('detailed_description'); // Detailed description of the idea
-            $table->decimal('budget', 10, 2); // Required budget for the idea
+            $table->decimal('budget', 30, 2); // Required budget for the idea
             $table->string('image')->nullable(); // Image of the idea
             $table->string('location'); // Location of the idea
             $table->enum('idea_type', ['creative', 'traditional']); // Type of idea
@@ -30,7 +30,7 @@ return new class extends Migration {
             $table->enum('stage', ['new', 'initial_acceptance', 'under_review', 'expert_consultation', 'final_decision'])
                 ->nullable()
                 ->default('new');
-                
+
             $table->boolean('is_reusable')->default(false); // Whether the idea is reusable
             $table->softDeletes(); // Add deleted_at column
             $table->timestamps();

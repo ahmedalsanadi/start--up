@@ -38,6 +38,7 @@
                             </label>
                             <input type="text" name="registration_number" id="registration_number" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
                         </div>
 
                         <div>
@@ -48,6 +49,9 @@
                             <input type="text" name="registration_number_confirmation"
                                 id="registration_number_confirmation" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                @error('registration_number')
+                                <p class="form-error">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <button type="submit"

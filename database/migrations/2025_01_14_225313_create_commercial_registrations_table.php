@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('commercial_registrations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('registration_number');
+            $table->string('registration_number')->unique();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('rejection_reason')->nullable();
             $table->timestamps();
