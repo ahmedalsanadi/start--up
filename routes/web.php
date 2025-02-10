@@ -181,11 +181,14 @@ Route::middleware('guest')->group(function () {
         return redirect()->route('login');
     })->where('any', '.*');
 
-    Route::get('/notifications/{any}', function () {
-        return redirect()->route('login');
-    })->where('any', '.*');
+    // Route::get('/notifications/{any}', function () {
+    //     return redirect()->route('login');
+    // })->where('any', '.*');
+
+
 
 
 });
+
 
 Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
