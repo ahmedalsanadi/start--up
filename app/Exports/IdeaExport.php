@@ -19,7 +19,7 @@ class IdeaExport extends BaseExport
             'idea_type' => 'نوع الفكرة',
             'feasibility_study' => 'دراسة الجدوى',
             'entrepreneur.name' => 'رائد الأعمال',
-            'announcement.name' => 'الإعلان المرتبط',
+            'announcement.description' => 'الإعلان المرتبط',
             'approval_status' => 'حالة الموافقة',
             'rejection_reason' => 'سبب الرفض',
             'status' => 'حالة الفكرة',
