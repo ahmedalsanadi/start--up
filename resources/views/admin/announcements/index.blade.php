@@ -215,10 +215,10 @@
                             <option value="in-progress" {{ request('status') == 'in-progress' ? 'selected' : '' }}>
                                 جاري
                             </option>
-                            <option value="compeleted" {{ request('status') == 'compeleted' ? 'selected' : '' }}>
-
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
                                 مكتملة
                             </option>
+
                             <option value="deleted_by_investor" {{ request('status') == 'deleted_by_investor' ? 'selected' : '' }}>
 
                                 محذوفة
@@ -344,8 +344,9 @@
                                                 <tr>
                                                     <td class="px-4 py-3 whitespace-nowrap">
                                                         <div class="flex items-center gap-3">
-                                        
-                                                            <x-profile-img src="{{$announcement->investor->profile_image}}" alt="User Avatar" size="sm" />
+
+                                                            <x-profile-img src="{{$announcement->investor->profile_image}}" alt="User Avatar"
+                                                                size="sm" />
                                                             <span class="text-xs font-medium text-gray-900 dark:text-white">
                                                                 {{ $announcement->investor->name }} </span>
                                                         </div>
